@@ -31,8 +31,10 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import { useRouter} from 'next/navigation';
 
 const AdminDashboard = () => {
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -362,7 +364,7 @@ const AdminDashboard = () => {
                       <HelpCircle className="h-6 w-6 text-[#4E9419] mr-2" />
                       <span className="text-[#2C5234]">Centro de Ayuda</span>
                     </div>
-                    <Button className="bg-[#4E9419] text-white">
+                    <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
                       Acceder
                     </Button>
                   </div>
@@ -371,7 +373,7 @@ const AdminDashboard = () => {
                       <Link className="h-6 w-6 text-[#4E9419] mr-2" />
                       <span className="text-[#2C5234]">Documentación</span>
                     </div>
-                    <Button className="bg-[#4E9419] text-white">
+                    <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
                       Ver
                     </Button>
                   </div>

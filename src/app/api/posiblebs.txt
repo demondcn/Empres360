@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  password   String
+  diagnoses  Diagnosis[]
+  empresas   Empresa[]   // Relación con la tabla Empresas
+}
+
+model Diagnosis {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  status    String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+  tests     Test[]
+
+  // Comentado porque ya no es necesario
+  // @@unique([userId, createdAt])
+}
+
+model Test {
+  id            Int      @id @default(autoincrement())
+  diagnosisId   Int
+  number        Int      
+  result        Int      
+  description   String   
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  diagnosis     Diagnosis @relation(fields: [diagnosisId], references: [id])
+}
+
+model Empresa {
+  id      Int      @id @default(autoincrement())
+  nombre  String
+  estado  String   // Puede ser "online" o "offline"
+  sector  String
+  userId  Int
+
+  user    User     @relation(fields: [userId], references: [id])
+
+  @@map("empresas") // Opcional: especifica un nombre personalizado de la tabla en la base de datos
+}

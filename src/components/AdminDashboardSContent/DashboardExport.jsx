@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { 
   FileSpreadsheet,
-  FilePdf,
+  FileText,
   Download,
   Calendar,
   BarChart2,
@@ -191,7 +191,7 @@ const ReportsDashboard = () => {
               {selectedFormat === 'excel' ? (
                 <FileSpreadsheet className="mr-2 h-4 w-4" />
               ) : (
-                <FilePdf className="mr-2 h-4 w-4" />
+                <FileText  className="mr-2 h-4 w-4" />
               )}
               Exportar Informe
             </Button>

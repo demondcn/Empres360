@@ -1,7 +1,7 @@
 "use client";
 import React, {useState} from 'react';
 import Sidebar from '@/components/AdminDashboardSContent/Sidebar'
-import DashboardSoporteTeC from '@/components/AdminDashboardSContent/DashboardSoporteTeC';
+import DashboardSoporteTeC from '@/components/AdminDashboardSContent/DashboardSoporteTec';
 //import Adminpanel from '@/components/AdminDashboardCompleto';
 
 

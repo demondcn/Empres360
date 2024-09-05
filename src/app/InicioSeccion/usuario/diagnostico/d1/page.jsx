@@ -4,7 +4,7 @@ import CuestionarioVentasMark from '@/components/CuestionarioVentasMark'
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function di1() {
+export default function Di1() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 2;

@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import CuestionarioTalentoHumano from '@/components/CuestionarioTalentoHumano'
 
 
-export default function di4() {
+export default function Di4() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 5;

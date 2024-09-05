@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioTecnologiasInformacion from '@/components/CuestionarioTecnologiasInformacion'
 
-export default function di6() {
+export default function Di6() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 7;

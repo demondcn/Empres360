@@ -1,7 +1,7 @@
 "use client";
 import React, {useState} from 'react';
 import Sidebar from '@/components/AdminDashboardSContent/Sidebar'
-import DashboardContent from '@/components/AdminDashboardSContent/DashboardSoporteTeC'
+import DashboardSoporteTeC from '@/components/AdminDashboardSContent/DashboardSoporteTeC';
 //import Adminpanel from '@/components/AdminDashboardCompleto';
 
 
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   return (
     <div className="flex h-screen bg-[#2C5234]">
       <Sidebar onSelectSection={handleSectionChange} />
-      <DashboardContent section={activeSection} />
+      <DashboardSoporteTeC section={activeSection} />
     </div>
   );
 };

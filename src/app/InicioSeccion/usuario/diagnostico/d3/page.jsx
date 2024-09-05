@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import CuestionarioDesarrolloAreaFinanzas from '@/components/CuestionarioDesarrolloAreaFinanzas'
 
 
-export default function di3() {
+export default function Di3() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 4;

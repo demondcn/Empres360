@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioInvestigacionDesarrollo from '@/components/CuestionarioInvestigacionDesarrollo'
 
-export default function di7() {
+export default function Di7() {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const diagnosisId = searchParams.get('diagnosisId');

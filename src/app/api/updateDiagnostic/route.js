@@ -6,10 +6,16 @@ export async function POST(request) {
   try {
     const { diagnosisId, status } = await request.json();
 
+    // Obtener la fecha y hora actuales
+    const now = new Date(); // Equivalent to NOW() in SQL
+
     // Actualiza el resultado del test
     await prisma.diagnosis.update({
       where: { id: parseInt(diagnosisId, 10) },
-      data: { status: status }, 
+      data: { 
+        status: status,
+        updatedAt: now
+      }, 
     });
 
     return new Response(JSON.stringify({ message: 'Diagnostico Exitoso' }), {

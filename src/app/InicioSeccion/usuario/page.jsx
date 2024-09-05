@@ -9,7 +9,8 @@ export default function User() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
-  
+  const status = 'Pending';
+  const createdAt = new Date();
 
   const handleNewDiagnostic = async () => {
     try {
@@ -18,7 +19,7 @@ export default function User() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ userId, status, createdAt }),
       });
 
       if (!response.ok) {
@@ -49,3 +50,4 @@ export default function User() {
     </>
   );
 }
+

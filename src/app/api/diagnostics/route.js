@@ -6,13 +6,14 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     // Extraer el userId del cuerpo de la solicitud
-    const { userId } = await request.json();
+    const { userId, status, createdAt } = await request.json();
 
     // Crear un nuevo diagnóstico en la base de datos
     const newDiagnostic = await prisma.diagnosis.create({
       data: {
         userId: parseInt(userId, 10),
-        status: 'Pending', // O cualquier valor predeterminado que desees
+        status: status,
+        createdAt: createdAt
       },
     });
 

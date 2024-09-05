@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Users, 
-  ShoppingCart, 
-  FileText, 
-  Settings, 
+import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
+import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgregarDiagnostico';
+import {
+  Users,
+  ShoppingCart,
+  FileText,
+  Settings,
   UserPlus,
   FileSignature,
   AlertTriangle,
@@ -31,17 +33,29 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import { useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const AdminDashboard = () => {
   const router = useRouter();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
+  const [isNewDiagnosticDialogOpen, setIsNewDiagnosticDialogOpen] = useState(false)
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
+        const data = await res.json();
+        setDashboardData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
@@ -78,311 +92,333 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  const barChartData = [
-    { name: 'Ene', completados: 4, pendientes: 2 },
-    { name: 'Feb', completados: 3, pendientes: 1 },
-    { name: 'Mar', completados: 5, pendientes: 3 },
-    { name: 'Abr', completados: 6, pendientes: 1 },
-    { name: 'May', completados: 4, pendientes: 2 },
-    { name: 'Jun', completados: 7, pendientes: 0 },
-  ];
+  const handleNewUser = (event) => {
+    event.preventDefault()
+    // Implement new user creation logic here
+    console.log("Creating new user")
+    // You might want to make an API call to create the user
+    setIsNewUserDialogOpen(false)
+  }
+  const handleNewDiagnostic = (event) => {
+    event.preventDefault()
+    // Implement new diagnostic creation logic here
+    console.log("Creating new diagnostic")
+    // You might want to make an API call to create the diagnostic
+    setIsNewDiagnosticDialogOpen(false)
+  }
 
-  const lineChartData = [
-    { name: 'Ene', empresasActivas: 10 },
-    { name: 'Feb', empresasActivas: 12 },
-    { name: 'Mar', empresasActivas: 15 },
-    { name: 'Abr', empresasActivas: 18 },
-    { name: 'May', empresasActivas: 20 },
-    { name: 'Jun', empresasActivas: 25 },
-  ];
+  if (loading) {
+    return <p>Cargando datos...</p>;
+  }
+
+  if (!dashboardData) {
+    return <p>Error al cargar los datos</p>;
+  }
+  const {
+    totalDiagnosticos,
+    totalDiagnosticosUltimoMes,
+    totalEmpresasActivas,
+    porcentajeEmpresasActivasSemana,
+    totalUsuarios,
+    porcentajeUsuariosUltimoMes,
+    diagnosticosPendientes,
+    diagnosticosCompletados,
+    usuariosConEmpresa,
+    empresasConDiagnostico,
+    tiemposPendientes,
+    usuariosNuevos,
+    barChartData,
+    lineChartData,
+    notificaciones,
+    empresasFormateadas,
+    usuariosFormateados,
+  } = dashboardData;
+
+  const empresas = empresasFormateadas;
+
+  const users = usuariosFormateados;
+
+
+
 
   const pieChartData = [
-    { name: 'Completados', value: 60 },
-    { name: 'Pendientes', value: 10 },
+    { name: 'Completados', value: diagnosticosCompletados },
+    { name: 'Pendientes', value: diagnosticosPendientes },
   ];
 
   const COLORS = ['#4E9419', '#2C5234'];
 
   return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
-          <div className="container mx-auto px-6 py-8">
-            <h3 className="text-white text-3xl font-medium mb-4">Dashboard</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Total de Diagnósticos</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-semibold text-[#2C5234]">152</p>
-                      <p className="text-[#4E9419]">+12% desde el último mes</p>
-                    </div>
-                    <FileText className="h-12 w-12 text-[#4E9419]" />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Empresas Activas</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-semibold text-[#2C5234]">87</p>
-                      <p className="text-[#4E9419]">+5% desde la última semana</p>
-                    </div>
-                    <ShoppingCart className="h-12 w-12 text-[#4E9419]" />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Usuarios Registrados</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-3xl font-semibold text-[#2C5234]">1,234</p>
-                      <p className="text-[#4E9419]">+20 nuevos usuarios</p>
-                    </div>
-                    <Users className="h-12 w-12 text-[#4E9419]" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+    <div className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
+        <div className="container mx-auto px-6 py-8">
+          <h3 className="text-white text-3xl font-medium mb-4">Dashboard</h3>
 
-            <Tabs defaultValue="charts" className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
-              <TabsList>
-                <TabsTrigger value="charts">Gráficos</TabsTrigger>
-                <TabsTrigger value="users">Usuarios</TabsTrigger>
-                <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
-              </TabsList>
-              <TabsContent value="charts">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Estado de Diagnósticos</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={barChartData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="name" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="completados" fill="#4E9419" />
-                          <Bar dataKey="pendientes" fill="#2C5234" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Empresas Activas</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={lineChartData}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="name" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Line type="monotone" dataKey="empresasActivas" stroke="#4E9419" />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Total de Diagnósticos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalDiagnosticos}</p>
+                    <p className="text-[#4E9419]">+{Math.floor(totalDiagnosticosUltimoMes)}% desde el último mes</p>
+                  </div>
+                  <FileText className="h-12 w-12 text-[#4E9419]" />
                 </div>
-                <Card className="mt-6">
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Empresas Activas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalEmpresasActivas}</p>
+                    <p className="text-[#4E9419]">+{Math.floor(porcentajeEmpresasActivasSemana)}% desde la última semana</p>
+                  </div>
+                  <ShoppingCart className="h-12 w-12 text-[#4E9419]" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Usuarios Registrados</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsuarios}</p>
+                    <p className="text-[#4E9419]">+{Math.floor(usuariosNuevos)} nuevos usuarios</p>
+                  </div>
+                  <Users className="h-12 w-12 text-[#4E9419]" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Tabs defaultValue="charts" className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
+            <TabsList>
+              <TabsTrigger value="charts">Gráficos</TabsTrigger>
+              <TabsTrigger value="users">Usuarios</TabsTrigger>
+              <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
+            </TabsList>
+            <TabsContent value="charts">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                <Card>
                   <CardHeader>
-                    <CardTitle>Distribución de Diagnósticos</CardTitle>
+                    <CardTitle>Estado de Diagnósticos</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <RePieChart>
-                        <Pie
-                          data={pieChartData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          outerRadius={100}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {pieChartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
+                      <BarChart data={barChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
                         <Tooltip />
                         <Legend />
-                      </RePieChart>
+                        <Bar dataKey="completados" fill="#4E9419" />
+                        <Bar dataKey="pendientes" fill="#2C5234" />
+                      </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
-              </TabsContent>
-              <TabsContent value="users">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Gestión de Usuarios</CardTitle>
+                    <CardTitle>Empresas Activas</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex justify-end mb-4">
-                      <Button className="bg-[#4E9419] text-white">
-                        <UserPlus className="mr-2 h-4 w-4" /> Agregar Usuario
-                      </Button>
-                    </div>
-                    <ScrollArea className="h-[400px]">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left p-2">Nombre</th>
-                            <th className="text-left p-2">Email</th>
-                            <th className="text-left p-2">Rol</th>
-                            <th className="text-left p-2">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[...Array(10)].map((_, index) => (
-                            <tr key={index} className="border-b">
-                              <td className="p-2">Usuario {index + 1}</td>
-                              <td className="p-2">usuario{index + 1}@example.com</td>
-                              <td className="p-2">{index % 2 === 0 ? 'Admin' : 'Usuario'}</td>
-                              <td className="p-2">
-                                <Button variant="ghost" className="mr-2">Editar</Button>
-                                <Button variant="ghost" className="text-red-500">Eliminar</Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </ScrollArea>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={lineChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="empresasActivas" stroke="#4E9419" />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
-              </TabsContent>
-              <TabsContent value="diagnostics">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Gestión de Diagnósticos</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-end mb-4">
-                      <Button className="bg-[#4E9419] text-white">
-                        <FileSignature className="mr-2 h-4 w-4" /> Nuevo Diagnóstico
-                      </Button>
-                    </div>
-                    <ScrollArea className="h-[400px]">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left p-2">Empresa</th>
-                            <th className="text-left p-2">Fecha</th>
-                            <th className="text-left p-2">Estado</th>
-                            <th className="text-left p-2">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {[...Array(10)].map((_, index) => (
-                            <tr key={index} className="border-b">
-                              <td className="p-2">Empresa {index + 1}</td>
-                              <td className="p-2">{new Date().toLocaleDateString()}</td>
-                              <td className="p-2">{['Completado', 'En Curso', 'Pendiente'][index % 3]}</td>
-                              <td className="p-2">
-                                <Button variant="ghost" className="mr-2">Ver</Button>
-                                <Button variant="ghost" className="mr-2">Editar</Button>
-                                <Button variant="ghost" className="text-red-500">Eliminar</Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </ScrollArea>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <Card className="bg-white/90 backdrop-blur-sm">
+              </div>
+              <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Notificaciones Recientes</CardTitle>
+                  <CardTitle>Distribución de Diagnósticos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ScrollArea className="h-[200px]">
-                    <div className="space-y-4">
-                      {[...Array(5)].map((_, index) => (
-                        <div key={index} className="flex items-center">
-                          <AlertTriangle className="h-6 w-6 text-[#FFF700] mr-2" />
-                          <div>
-                            <p className="text-[#2C5234]">Alerta de diagnóstico pendiente</p>
-                            <p className="text-[#4E9419] text-sm">Hace {index + 1} horas</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RePieChart>
+                      <Pie
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {pieChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </RePieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="users">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestión de Usuarios</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-end mb-4">
+                    <NewUserDialog isOpen={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen} onSubmit={handleNewUser} />
+                  </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">Nombre</th>
+                          <th className="text-left p-2">Email</th>
+                          <th className="text-left p-2">N°Diagnósticos</th>
+                          <th className="text-left p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {users.map((users) => (
+                          <tr key={users.id} className="border-b">
+                            <td className="p-2">{users.nombre}</td>
+                            <td className="p-2">{users.email}</td>
+                            <td className="p-2">{users.nD}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">Editar</Button>
+                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </ScrollArea>
                 </CardContent>
               </Card>
-
-              <Card className="bg-white/90 backdrop-blur-sm">
+            </TabsContent>
+            <TabsContent value="diagnostics">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Acciones Rápidas</CardTitle>
+                  <CardTitle>Gestión de Diagnósticos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button className="bg-[#4E9419] text-white">
-                      <UserPlus className="mr-2 h-4 w-4" /> Nuevo Usuario
-                    </Button>
-                    <Button className="bg-[#4E9419] text-white">
-                      <FileSignature className="mr-2 h-4 w-4" /> Nuevo Diagnóstico
-                    </Button>
-                    <Button className="bg-[#4E9419] text-white">
-                      <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
-                    </Button>
-                    <Button className="bg-[#4E9419] text-white">
-                      <Settings className="mr-2 h-4 w-4" /> Configuración
-                    </Button>
+                  <div className="flex justify-end mb-4">
+                    <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
                   </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">Empresa</th>
+                          <th className="text-left p-2">Fecha</th>
+                          <th className="text-left p-2">Estado</th>
+                          <th className="text-left p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {empresas.map((empresa) => (
+                          <tr key={empresa.id} className="border-b">
+                            <td className="p-2">{empresa.nombre}</td>
+                            <td className="p-2">{empresa.fecha}</td>
+                            <td className="p-2">{empresa.estado}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">Editar</Button>
+                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
                 </CardContent>
               </Card>
-            </div>
+            </TabsContent>
+          </Tabs>
 
-            <div className="mt-6">
-              <Card className="bg-white/90 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="text-[#2C5234]">Soporte y Ayuda</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <HelpCircle className="h-6 w-6 text-[#4E9419] mr-2" />
-                      <span className="text-[#2C5234]">Centro de Ayuda</span>
-                    </div>
-                    <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                      Acceder
-                    </Button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Notificaciones Recientes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-[200px]">
+                  <div className="space-y-4">
+                    {notificaciones.map((notificacion) => (
+                      <div key={notificacion.id} className="flex items-center">
+                        <AlertTriangle className="h-6 w-6 text-[#FFF700] mr-2" />
+                        <div>
+                          <p className="text-[#2C5234]">{notificacion.mensaje}</p>
+                          <p className="text-[#4E9419] text-sm">Hace {notificacion.hace}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center">
-                      <Link className="h-6 w-6 text-[#4E9419] mr-2" />
-                      <span className="text-[#2C5234]">Documentación</span>
-                    </div>
-                    <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
-                      Ver
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Acciones Rápidas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <NewUserDialog isOpen={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen} onSubmit={handleNewUser} />
+                  <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
+                  <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
+                    <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
+                  </Button>
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ConfigAd')}>
+                    <Settings className="mr-2 h-4 w-4" /> Configuración
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </main>
-      </div>
+
+          <div className="mt-6">
+            <Card className="bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-[#2C5234]">Soporte y Ayuda</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <HelpCircle className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <span className="text-[#2C5234]">Centro de Ayuda</span>
+                  </div>
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
+                    Acceder
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center">
+                    <Link className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <span className="text-[#2C5234]">Documentación</span>
+                  </div>
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
+                    Ver
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 };
 

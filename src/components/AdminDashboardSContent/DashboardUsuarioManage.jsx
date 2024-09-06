@@ -4,22 +4,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
-import { 
-  Users, 
+import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
+import {
+  Users,
   UserPlus,
   UserMinus,
   UserCog,
   Mail,
-  Phone,
-  Calendar,
   Search,
   BarChart2,
-  PieChart,
+
+  SquareUser,
+  FileCheck,
+  UserRoundX
+
 
 } from 'lucide-react';
 import {
   BarChart,
+  PieChart,
   Bar,
   XAxis,
   YAxis,
@@ -32,11 +37,28 @@ import {
   Pie,
   Cell
 } from 'recharts';
+import Result from '@/app/InicioSeccion/usuario/diagnostico/result/page';
 
 const UserManagementDashboard = () => {
+  const router = useRouter();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
+        const data = await res.json();
+        setDashboardData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
@@ -56,32 +78,72 @@ const UserManagementDashboard = () => {
     };
   }, []);
 
-  const userActivityData = [
-    { name: 'Ene', activos: 300, inactivos: 100 },
-    { name: 'Feb', activos: 400, inactivos: 120 },
-    { name: 'Mar', activos: 500, inactivos: 90 },
-    { name: 'Abr', activos: 470, inactivos: 110 },
-    { name: 'May', activos: 550, inactivos: 100 },
-    { name: 'Jun', activos: 600, inactivos: 80 },
-  ];
+  const handleNewUser = (event) => {
+    event.preventDefault()
+    // Implement new user creation logic here
+    console.log("Creating new user")
+    // You might want to make an API call to create the user
+    setIsNewUserDialogOpen(false)
+  }
 
-  const userRoleData = [
-    { name: 'Administradores', value: 20 },
-    { name: 'Gerentes', value: 50 },
-    { name: 'Empleados', value: 300 },
-    { name: 'Clientes', value: 1000 },
-  ];
+  if (loading) {
+    return <p>Cargando datos...</p>;
+  }
 
-  const COLORS = ['#4E9419', '#2C5234', '#FFF700', '#FF6B6B'];
+  if (!dashboardData) {
+    return <p>Error al cargar los datos</p>;
+  }
+  const {
+    totalDiagnosticos,
+    totalDiagnosticosUltimoMes,
+    totalEmpresasActivas,
+    porcentajeEmpresasActivasSemana,
+    totalUsuarios,
+    totalUsuariosUltimoMes,
+    totalUsersSemana,
+    porcentajeUsuariosActivosSeman,
+    registrosIn7days,
+    porcentajeUsuariosUltimoMes,
+    diagnosticosPendientes,
+    diagnosticosCompletados,
+    usuariosConEmpresa,
+    empresasConDiagnostico,
+    tiemposPendientes,
+    usuariosNuevos,
+    barChartData,
+    lineChartData,
+    notificaciones,
+    empresasFormateadas,
+    usuariosFormateados,
+    usersFormated,
+    newUsersData,
+    userActivityBar,
+    usersConDiagnoses,
+    usersWithCompletedDiagnoses,
+    usersNotAffiliated,
+    testResulPie
 
-  const newUsersData = [
-    { name: 'Ene', nuevosUsuarios: 50 },
-    { name: 'Feb', nuevosUsuarios: 80 },
-    { name: 'Mar', nuevosUsuarios: 120 },
-    { name: 'Abr', nuevosUsuarios: 90 },
-    { name: 'May', nuevosUsuarios: 110 },
-    { name: 'Jun', nuevosUsuarios: 150 },
-  ];
+  } = dashboardData;
+
+  const users = usersFormated;
+  const userActivityData = userActivityBar;
+
+  // const userActivityData = [
+  //   { name: 'Ene', activos: 300, inactivos: 100 },
+  //   { name: 'Feb', activos: 400, inactivos: 120 },
+  //   { name: 'Mar', activos: 500, inactivos: 90 },
+  //   { name: 'Abr', activos: 470, inactivos: 110 },
+  //   { name: 'May', activos: 550, inactivos: 100 },
+  //   { name: 'Jun', activos: 600, inactivos: 80 },
+  // ];
+
+  const userRoleData = testResulPie;
+
+  const COLORS = ['#4E9419', '#2C5234', '#FE1100', '#FF6B6B', '#3498DB', '#9B59B6', '#E67E22'];
+
+
+
+
 
   const mockUsers = [
     { id: 1, name: 'Juan Pérez', email: 'juan@example.com', role: 'Administrador', lastActive: '2023-06-15' },
@@ -91,34 +153,37 @@ const UserManagementDashboard = () => {
     { id: 5, name: 'Luis Sánchez', email: 'luis@example.com', role: 'Empleado', lastActive: '2023-06-11' },
   ];
 
-  const filteredUsers = mockUsers.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const usuariosFiltrados = users.filter((user) =>
+    user.id.toString().includes(searchTerm.toLowerCase()) ||
+    user.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+    user.nD.toString().includes(searchTerm.toLowerCase()) 
   );
+
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
         <div className="container mx-auto px-6 py-8">
           <h3 className="text-white text-3xl font-medium mb-4">Gestión de Usuarios</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          <Card className="bg-white/90 backdrop-blur-sm">
+            <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-[#2C5234]">Total de Usuarios</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">1,370</p>
-                    <p className="text-[#4E9419]">+50 nuevos este mes</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsuarios}</p>
+                    <p className="text-[#4E9419]">+{totalUsuariosUltimoMes} nuevos este mes</p>
                   </div>
                   <Users className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-[#2C5234]">Usuarios Activos</CardTitle>
@@ -126,14 +191,14 @@ const UserManagementDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">1,052</p>
-                    <p className="text-[#4E9419]">76% del total</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsersSemana}</p>
+                    <p className="text-[#4E9419]">{porcentajeUsuariosActivosSeman}% del total</p>
                   </div>
                   <UserCog className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-[#2C5234]">Nuevos Registros</CardTitle>
@@ -141,7 +206,7 @@ const UserManagementDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">87</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsersSemana}</p>
                     <p className="text-[#4E9419]">En los últimos 7 días</p>
                   </div>
                   <UserPlus className="h-12 w-12 text-[#4E9419]" />
@@ -157,9 +222,9 @@ const UserManagementDashboard = () => {
             <CardContent>
               <div className="flex items-center space-x-2">
                 <Search className="text-[#4E9419]" />
-                <Input 
-                  type="text" 
-                  placeholder="Buscar por nombre, email o rol..." 
+                <Input
+                  type="text"
+                  placeholder="Buscar por nombre, email o rol..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-grow"
@@ -172,7 +237,7 @@ const UserManagementDashboard = () => {
             <TabsList>
               <TabsTrigger value="users">Lista de Usuarios</TabsTrigger>
               <TabsTrigger value="activity">Actividad de Usuarios</TabsTrigger>
-              <TabsTrigger value="roles">Roles de Usuarios</TabsTrigger>
+              <TabsTrigger value="roles">Pruebas Por Usuario</TabsTrigger>
             </TabsList>
             <TabsContent value="users">
               <Card>
@@ -181,27 +246,27 @@ const UserManagementDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-end mb-4">
-                    <Button className="bg-[#4E9419] text-white">
-                      <UserPlus className="mr-2 h-4 w-4" /> Agregar Usuario
-                    </Button>
+                    <NewUserDialog isOpen={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen} onSubmit={handleNewUser} />
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
+                          <th className="text-left p-2">Id</th>
                           <th className="text-left p-2">Nombre</th>
                           <th className="text-left p-2">Email</th>
-                          <th className="text-left p-2">Rol</th>
+                          <th className="text-left p-2">N°Diagnósticos</th>
                           <th className="text-left p-2">Última Actividad</th>
                           <th className="text-left p-2">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredUsers.map((user) => (
+                        {usuariosFiltrados.map((user) => (
                           <tr key={user.id} className="border-b">
-                            <td className="p-2">{user.name}</td>
+                            <td className="p-2">{user.id}</td>
+                            <td className="p-2">{user.nombre}</td>
                             <td className="p-2">{user.email}</td>
-                            <td className="p-2">{user.role}</td>
+                            <td className="p-2">{user.nD}</td>
                             <td className="p-2">{user.lastActive}</td>
                             <td className="p-2">
                               <Button variant="ghost" className="mr-2">Editar</Button>
@@ -238,7 +303,7 @@ const UserManagementDashboard = () => {
             <TabsContent value="roles">
               <Card>
                 <CardHeader>
-                  <CardTitle>Distribución de Roles de Usuarios</CardTitle>
+                  <CardTitle>Resultados Maximos De Usuarios Por Prueba</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -290,16 +355,14 @@ const UserManagementDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button className="bg-[#4E9419] text-white">
-                    <UserPlus className="mr-2 h-4 w-4" /> Nuevo Usuario
-                  </Button>
+                  <NewUserDialog isOpen={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen} onSubmit={handleNewUser} />
                   <Button className="bg-[#4E9419] text-white">
                     <UserMinus className="mr-2 h-4 w-4" /> Desactivar Usuario
                   </Button>
                   <Button className="bg-[#4E9419] text-white">
                     <Mail className="mr-2 h-4 w-4" /> Enviar Notificación
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
                     <BarChart2 className="mr-2 h-4 w-4" /> Generar Reporte
                   </Button>
                 </div>
@@ -315,24 +378,24 @@ const UserManagementDashboard = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center">
-                    <Phone className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <SquareUser  className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Usuarios Móviles</p>
-                      <p className="text-[#4E9419]">65% del total</p>
+                      <p className="text-[#2C5234] font-semibold">Usuarios con Diagnósticos</p>
+                      <p className="text-[#4E9419]">{usersConDiagnoses}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <Calendar className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <FileCheck className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Retención a 30 días</p>
-                      <p className="text-[#4E9419]">78%</p>
+                      <p className="text-[#2C5234] font-semibold">Usuarios con Diagnósticos Completados</p>
+                      <p className="text-[#4E9419]">{usersWithCompletedDiagnoses}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <PieChart className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <UserRoundX className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Usuarios Premium</p>
-                      <p className="text-[#4E9419]">22% del total</p>
+                      <p className="text-[#2C5234] font-semibold">Usuarios No Afiliados</p>
+                      <p className="text-[#4E9419]">{usersNotAffiliated}</p>
                     </div>
                   </div>
                 </div>

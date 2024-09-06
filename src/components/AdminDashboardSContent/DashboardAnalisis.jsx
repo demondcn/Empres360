@@ -39,6 +39,18 @@ const AnalysisDashboard = () => {
 
   useEffect(() => {
     const styleElement = document.createElement("style");
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboardsroutes/dashboardAnalisis');
+        const data = await res.json();
+        setDashboardData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
         0% { background-position: 0% 50%; }
@@ -56,6 +68,8 @@ const AnalysisDashboard = () => {
       document.head.removeChild(styleElement);
     };
   }, []);
+
+
 
   const overallPerformanceData = [
     { name: 'Ene', score: 65 },

@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { 
-  ClipboardList, 
+import {
+  ClipboardList,
   BarChart2,
-  PieChart,
-  
+
+
   Search,
   FileText,
   CheckCircle,
@@ -20,6 +20,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import {
+  PieChart,
   BarChart,
   Bar,
   XAxis,
@@ -36,8 +37,24 @@ import {
 
 const DiagnosticManagementDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
+
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
+        const data = await res.json();
+        setDashboardData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
@@ -57,22 +74,73 @@ const DiagnosticManagementDashboard = () => {
     };
   }, []);
 
+  if (loading) {
+    return <p>Cargando datos...</p>;
+  }
+
+  if (!dashboardData) {
+    return <p>Error al cargar los datos</p>;
+  }
+
+  const {
+    totalDiagnosticos,
+    totalDiagnosticosUltimoMes,
+    totalEmpresasActivas,
+    porcentajeEmpresasActivasSemana,
+    totalUsuarios,
+    totalUsuariosUltimoMes,
+    totalUsersSemana,
+    porcentajeUsuariosActivosSeman,
+    registrosIn7days,
+    porcentajeUsuariosUltimoMes,
+    diagnosticosPendientes,
+    diagnosticosCompletados,
+    usuariosConEmpresa,
+    empresasConDiagnostico,
+    tiemposPendientes,
+    usuariosNuevos,
+    barChartData,
+    lineChartData,
+    notificaciones,
+    empresasFormateadas,
+    usuariosFormateados,
+    usersFormated,
+    newUsersData,
+    userActivityBar,
+    usersConDiagnoses,
+    usersWithCompletedDiagnoses,
+    usersNotAffiliated,
+    monthlyDiagnosticsData,
+    mayorResultado,
+    menorResultado,
+    mayorResultadoDescripcion,
+    menorResultadoDescripcion,
+    ResultadoGeneralMasAlto,
+    EmpresasDiagnosticRR
+
+  } = dashboardData;
+
+
+  const porcentajeDiagCompletados = Math.floor(totalDiagnosticos > 0 ? (diagnosticosCompletados / totalDiagnosticos) * 100 : 0);
+
+  const porcentajeDiagPendientes = Math.floor(totalDiagnosticos > 0 ? (diagnosticosPendientes / totalDiagnosticos) * 100 : 0);
+
   const diagnosticStatusData = [
-    { name: 'Completados', value: 300 },
-    { name: 'En Progreso', value: 150 },
-    { name: 'Pendientes', value: 100 },
+    { name: 'Completados', value: diagnosticosCompletados },
+    { name: 'Pendientes', value: diagnosticosPendientes },
   ];
 
-  const COLORS = ['#4E9419', '#FFF700', '#FF6B6B'];
 
-  const monthlyDiagnosticsData = [
-    { name: 'Ene', diagnosticos: 50 },
-    { name: 'Feb', diagnosticos: 80 },
-    { name: 'Mar', diagnosticos: 120 },
-    { name: 'Abr', diagnosticos: 90 },
-    { name: 'May', diagnosticos: 110 },
-    { name: 'Jun', diagnosticos: 150 },
-  ];
+  const COLORS = ['#4E9419', '#FF6B6B'];
+
+  // const monthlyDiagnosticsData = [
+  //   { name: 'Ene', diagnosticos: 50 },
+  //   { name: 'Feb', diagnosticos: 80 },
+  //   { name: 'Mar', diagnosticos: 120 },
+  //   { name: 'Abr', diagnosticos: 90 },
+  //   { name: 'May', diagnosticos: 110 },
+  //   { name: 'Jun', diagnosticos: 150 },
+  // ];
 
   const sectorDistributionData = [
     { name: 'Tecnología', value: 30 },
@@ -90,10 +158,17 @@ const DiagnosticManagementDashboard = () => {
     { id: 5, company: 'AgroInnovación', sector: 'Agricultura', status: 'En Progreso', date: '2023-06-11' },
   ];
 
-  const filteredDiagnostics = mockDiagnostics.filter(diagnostic => 
-    diagnostic.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    diagnostic.sector.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    diagnostic.status.toLowerCase().includes(searchTerm.toLowerCase())
+
+  const filteredDiagnostics = EmpresasDiagnosticRR.filter(diagnostic =>
+    diagnostic && // Verifica que diagnostic no sea null o undefined
+    (
+      diagnostic.id.toString().includes(searchTerm.toLowerCase()) ||
+      diagnostic.Empresa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      diagnostic.sector?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      diagnostic.resultGeneralD?.toString().includes(searchTerm) ||
+      diagnostic.Dominprueba?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      diagnostic.Peorprueva?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   return (
@@ -101,7 +176,7 @@ const DiagnosticManagementDashboard = () => {
       <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
         <div className="container mx-auto px-6 py-8">
           <h3 className="text-white text-3xl font-medium mb-4">Gestión de Diagnósticos Empresariales</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
@@ -110,14 +185,14 @@ const DiagnosticManagementDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">550</p>
-                    <p className="text-[#4E9419]">+30 este mes</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalDiagnosticos}</p>
+                    <p className="text-[#4E9419]">+{totalDiagnosticosUltimoMes} este mes</p>
                   </div>
                   <ClipboardList className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-[#2C5234]">Diagnósticos Completados</CardTitle>
@@ -125,23 +200,23 @@ const DiagnosticManagementDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">300</p>
-                    <p className="text-[#4E9419]">54% del total</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{diagnosticosCompletados}</p>
+                    <p className="text-[#4E9419]">{porcentajeDiagCompletados}% del total</p>
                   </div>
                   <CheckCircle className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Diagnósticos en Progreso</CardTitle>
+                <CardTitle className="text-[#2C5234]">Diagnósticos en Pendiente</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">150</p>
-                    <p className="text-[#4E9419]">27% del total</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{diagnosticosPendientes}</p>
+                    <p className="text-[#4E9419]">{porcentajeDiagPendientes}% del total</p>
                   </div>
                   <Clock className="h-12 w-12 text-[#4E9419]" />
                 </div>
@@ -156,9 +231,9 @@ const DiagnosticManagementDashboard = () => {
             <CardContent>
               <div className="flex items-center space-x-2">
                 <Search className="text-[#4E9419]" />
-                <Input 
-                  type="text" 
-                  placeholder="Buscar por empresa, sector o estado..." 
+                <Input
+                  type="text"
+                  placeholder="Buscar por empresa, sector o estado..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-grow"
@@ -188,20 +263,24 @@ const DiagnosticManagementDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
+                          <th className="text-left p-2">IdD</th>
                           <th className="text-left p-2">Empresa</th>
                           <th className="text-left p-2">Sector</th>
-                          <th className="text-left p-2">Estado</th>
-                          <th className="text-left p-2">Fecha</th>
-                          <th className="text-left p-2">Acciones</th>
+                          <th className="text-left p-2">ResultGeneral</th>
+                          <th className="text-center p-2">MejorPrueba</th>
+                          <th className="text-left p-2">PeorPrueba</th>
+                          <th className="text-center p-2">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
                         {filteredDiagnostics.map((diagnostic) => (
                           <tr key={diagnostic.id} className="border-b">
-                            <td className="p-2">{diagnostic.company}</td>
+                            <td className="p-2">{diagnostic.id}</td>
+                            <td className="p-2">{diagnostic.Empresa}</td>
                             <td className="p-2">{diagnostic.sector}</td>
-                            <td className="p-2">{diagnostic.status}</td>
-                            <td className="p-2">{diagnostic.date}</td>
+                            <td className="p-2">{diagnostic.resultGeneralD}</td>
+                            <td className="p-2">{diagnostic.Dominprueba}</td>
+                            <td className="p-2">{diagnostic.Peorprueva}</td>
                             <td className="p-2">
                               <Button variant="ghost" className="mr-2">
                                 <FileText className="h-4 w-4 mr-1" /> Ver
@@ -319,22 +398,24 @@ const DiagnosticManagementDashboard = () => {
                   <div className="flex items-center">
                     <Clock className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Tiempo Promedio</p>
-                      <p className="text-[#4E9419]">3.5 días por diagnóstico</p>
+                      <p className="text-[#2C5234] font-semibold">Resultado Mas Alto</p>
+                      <p className="text-[#4E9419]">{ResultadoGeneralMasAlto}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Tasa de Finalización</p>
-                      <p className="text-[#4E9419]">85% completados</p>
+                      <p className="text-[#2C5234] font-semibold">Prueba Debil</p>
+                      {/* <p className="text-[#4E9419]">Tecnología (30%)</p> */}
+                      <p className="text-[#4E9419]">{menorResultadoDescripcion} ({menorResultado})%</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <PieChart className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Sector Predominante</p>
-                      <p className="text-[#4E9419]">Tecnología (30%)</p>
+                      <p className="text-[#2C5234] font-semibold">Prueba Predominante</p>
+                      {/* <p className="text-[#4E9419]">Tecnología (30%)</p> */}
+                      <p className="text-[#4E9419]"> {mayorResultadoDescripcion} ({mayorResultado}%)</p>
                     </div>
                   </div>
                 </div>

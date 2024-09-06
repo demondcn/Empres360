@@ -36,6 +36,26 @@ export async function GET(request) {
                 },
             },
         });
+        //porcentaje de usuarios activos hace esta semana
+
+        const UsuariosActivosSemana = await prisma.user.count({
+            where: {
+                updatedAt: {
+                    gte: fechaUnaSemana,
+                },
+            },
+        });
+
+
+
+        //total usuarios activos en la semana
+        const totalUsersSemana = await prisma.user.count({
+            where: {
+                createdAt: {
+                    gte: fechaUnaSemana,
+                },
+            },
+        });
 
         const totalEmpresasSemana = await prisma.empresa.count({
             where: {
@@ -45,7 +65,9 @@ export async function GET(request) {
             },
         });
 
+        const porcentajeUsuariosActivosSeman = totalUsersSemana > 0 ? (UsuariosActivosSemana / totalUsersSemana) * 100 : 0;
         const porcentajeEmpresasActivasSemana = totalEmpresasSemana > 0 ? (empresasActivasSemana / totalEmpresasSemana) * 100 : 0;
+
 
         // Total de usuarios registrados
         const totalUsuarios = await prisma.user.count();
@@ -60,6 +82,10 @@ export async function GET(request) {
         });
         const porcentajeUsuariosUltimoMes = totalUsuarios > 0 ? (totalUsuariosUltimoMes / totalUsuarios) * 100 : 0;
         const usuariosNuevos = totalUsuariosUltimoMes;
+
+
+
+
         // Cantidad total de diagnósticos en status "pending" y "completed"
         const diagnosticosPendientes = await prisma.diagnosis.count({
             where: {
@@ -240,6 +266,19 @@ export async function GET(request) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         const currentDate = new Date();
         const tiemposPendientes = diagnosticosPendientesConTiempo.map(diagnostico => {
             const tiempo = Math.floor((currentDate - new Date(diagnostico.createdAt)) / (1000 * 60 * 60 * 24)); // Diferencia en días
@@ -263,50 +302,354 @@ export async function GET(request) {
 
         const users = await prisma.user.findMany({
             select: {
-              id: true,
-              name: true,
-              email: true,
-              _count: {
-                select: {
-                  diagnoses: true, // Contar el número de diagnósticos asociados
+                id: true,
+                name: true,
+                email: true,
+                _count: {
+                    select: {
+                        diagnoses: true, // Contar el número de diagnósticos asociados
+                    },
                 },
-              },
             },
-          });
-        
-          // Formatear los datos para enviar al frontend
-          const usuariosFormateados = users.map(user => ({
+        });
+
+        // Formatear los datos para enviar al frontend
+        const usuariosFormateados = users.map(user => ({
             id: user.id,
             nombre: user.name,
             email: user.email,
             nD: user._count.diagnoses, // Número de diagnósticos
+        }));
+        const usersManage = await prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                _count: {
+                    select: {
+                        diagnoses: true, // Contar el número de diagnósticos asociados
+                    },
+                },
+                updatedAt: true, // Incluir updatedAt en la consulta
+            },
+        });
+
+
+
+        const usersFormated = usersManage.map(user => ({
+            id: user.id,
+            nombre: user.name,
+            email: user.email,
+            nD: user._count.diagnoses, // Número de diagnósticos
+            lastActive: user.updatedAt.toLocaleDateString(), // Última fecha de actualización
+        }))
+
+
+        // Agrupamos los usuarios por updatedAt dentro del rango de fechas
+        const usuariosActualizadosPorMes = await prisma.user.groupBy({
+            by: ['updatedAt'],
+            _count: {
+                id: true, // Contamos el número de usuarios
+            },
+            where: {
+                updatedAt: {
+                    gte: startDate, // Desde la fecha de inicio
+                    lte: endDate,   // Hasta la fecha actual
+                },
+            },
+        });
+
+        // Crear un mapa para acumular el conteo de usuarios actualizados por mes y año
+        const countsMapUsers = usuariosActualizadosPorMes.reduce((acc, item) => {
+            const monthYear = item.updatedAt.toLocaleString('default', { month: 'short', year: 'numeric' }); // Formateamos como "Mes Año"
+            if (!acc[monthYear]) {
+                acc[monthYear] = 0;
+            }
+            acc[monthYear] += item._count.id; // Acumula el conteo de usuarios
+            return acc;
+        }, {});
+
+        // Ordenar las claves de los meses en orden ascendente
+        const sortedKeysUsers = Object.keys(countsMapUsers).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return (aYear - bYear) || (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(aMonth) - ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(bMonth));
+        });
+
+        // Formatear los datos para el gráfico en el formato requerido
+        const formattedLineChartData2 = sortedKeysUsers.map((key) => ({
+            name: key,
+            nuevosUsuarios: countsMapUsers[key],
+        }));
+
+        // Invertir los datos si es necesario para mostrar desde la fecha más reciente
+        const userActivity = formattedLineChartData2.slice().reverse();
+
+
+
+
+
+        const usuariosPorMes = await prisma.user.groupBy({
+            by: ['updatedAt'],
+            _count: {
+                id: true, // Contamos el número de usuarios
+            },
+            where: {
+                updatedAt: {
+                    gte: startDate, // Desde la fecha de inicio
+                    lte: endDate,   // Hasta la fecha actual
+                },
+            },
+        });
+
+        // Crear un mapa para acumular el conteo de usuarios activos e inactivos por mes y año
+        const countsMapUsersBar = usuariosPorMes.reduce((acc, item) => {
+            const monthYear = item.updatedAt.toLocaleString('default', { month: 'short', year: 'numeric' }); // Formateamos como "Mes Año"
+
+            // Inicializar el contador si no existe para el mes y año
+            if (!acc[monthYear]) {
+                acc[monthYear] = { activos: 0, inactivos: 0 };
+            }
+
+            // Verificar si el usuario está activo o inactivo
+            if (item.updatedAt >= fechaUnaSemana && item.updatedAt <= endDate) {
+                acc[monthYear].activos += item._count.id; // Usuario activo
+            } else {
+                acc[monthYear].inactivos += item._count.id; // Usuario inactivo
+            }
+
+            return acc;
+        }, {});
+
+        // Ordenar las claves de los meses en orden ascendente
+        const sortedKeysUsersBar = Object.keys(countsMapUsersBar).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return (aYear - bYear) || (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(aMonth) - ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(bMonth));
+        });
+
+        // Formatear los datos para el gráfico en el formato requerido
+        const formattedBarChartDataUser = sortedKeysUsersBar.map((key) => ({
+            name: key,
+            activos: countsMapUsersBar[key].activos,
+            inactivos: countsMapUsersBar[key].inactivos,
+        }));
+
+        // Invertir los datos si es necesario para mostrar desde la fecha más reciente
+        const userActivityBar = formattedBarChartDataUser.slice().reverse();
+
+        const usersConDiagnoses = await prisma.user.count({
+            where: {
+                diagnoses: {
+                    some: {}, // Asegura que el usuario tenga al menos un diagnóstico
+                },
+            },
+        });
+        const usersWithCompletedDiagnoses = await prisma.user.count({
+            where: {
+                diagnoses: {
+                    some: {
+                        status: 'Completate', // Filtra los diagnósticos completados
+                    },
+                },
+            },
+        });
+
+        const usersNotAffiliated = await prisma.user.count({
+            where: {
+                empresas: {
+                    none: {}, // Asegura que el usuario no esté afiliado a ninguna empresa
+                },
+            },
+        });
+
+        const diagnosticosPorMes = await prisma.diagnosis.groupBy({
+            by: ['createdAt'],
+            _count: {
+                id: true, // Contamos el número de diagnósticos
+            },
+
+            where: {
+                createdAt: {
+                    gte: startDate, // Desde la fecha de inicio
+                    lte: endDate,   // Hasta la fecha actual
+                },
+            },
+        });
+        // Crear un mapa para acumular el conteo de diagnósticos por mes y año
+        const countsMapDiagnosticos = diagnosticosPorMes.reduce((acc, item) => {
+            const monthYear = item.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' }); // Formateamos como "Mes Año"
+            if (!acc[monthYear]) {
+                acc[monthYear] = 0;
+            }
+            acc[monthYear] += item._count.id; // Acumula el conteo de diagnósticos
+            return acc;
+        }, {});
+
+        // Ordenar las claves de los meses en orden ascendente
+        const sortedKeysDiagnosticos = Object.keys(countsMapDiagnosticos).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return (aYear - bYear) || (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(aMonth) - ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(bMonth));
+        });
+
+        // Formatear los datos para el gráfico en el formato requerido
+        const formattedLineChartDataDiagnosticos = sortedKeysDiagnosticos.map((key) => ({
+            name: key,
+            diagnosticos: countsMapDiagnosticos[key],
+        }));
+
+        const monthlyDiagnosticsData = formattedLineChartDataDiagnosticos.slice().reverse();
+
+        const resultadoMasAlto = await prisma.test.findMany({
+            orderBy: {
+                result: 'desc'
+            },
+            take: 1
+        });
+        const mayorResultadoDescripcion = resultadoMasAlto[0]?.description || 'No hay datos';
+        const mayorResultado = resultadoMasAlto[0]?.result || '0';
+
+
+        const pruebaMenorResultado = await prisma.test.findMany({
+            orderBy: {
+                result: 'asc'
+            },
+            take: 1
+        });
+
+        const menorResultadoDescripcion = pruebaMenorResultado[0]?.description || 'No hay datos';
+        const menorResultado = pruebaMenorResultado[0]?.result || '0';
+
+
+        const diagnosticosS = await prisma.diagnosis.findMany({
+            where: {
+                status: 'completate',
+            },
+            include: {
+                tests: true
+            }
+        });
+
+        // 2. Calcular el porcentaje para cada diagnóstico
+        const resultadosD = diagnosticosS.map(diagnostico => {
+            const totalPuntaje = 700; // Puntaje máximo
+            const puntajeObtenido = diagnostico.tests.reduce((acc, test) => acc + test.result, 0);
+            const porcentaje = (puntajeObtenido / totalPuntaje) * 100;
+
+            return {
+                id: diagnostico.id,
+                descripcion: diagnostico.tests.map(test => test.description).join(', '), // Puedes ajustar esto si es necesario
+                porcentaje
+            };
+        });
+
+        // 3. Encontrar el diagnóstico con el porcentaje más alto
+        const mejorResultado = resultadosD.reduce((prev, current) => {
+            return (prev.porcentaje > current.porcentaje) ? prev : current;
+        }, { porcentaje: -Infinity });
+
+        const ResultadoGeneralMasAlto = Math.trunc(mejorResultado.porcentaje)
+
+        const PieUserTest = await prisma.test.groupBy({
+            by: ['description'],
+            _max: {
+              result: true,
+            },
+          });
+        
+          // Construir el objeto en el formato solicitado
+          const testResulPie = PieUserTest.map(result => ({
+            name: result.description,
+            value: result._max.result,
           }));
 
+          
+          const DiagnosticEmpresList = await prisma.diagnosis.findMany({
+            where: {
+              status: 'completate', // Verifica que este estado sea correcto
+            },
+            include: {
+              user: {
+                include: {
+                  empresas: true, // Incluimos la empresa vinculada al usuario
+                },
+              },
+              tests: true, // Incluimos las pruebas del diagnóstico
+            },
+          });
+
+          
+          const EmpresasDiagnosticR = DiagnosticEmpresList.map(diagnosis => {
+            // Verificamos que haya pruebas y al menos una empresa vinculada
+            if (!diagnosis.tests.length || !diagnosis.user.empresas.length) {
+              // Si no hay pruebas o empresas, omitimos este diagnóstico
+              return null;
+            }
+          
+            const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
+            const resultGeneralD = (totalResultado / 700) * 100;
+          
+            // Encontramos la prueba con mayor y menor resultado
+            const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
+            const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
+          
+            return {
+              id: diagnosis.id,
+              Empresa: diagnosis.user.empresas[0].nombre,  // Nombre de la empresa
+              sector: diagnosis.user.empresas[0].sector,   // Sector de la empresa
+              resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
+              Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
+              Peorprueva: Peorprueva.description,   // Descripción de la prueba con menor resultado
+            };
+          });
+          
+          // Filtramos los nulos
+          const EmpresasDiagnosticRR = EmpresasDiagnosticR.filter(item => item !== null);
+          
+          
 
         return new Response(
-            JSON.stringify({
-                totalDiagnosticos,
-                totalDiagnosticosUltimoMes,
-                totalEmpresasActivas,
-                porcentajeEmpresasActivasSemana,
-                totalUsuarios,
-                porcentajeUsuariosUltimoMes,
-                diagnosticosPendientes,
-                diagnosticosCompletados,
-                usuariosConEmpresa,
-                empresasConDiagnostico,
-                tiemposPendientes,
-                usuariosNuevos,
-                barChartData: formattedBarChartData,
-                lineChartData: formattedLineChartData,
-                notificaciones,
-                empresasFormateadas,
-                usuariosFormateados,
-            }),
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500 });
-    }
+        JSON.stringify({
+            totalDiagnosticos,
+            totalDiagnosticosUltimoMes,
+            totalEmpresasActivas,
+            porcentajeEmpresasActivasSemana,
+            totalUsuarios,
+            porcentajeUsuariosUltimoMes,
+            diagnosticosPendientes,
+            diagnosticosCompletados,
+            usuariosConEmpresa,
+            empresasConDiagnostico,
+            tiemposPendientes,
+            usuariosNuevos,
+            barChartData: formattedBarChartData,
+            lineChartData: formattedLineChartData,
+            notificaciones,
+            empresasFormateadas,
+            usuariosFormateados,
+            totalUsuariosUltimoMes,
+            porcentajeUsuariosActivosSeman,
+            totalUsersSemana,
+            usersFormated,
+            newUsersData: userActivity,
+            userActivityBar,
+            usersConDiagnoses,
+            usersWithCompletedDiagnoses,
+            usersNotAffiliated,
+            monthlyDiagnosticsData: monthlyDiagnosticsData,
+            mayorResultado,
+            menorResultado,
+            mayorResultadoDescripcion,
+            menorResultadoDescripcion,
+            ResultadoGeneralMasAlto,
+            testResulPie,
+            EmpresasDiagnosticRR
+        }),
+        { status: 200 }
+    );
+} catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500 });
+}
 }

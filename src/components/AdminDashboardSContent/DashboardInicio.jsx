@@ -16,7 +16,8 @@ import {
   AlertTriangle,
   FileOutput,
   HelpCircle,
-  Link
+  Link,
+  BarChart2
 } from 'lucide-react';
 import {
   BarChart,
@@ -381,8 +382,8 @@ const AdminDashboard = () => {
                   <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
                     <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
                   </Button>
-                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ConfigAd')}>
-                    <Settings className="mr-2 h-4 w-4" /> Configuración
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/AnalisisAd')}>
+                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Análisis
                   </Button>
                 </div>
               </CardContent>

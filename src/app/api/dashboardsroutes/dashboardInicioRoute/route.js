@@ -604,8 +604,69 @@ export async function GET(request) {
             };
         });
 
+        const EmpresasDiagnosticRId = DiagnosticEmpresList.map(diagnosis => {
+            // Verificamos que haya pruebas y al menos una empresa vinculada
+            if (!diagnosis.tests.length || !diagnosis.user.empresas.length) {
+                // Si no hay pruebas o empresas, omitimos este diagnóstico
+                return null;
+            }
+        
+            const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
+            const resultGeneralD = (totalResultado / 700) * 100;
+        
+            // Encontramos la prueba con mayor y menor resultado
+            const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
+            const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
+        
+            return {
+                id: diagnosis.user.empresas[0].id,  // ID de la empresa
+                Empresa: diagnosis.user.empresas[0].nombre,  // Nombre de la empresa
+                sector: diagnosis.user.empresas[0].sector,   // Sector de la empresa
+                resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
+                Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
+                Peorprueva: Peorprueva.description,   // Descripción de la prueba con menor resultado
+            };
+        });
+
         // Filtramos los nulos
         const EmpresasDiagnosticRR = EmpresasDiagnosticR.filter(item => item !== null);
+        const EmpresasDiagnosticRRR = EmpresasDiagnosticRId.filter(item => item !== null);
+
+        const UsuariosDiagnosticR = DiagnosticEmpresList.map(diagnosis => {
+            // Verificamos que haya pruebas
+            if (!diagnosis.tests.length) {
+                // Si no hay pruebas, omitimos este diagnóstico
+                return null;
+            }
+        
+            const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
+            const resultGeneralD = (totalResultado / 700) * 100;
+        
+            // Encontramos la prueba con mayor y menor resultado
+            const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
+            const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
+        
+            return {
+                id: diagnosis.id,
+                Empresa: diagnosis.user.name,  // Nombre del usuario
+                resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
+                Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
+                Peorprueva: Peorprueva.description   // Descripción de la prueba con menor resultado
+            };
+        });
+        
+        // Filtramos los nulos
+        const UsuariosDiagnosticRR = UsuariosDiagnosticR.filter(item => item !== null);
+        
+
+
+
+
+
+
+
+
+        
 
         const testCounts = await prisma.test.groupBy({
             by: ['description'],
@@ -642,7 +703,35 @@ export async function GET(request) {
             fullMark: 100,           // Puedes ajustar el valor máximo esperado
         }));
 
-        console.log(radarData)
+        const TestListDiag = await prisma.diagnosis.findMany({
+            include: {
+                user: {
+                    include: {
+                        empresas: true, // Incluimos la empresa vinculada al usuario
+                    },
+                },
+                tests: true, // Incluimos las pruebas del diagnóstico
+            },
+        });
+
+        const TestList = TestListDiag.flatMap(diagnosis => {
+            // Verificamos que haya pruebas
+            if (!diagnosis.tests.length) {
+                // Si no hay pruebas, omitimos este diagnóstico
+                return [];
+            }
+        
+            // Mapeamos cada test de este diagnóstico a un nuevo formato de objeto
+            return diagnosis.tests.map(test => ({
+                id: test.id,                // ID del test
+                idD: diagnosis.id,          // ID del diagnóstico
+                number: test.number,        // Número del test
+                result: test.result,        // Resultado del test
+                name: test.description      // Descripción del test
+            }));
+        });
+        const TestListR = TestList.filter(item => item !== null);
+
 
 
 
@@ -684,7 +773,10 @@ export async function GET(request) {
                 EmpresasDiagnosticRR,
                 formattedResultsTestCounts,
                 totalEmpresas,
-                radarData
+                radarData,
+                UsuariosDiagnosticRR,
+                EmpresasDiagnosticRRR,
+                TestListR
             }),
             { status: 200 }
         );

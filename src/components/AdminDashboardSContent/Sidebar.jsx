@@ -38,9 +38,6 @@ const Sidebar = ({ onSelectSection }) => {
         <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
           <FileOutput className="mr-2 h-4 w-4" /> Informes
         </Button>
-        <Button variant="ghost" className="w-full justify-start text-white hover:bg-[#2C5234] nav-button" onClick={() => router.push('/InicioSeccion/admin/ConfigAd')}>
-          <Settings className="mr-2 h-4 w-4" /> Configuración
-        </Button>
       </nav>
     </div>
   );

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
+import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgregarDiagnostico';
 import {
   TrendingUp,
   TrendingDown,
@@ -16,6 +18,11 @@ import {
   FileText,
   Users,
   Building,
+  Trash2,
+  Filter,
+  BarChart2,
+  FileOutput,
+
 } from 'lucide-react';
 import {
   BarChart,
@@ -45,6 +52,19 @@ const AnalysisDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [selectedSector, setSelectedSector] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
+  const [searchTermUsers, setSearchTermUsers] = useState("");
+  const [searchTermDiagnostics, setSearchTermDiagnostics] = useState("");
+  const [searchTermTests, setSearchTermTests] = useState("");
+  const [searchTermEmpress, setSearchTermEmpress] = useState("");
+  const [isNewDiagnosticDialogOpen, setIsNewDiagnosticDialogOpen] = useState(false)
+  const [filterUser, setFilterUser] = useState("all");
+  const [filterDiagnostic, setFilterDiagnostic] = useState("all");
+  const [filterEmpres, setFilterEmpres] = useState("all");
+  const [filterPrue, setFilterPrue] = useState("all");
+
+
+
 
   useEffect(() => {
     async function fetchData() {
@@ -77,7 +97,20 @@ const AnalysisDashboard = () => {
       document.head.removeChild(styleElement);
     };
   }, []);
-
+  const handleNewUser = (event) => {
+    event.preventDefault()
+    // Implement new user creation logic here
+    console.log("Creating new user")
+    // You might want to make an API call to create the user
+    setIsNewUserDialogOpen(false)
+  }
+  const handleNewDiagnostic = (event) => {
+    event.preventDefault()
+    // Implement new diagnostic creation logic here
+    console.log("Creating new diagnostic")
+    // You might want to make an API call to create the diagnostic
+    setIsNewDiagnosticDialogOpen(false)
+  }
 
   if (loading) {
     return <p>Cargando datos...</p>;
@@ -111,13 +144,17 @@ const AnalysisDashboard = () => {
     formattedResultsTestCounts,
     monthlyDiagnosticsData,
     radarData,
-    menorResultadoDescripcion
+    menorResultadoDescripcion,
+    usersFormated,
+    UsuariosDiagnosticRR,
+    TestListR,
+    EmpresasDiagnosticRRR
   } = dashboardData;
 
-  const porcentajeD = (diagnosticosCompletados/totalDiagnosticos) * 100
+  const porcentajeD = (diagnosticosCompletados / totalDiagnosticos) * 100
   const userActivityData = userActivityBar;
   const sectorDistributionData = formattedResultsTestCounts;
-
+  const users = usersFormated;
   const userRoleData = testResulPie;
 
   const pieChartData = [
@@ -126,40 +163,121 @@ const AnalysisDashboard = () => {
   ];
 
   const COLORSPruebasUsuarios = ['#4E9419', '#2C5234', '#FE1100', '#FF6B6B', '#3498DB', '#9B59B6', '#E67E22'];
-  const COLORS = ['#4E9419', '#2C5234'];
 
 
 
-  const overallPerformanceData = [
-    { name: 'Ene', score: 65 },
-    { name: 'Feb', score: 59 },
-    { name: 'Mar', score: 80 },
-    { name: 'Abr', score: 81 },
-    { name: 'May', score: 56 },
-    { name: 'Jun', score: 55 },
-    { name: 'Jul', score: 40 },
-  ];
 
-  const sectorComparisonData = [
-    { sector: 'Tecnología', score: 75 },
-    { sector: 'Manufactura', score: 68 },
-    { sector: 'Servicios', score: 82 },
-    { sector: 'Comercio', score: 71 },
-    { sector: 'Agricultura', score: 63 },
-  ];
+
+
 
   const COLORSPie = ['#4E9419', '#2C5234'];
 
-  // const radarData = [
-  //   { subject: 'Finanzas', A: 120, B: 110, fullMark: 150 },
-  //   { subject: 'Marketing', A: 98, B: 130, fullMark: 150 },
-  //   { subject: 'Operaciones', A: 86, B: 130, fullMark: 150 },
-  //   { subject: 'Recursos Humanos', A: 99, B: 100, fullMark: 150 },
-  //   { subject: 'Tecnología', A: 85, B: 90, fullMark: 150 },
-  //   { subject: 'Liderazgo', A: 65, B: 85, fullMark: 150 },
-  //   { subject: 'xdfunciona', A: 65, B: 85, fullMark: 150 }
-  // ];
+  const usuariosFiltrados = users.filter(user => {
+    const searchTermLowerCase = searchTermUsers.toLowerCase();
 
+    if (filterUser === "all") {
+      // Si el filtro es "all", buscamos en todas las llaves
+      return Object.keys(user).some(key => {
+        const value = user[key]?.toString().toLowerCase();
+        return value?.includes(searchTermLowerCase);
+      });
+    } else {
+      // Si hay un filtro específico, buscamos solo en la llave seleccionada
+      const value = user[filterUser]?.toString().toLowerCase();
+      return value?.includes(searchTermLowerCase);
+    }
+  });
+
+
+  const filteredTests = TestListR.filter(user => {
+    const searchTermLowerCase = searchTermTests.toLowerCase();
+    // Filtrado por estado
+
+    if (filterPrue === "all") {
+      // Si el filtro es "all", buscamos en todas las llaves
+      return Object.keys(user).some(key => {
+        const value = user[key]?.toString().toLowerCase();
+        return value?.includes(searchTermLowerCase);
+      });
+    } else {
+      // Si hay un filtro específico, buscamos solo en la llave seleccionada
+      const value = user[filterPrue]?.toString().toLowerCase();
+      return value?.includes(searchTermLowerCase);
+    }
+  });
+
+  const filteredDiagnostics = UsuariosDiagnosticRR.filter(user => {
+    const searchTermLowerCase = searchTermDiagnostics.toLowerCase();
+
+    if (filterDiagnostic === "all") {
+      // Si el filtro es "all", buscamos en todas las llaves
+      return Object.keys(user).some(key => {
+        const value = user[key]?.toString().toLowerCase();
+        return value?.includes(searchTermLowerCase);
+      });
+    } else {
+      // Si hay un filtro específico, buscamos solo en la llave seleccionada
+      const value = user[filterDiagnostic]?.toString().toLowerCase();
+      return value?.includes(searchTermLowerCase);
+    }
+  });
+
+  const filteredEmpress = EmpresasDiagnosticRRR.filter(user => {
+    const searchTermLowerCase = searchTermEmpress.toLowerCase();
+
+    if (filterEmpres === "all") {
+      // Si el filtro es "all", buscamos en todas las llaves
+      return Object.keys(user).some(key => {
+        const value = user[key]?.toString().toLowerCase();
+        return value?.includes(searchTermLowerCase);
+      });
+    } else {
+      // Si hay un filtro específico, buscamos solo en la llave seleccionada
+      const value = user[filterEmpres]?.toString().toLowerCase();
+      return value?.includes(searchTermLowerCase);
+    }
+  });
+  // const filteredTests = TestListR.filter(test =>
+  //   test &&
+  //   (
+  //     test.id.toString().includes(searchTermTests.toLowerCase()) ||
+  //     test.idD.toString().includes(searchTermTests.toLowerCase()) ||
+  //     test.number?.toString().includes(searchTermTests) ||
+  //     test.result?.toString().includes(searchTermTests.toLowerCase()) ||
+  //     test.name?.toLowerCase().includes(searchTermTests.toLowerCase())
+  //   )
+  // );
+  // const usuariosFiltrados = users.filter(user =>
+  //   user &&
+  //   (
+  //     user.id.toString().includes(searchTermUsers.toLowerCase()) ||
+  //     user.nombre?.toLowerCase().includes(searchTermUsers.toLowerCase()) ||
+  //     user.email?.toLowerCase().includes(searchTermUsers.toLowerCase()) ||
+  //     user.nD?.toString().includes(searchTermUsers) ||
+  //     user.lastActive?.toLowerCase().includes(searchTermUsers.toLowerCase())
+  //   )
+  // );
+  // const filteredDiagnostics = UsuariosDiagnosticRR.filter(diagnostic =>
+  //   diagnostic &&
+  //   (
+  //     diagnostic.id.toString().includes(searchTermDiagnostics.toLowerCase()) ||
+  //     diagnostic.Empresa?.toLowerCase().includes(searchTermDiagnostics.toLowerCase()) ||
+  //     diagnostic.resultGeneralD?.toString().includes(searchTermDiagnostics) ||
+  //     diagnostic.Dominprueba?.toLowerCase().includes(searchTermDiagnostics.toLowerCase()) ||
+  //     diagnostic.Peorprueva?.toLowerCase().includes(searchTermDiagnostics.toLowerCase())
+  //   )
+  // );
+  // const filteredEmpress = EmpresasDiagnosticRRR.filter(empresa =>
+  //   empresa &&
+  //   (
+  //     empresa.id.toString().includes(searchTermEmpress.toLowerCase()) ||
+  //     empresa.Empresa?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
+  //     empresa.sector?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
+  //     empresa.resultGeneralD?.toString().includes(searchTermEmpress) ||
+  //     empresa.Dominprueba?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
+  //     empresa.Peorprueva?.toLowerCase().includes(searchTermEmpress.toLowerCase())
+  //   )
+  // );
 
 
   return (
@@ -215,53 +333,12 @@ const AnalysisDashboard = () => {
             </Card>
           </div>
 
-          <Card className="bg-white/90 backdrop-blur-sm mb-6">
-            <CardHeader>
-              <CardTitle className="text-[#2C5234]">Filtrar</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select onValueChange={setSelectedSector} defaultValue={selectedSector}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar sector" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los sectores</SelectItem>
-                  <SelectItem value="tecnologia">Tecnología</SelectItem>
-                  <SelectItem value="manufactura">Manufactura</SelectItem>
-                  <SelectItem value="servicios">Servicios</SelectItem>
-                  <SelectItem value="comercio">Comercio</SelectItem>
-                  <SelectItem value="agricultura">Agricultura</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
-
-          {/* <Card className="bg-white/90 backdrop-blur-sm mb-6">
-            <CardHeader>
-              <CardTitle className="text-[#2C5234]">Búsqueda de Diagnósticos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-2">
-                <Search className="text-[#4E9419]" />
-                <Input
-                  type="text"
-                  placeholder="Buscar por empresa, sector o estado..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-grow"
-                />
-              </div>
-            </CardContent>
-          </Card> */}
-
-
-          <Tabs defaultValue="overall" className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
+          <Tabs defaultValue="charts" className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
             <TabsList>
-
               <TabsTrigger value="charts">Gráficos</TabsTrigger>
               <TabsTrigger value="users">Usuarios</TabsTrigger>
               <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
-              <TabsTrigger value="prueb">Pruebas</TabsTrigger>
+              <TabsTrigger value="tests">Pruebas</TabsTrigger>
               <TabsTrigger value="empres">Empresas</TabsTrigger>
             </TabsList>
 
@@ -431,6 +508,290 @@ const AnalysisDashboard = () => {
                 </Card>
               </div>
             </TabsContent>
+            <TabsContent value="users">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestión de Usuarios</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+                    <div className="flex items-center flex-grow">
+
+                      <input
+                        type="text"
+                        placeholder={`Buscar por ${filterUser}...`}
+                        value={searchTermUsers}
+                        onChange={e => setSearchTermUsers(e.target.value)}
+                        className="border p-2 rounded"
+                      />
+                      <NewUserDialog isOpen={isNewUserDialogOpen} onOpenChange={setIsNewUserDialogOpen} onSubmit={handleNewUser} />
+                    </div>
+                    {/* Filter Dropdown */}
+                    <div className="flex items-center">
+                      <Filter className="text-[#4E9419] mr-2" />
+                      <select
+                        value={filterUser}
+                        onChange={(e) => setFilterUser(e.target.value)}
+                        className="border border-gray-300 rounded-md p-2"
+                      >
+                        <option value="all">Todos</option>
+                        {users.length > 0 &&
+                          Object.keys(users[0]).map((key) => (
+                            <option value={key}>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">Id</th>
+                          <th className="text-left p-2">Nombre</th>
+                          <th className="text-left p-2">Email</th>
+                          <th className="text-left p-2">N°Diagnósticos</th>
+                          <th className="text-left p-2">Última Actividad</th>
+                          <th className="text-left p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {usuariosFiltrados.map((user) => (
+                          <tr key={user.id} className="border-b">
+                            <td className="p-2">{user.id}</td>
+                            <td className="p-2">{user.nombre}</td>
+                            <td className="p-2">{user.email}</td>
+                            <td className="p-2">{user.nD}</td>
+                            <td className="p-2">{user.lastActive}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">Editar</Button>
+                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="diagnostics">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestión de Diagnósticos</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-end mb-4">
+                    <div className="flex items-center flex-grow">
+                      <input
+                        type="text"
+                        placeholder={`Buscar por ${filterDiagnostic}...`}
+                        value={searchTermDiagnostics}
+                        onChange={e => setSearchTermDiagnostics(e.target.value)}
+                        className="border p-2 rounded"
+                      />
+                      <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
+                    </div>
+                    <div className="flex items-center">
+                      <Filter className="text-[#4E9419] mr-2" />
+                      <select
+                        value={filterDiagnostic}
+                        onChange={(e) => setFilterDiagnostic(e.target.value)}
+                        className="border border-gray-300 rounded-md p-2"
+                      >
+                        <option value="all">Todos</option>
+                        {UsuariosDiagnosticRR.length > 0 &&
+                          Object.keys(UsuariosDiagnosticRR[0]).map((key) => (
+                            <option value={key}>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">IdD</th>
+                          <th className="text-left p-2">Usuario</th>
+                          <th className="text-left p-2">ResultGeneral</th>
+                          <th className="text-center p-2">MejorPrueba</th>
+                          <th className="text-left p-2">PeorPrueba</th>
+                          <th className="text-center p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredDiagnostics.map((diagnostic) => (
+                          <tr key={diagnostic.id} className="border-b">
+                            <td className="p-2">{diagnostic.id}</td>
+                            <td className="p-2">{diagnostic.Empresa}</td>
+                            <td className="p-2">{diagnostic.resultGeneralD}</td>
+                            <td className="p-2">{diagnostic.Dominprueba}</td>
+                            <td className="p-2">{diagnostic.Peorprueva}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">
+                                <FileText className="h-4 w-4 mr-1" /> Ver
+                              </Button>
+                              <Button variant="ghost" className="text-red-500">
+                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="empres">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestión de Empresas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-end mb-4">
+                    <div className="flex items-center flex-grow">
+                      <input
+                        type="text"
+                        placeholder={`Buscar por ${filterEmpres}...`}
+                        value={searchTermEmpress}
+                        onChange={e => setSearchTermEmpress(e.target.value)}
+                        className="border p-2 rounded"
+                      />
+                      <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
+                    </div>
+                    <div className="flex items-center">
+                      <Filter className="text-[#4E9419] mr-2" />
+                      <select
+                        value={filterEmpres}
+                        onChange={(e) => setFilterEmpres(e.target.value)}
+                        className="border border-gray-300 rounded-md p-2"
+                      >
+                        <option value="all">Todos</option>
+                        {EmpresasDiagnosticRRR.length > 0 &&
+                          Object.keys(EmpresasDiagnosticRRR[0]).map((key) => (
+                            <option value={key}>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">IdE</th>
+                          <th className="text-left p-2">Empresa</th>
+                          <th className="text-left p-2">Sector</th>
+                          <th className="text-left p-2">ResultGeneral</th>
+                          <th className="text-center p-2">MejorPrueba</th>
+                          <th className="text-left p-2">PeorPrueba</th>
+                          <th className="text-center p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredEmpress.map((diagnostic) => (
+                          <tr key={diagnostic.id} className="border-b">
+                            <td className="p-2">{diagnostic.id}</td>
+                            <td className="p-2">{diagnostic.Empresa}</td>
+                            <td className="p-2">{diagnostic.sector}</td>
+                            <td className="p-2">{diagnostic.resultGeneralD}</td>
+                            <td className="p-2">{diagnostic.Dominprueba}</td>
+                            <td className="p-2">{diagnostic.Peorprueva}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">
+                                <FileText className="h-4 w-4 mr-1" /> Ver
+                              </Button>
+                              <Button variant="ghost" className="text-red-500">
+                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="tests">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gestión de Tests</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between mb-4">
+                    <div className="flex items-center flex-grow">
+                      <input
+                        type="text"
+                        placeholder={`Buscar por ${filterPrue}...`}
+                        value={searchTermTests}
+                        onChange={e => setSearchTermTests(e.target.value)}
+                        className="border p-2 rounded"
+                      />
+                    </div>
+                    <div className="flex items-center">
+                      <Filter className="text-[#4E9419] mr-2" />
+                      <select
+                        value={filterPrue}
+                        onChange={(e) => setFilterPrue(e.target.value)}
+                        className="border border-gray-300 rounded-md p-2"
+                      >
+                        <option value="all">Todos</option>
+                        {TestListR.length > 0 &&
+                          Object.keys(TestListR[0]).map((key) => (
+                            <option value={key}>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <ScrollArea className="h-[400px]">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-2">Id Test</th>
+                          <th className="text-left p-2">Id Diagnóstico</th>
+                          <th className="text-left p-2">Número</th>
+                          <th className="text-left p-2">Resultado</th>
+                          <th className="text-left p-2">NombreTest</th>
+                          <th className="text-center p-2">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredTests.map((test) => (
+                          <tr key={test.id} className="border-b">
+                            <td className="p-2">{test.id}</td>
+                            <td className="p-2">{test.idD}</td>
+                            <td className="p-2">{test.number}</td>
+                            <td className="p-2">{test.result}</td>
+                            <td className="p-2">{test.name}</td>
+                            <td className="p-2">
+                              <Button variant="ghost" className="mr-2">
+                                <FileText className="h-4 w-4 mr-1" /> Ver
+                              </Button>
+                              <Button variant="ghost" className="text-red-500">
+                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
           </Tabs>
 
 
@@ -461,17 +822,17 @@ const AnalysisDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button className="bg-[#4E9419] text-white">
-                    <Zap className="mr-2 h-4 w-4" /> Análisis Predictivo
+                  <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/UserAd')}>
+                    <Users className="mr-2 h-4 w-4" /> Ver Usuarios
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
-                    <Activity className="mr-2 h-4 w-4" /> Benchmarking
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/DiagnAd')}>
+                    <FileText className="mr-2 h-4 w-4" /> Ver Diagnosticos
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
-                    <Download className="mr-2 h-4 w-4" /> Exportar Informe
+                  <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
+                    <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
-                    <Share2 className="mr-2 h-4 w-4" /> Compartir Resultados
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/AnalisisAd')}>
+                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Análisis
                   </Button>
                 </div>
               </CardContent>

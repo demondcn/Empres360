@@ -45,10 +45,10 @@ const ReportsDashboard = () => {
   }, []);
 
   const reportTypes = [
-    { id: 'diagnostics', name: 'Diagnósticos Empresariales', icon: <BarChart2 className="h-5 w-5" /> },
-    { id: 'users', name: 'Usuarios del Sistema', icon: <Users className="h-5 w-5" /> },
-    { id: 'companies', name: 'Empresas Registradas', icon: <Building className="h-5 w-5" /> },
-    { id: 'sectors', name: 'Análisis por Sectores', icon: <PieChart className="h-5 w-5" /> },
+    { id: 'diagnostics', name: 'Diagnósticos', icon: <BarChart2 className="h-5 w-5" /> },
+    { id: 'users', name: 'Usuarios', icon: <Users className="h-5 w-5" /> },
+    { id: 'companies', name: 'Empresas', icon: <Building className="h-5 w-5" /> },
+    { id: 'sectors', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> },
   ];
 
   const fieldOptions = {

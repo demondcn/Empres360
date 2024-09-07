@@ -554,102 +554,142 @@ export async function GET(request) {
         const PieUserTest = await prisma.test.groupBy({
             by: ['description'],
             _max: {
-              result: true,
+                result: true,
             },
-          });
-        
-          // Construir el objeto en el formato solicitado
-          const testResulPie = PieUserTest.map(result => ({
+        });
+
+        // Construir el objeto en el formato solicitado
+        const testResulPie = PieUserTest.map(result => ({
             name: result.description,
             value: result._max.result,
-          }));
+        }));
 
-          
-          const DiagnosticEmpresList = await prisma.diagnosis.findMany({
+
+        const DiagnosticEmpresList = await prisma.diagnosis.findMany({
             where: {
-              status: 'completate', // Verifica que este estado sea correcto
+                status: 'completate', // Verifica que este estado sea correcto
             },
             include: {
-              user: {
-                include: {
-                  empresas: true, // Incluimos la empresa vinculada al usuario
+                user: {
+                    include: {
+                        empresas: true, // Incluimos la empresa vinculada al usuario
+                    },
                 },
-              },
-              tests: true, // Incluimos las pruebas del diagnóstico
+                tests: true, // Incluimos las pruebas del diagnóstico
             },
-          });
+        });
 
-          
-          const EmpresasDiagnosticR = DiagnosticEmpresList.map(diagnosis => {
+
+        const EmpresasDiagnosticR = DiagnosticEmpresList.map(diagnosis => {
             // Verificamos que haya pruebas y al menos una empresa vinculada
             if (!diagnosis.tests.length || !diagnosis.user.empresas.length) {
-              // Si no hay pruebas o empresas, omitimos este diagnóstico
-              return null;
+                // Si no hay pruebas o empresas, omitimos este diagnóstico
+                return null;
             }
-          
+
             const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
             const resultGeneralD = (totalResultado / 700) * 100;
-          
+
             // Encontramos la prueba con mayor y menor resultado
             const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
             const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
-          
+
             return {
-              id: diagnosis.id,
-              Empresa: diagnosis.user.empresas[0].nombre,  // Nombre de la empresa
-              sector: diagnosis.user.empresas[0].sector,   // Sector de la empresa
-              resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
-              Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
-              Peorprueva: Peorprueva.description,   // Descripción de la prueba con menor resultado
+                id: diagnosis.id,
+                Empresa: diagnosis.user.empresas[0].nombre,  // Nombre de la empresa
+                sector: diagnosis.user.empresas[0].sector,   // Sector de la empresa
+                resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
+                Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
+                Peorprueva: Peorprueva.description,   // Descripción de la prueba con menor resultado
             };
-          });
-          
-          // Filtramos los nulos
-          const EmpresasDiagnosticRR = EmpresasDiagnosticR.filter(item => item !== null);
-          
-          
+        });
+
+        // Filtramos los nulos
+        const EmpresasDiagnosticRR = EmpresasDiagnosticR.filter(item => item !== null);
+
+        const testCounts = await prisma.test.groupBy({
+            by: ['description'],
+            _count: {
+                id: true,
+            },
+        });
+
+        // Transformar el resultado en el formato { name: '{description}', value: {cantidad} }
+        const formattedResultsTestCounts = testCounts.map(test => ({
+            name: test.description,
+            value: test._count.id,
+        }));
+
+        const tests = await prisma.test.findMany({
+            select: {
+                description: true,
+                result: true,
+            },
+        });
+        const groupedData = tests.reduce((acc, test) => {
+            const { description, result } = test;
+            if (!acc[description]) {
+                acc[description] = { subject: description, A: 0, count: 0 };
+            }
+            acc[description].A += result;  // Sumamos los resultados
+            acc[description].count += 1;   // Contamos el número de pruebas en esa categoría
+            return acc;
+        }, {});
+        // Convertimos el objeto agrupado en un array y calculamos el promedio.
+        const radarData = Object.values(groupedData).map(data => ({
+            subject: data.subject,
+            A: data.A / data.count,  // Promedio de resultados
+            fullMark: 100,           // Puedes ajustar el valor máximo esperado
+        }));
+
+        console.log(radarData)
+
+
 
         return new Response(
-        JSON.stringify({
-            totalDiagnosticos,
-            totalDiagnosticosUltimoMes,
-            totalEmpresasActivas,
-            porcentajeEmpresasActivasSemana,
-            totalUsuarios,
-            porcentajeUsuariosUltimoMes,
-            diagnosticosPendientes,
-            diagnosticosCompletados,
-            usuariosConEmpresa,
-            empresasConDiagnostico,
-            tiemposPendientes,
-            usuariosNuevos,
-            barChartData: formattedBarChartData,
-            lineChartData: formattedLineChartData,
-            notificaciones,
-            empresasFormateadas,
-            usuariosFormateados,
-            totalUsuariosUltimoMes,
-            porcentajeUsuariosActivosSeman,
-            totalUsersSemana,
-            usersFormated,
-            newUsersData: userActivity,
-            userActivityBar,
-            usersConDiagnoses,
-            usersWithCompletedDiagnoses,
-            usersNotAffiliated,
-            monthlyDiagnosticsData: monthlyDiagnosticsData,
-            mayorResultado,
-            menorResultado,
-            mayorResultadoDescripcion,
-            menorResultadoDescripcion,
-            ResultadoGeneralMasAlto,
-            testResulPie,
-            EmpresasDiagnosticRR
-        }),
-        { status: 200 }
-    );
-} catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500 });
-}
+            JSON.stringify({
+                totalDiagnosticos,
+                totalDiagnosticosUltimoMes,
+                totalEmpresasActivas,
+                porcentajeEmpresasActivasSemana,
+                totalUsuarios,
+                porcentajeUsuariosUltimoMes,
+                diagnosticosPendientes,
+                diagnosticosCompletados,
+                usuariosConEmpresa,
+                empresasConDiagnostico,
+                tiemposPendientes,
+                usuariosNuevos,
+                barChartData: formattedBarChartData,
+                lineChartData: formattedLineChartData,
+                notificaciones,
+                empresasFormateadas,
+                usuariosFormateados,
+                totalUsuariosUltimoMes,
+                porcentajeUsuariosActivosSeman,
+                totalUsersSemana,
+                usersFormated,
+                newUsersData: userActivity,
+                userActivityBar,
+                usersConDiagnoses,
+                usersWithCompletedDiagnoses,
+                usersNotAffiliated,
+                monthlyDiagnosticsData: monthlyDiagnosticsData,
+                mayorResultado,
+                menorResultado,
+                mayorResultadoDescripcion,
+                menorResultadoDescripcion,
+                ResultadoGeneralMasAlto,
+                testResulPie,
+                EmpresasDiagnosticRR,
+                formattedResultsTestCounts,
+                totalEmpresas,
+                radarData
+            }),
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500 });
+    }
 }

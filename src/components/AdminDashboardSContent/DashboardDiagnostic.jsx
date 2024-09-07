@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgregarDiagnostico';
 import {
   ClipboardList,
   BarChart2,
@@ -32,14 +33,19 @@ import {
   LineChart,
   Line,
   Pie,
-  Cell
+  Cell,
+  LabelList
 } from 'recharts';
+import { useRouter } from 'next/navigation';
 
 const DiagnosticManagementDashboard = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
+  const [isNewDiagnosticDialogOpen, setIsNewDiagnosticDialogOpen] = useState(false)
+
 
 
   useEffect(() => {
@@ -73,6 +79,14 @@ const DiagnosticManagementDashboard = () => {
       document.head.removeChild(styleElement);
     };
   }, []);
+
+  const handleNewDiagnostic = (event) => {
+    event.preventDefault()
+    // Implement new diagnostic creation logic here
+    console.log("Creating new diagnostic")
+    // You might want to make an API call to create the diagnostic
+    setIsNewDiagnosticDialogOpen(false)
+  }
 
   if (loading) {
     return <p>Cargando datos...</p>;
@@ -116,7 +130,8 @@ const DiagnosticManagementDashboard = () => {
     mayorResultadoDescripcion,
     menorResultadoDescripcion,
     ResultadoGeneralMasAlto,
-    EmpresasDiagnosticRR
+    EmpresasDiagnosticRR,
+    formattedResultsTestCounts
 
   } = dashboardData;
 
@@ -142,21 +157,8 @@ const DiagnosticManagementDashboard = () => {
   //   { name: 'Jun', diagnosticos: 150 },
   // ];
 
-  const sectorDistributionData = [
-    { name: 'Tecnología', value: 30 },
-    { name: 'Manufactura', value: 25 },
-    { name: 'Servicios', value: 20 },
-    { name: 'Comercio', value: 15 },
-    { name: 'Otros', value: 10 },
-  ];
+  const sectorDistributionData = formattedResultsTestCounts;
 
-  const mockDiagnostics = [
-    { id: 1, company: 'TechSolutions SA', sector: 'Tecnología', status: 'Completado', date: '2023-06-15' },
-    { id: 2, company: 'IndustriasPro', sector: 'Manufactura', status: 'En Progreso', date: '2023-06-14' },
-    { id: 3, company: 'ServiExpress', sector: 'Servicios', status: 'Pendiente', date: '2023-06-13' },
-    { id: 4, company: 'ComercioTotal', sector: 'Comercio', status: 'Completado', date: '2023-06-12' },
-    { id: 5, company: 'AgroInnovación', sector: 'Agricultura', status: 'En Progreso', date: '2023-06-11' },
-  ];
 
 
   const filteredDiagnostics = EmpresasDiagnosticRR.filter(diagnostic =>
@@ -246,7 +248,7 @@ const DiagnosticManagementDashboard = () => {
             <TabsList>
               <TabsTrigger value="list">Lista de Diagnósticos</TabsTrigger>
               <TabsTrigger value="status">Estado de Diagnósticos</TabsTrigger>
-              <TabsTrigger value="sectors">Distribución por Sectores</TabsTrigger>
+              <TabsTrigger value="sectors">Distribución por Prueba</TabsTrigger>
             </TabsList>
             <TabsContent value="list">
               <Card>
@@ -255,9 +257,7 @@ const DiagnosticManagementDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-end mb-4">
-                    <Button className="bg-[#4E9419] text-white">
-                      <Plus className="mr-2 h-4 w-4" /> Nuevo Diagnóstico
-                    </Button>
+                    <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
@@ -327,19 +327,25 @@ const DiagnosticManagementDashboard = () => {
               </Card>
             </TabsContent>
             <TabsContent value="sectors">
-              <Card>
+              <Card className="w-full">
                 <CardHeader>
-                  <CardTitle>Distribución por Sectores</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Cantidad de Pruebas</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={sectorDistributionData}>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                      data={sectorDistributionData}
+                      layout="vertical"
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="value" fill="#4E9419" />
+                      <Bar dataKey="value" fill="#4E9419">
+                        <LabelList dataKey="value" position="right" fill="#2C5234" />
+                      </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -371,17 +377,15 @@ const DiagnosticManagementDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button className="bg-[#4E9419] text-white">
-                    <Plus className="mr-2 h-4 w-4" /> Nuevo Diagnóstico
-                  </Button>
-                  <Button className="bg-[#4E9419] text-white">
+                  <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')} >
                     <Download className="mr-2 h-4 w-4" /> Exportar Informes
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
-                    <AlertTriangle className="mr-2 h-4 w-4" /> Diagnósticos Pendientes
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
+                    <AlertTriangle className="mr-2 h-4 w-4" /> Ver Notificaciones
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
-                    <BarChart2 className="mr-2 h-4 w-4" /> Análisis Comparativo
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/AnalisisAd')}>
+                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Análisis
                   </Button>
                 </div>
               </CardContent>
@@ -406,7 +410,6 @@ const DiagnosticManagementDashboard = () => {
                     <CheckCircle className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
                       <p className="text-[#2C5234] font-semibold">Prueba Debil</p>
-                      {/* <p className="text-[#4E9419]">Tecnología (30%)</p> */}
                       <p className="text-[#4E9419]">{menorResultadoDescripcion} ({menorResultado})%</p>
                     </div>
                   </div>
@@ -414,7 +417,6 @@ const DiagnosticManagementDashboard = () => {
                     <PieChart className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
                       <p className="text-[#2C5234] font-semibold">Prueba Predominante</p>
-                      {/* <p className="text-[#4E9419]">Tecnología (30%)</p> */}
                       <p className="text-[#4E9419]"> {mayorResultadoDescripcion} ({mayorResultado}%)</p>
                     </div>
                   </div>

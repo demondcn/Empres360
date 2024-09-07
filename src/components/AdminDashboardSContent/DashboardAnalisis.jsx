@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
+import {
   TrendingUp,
   TrendingDown,
   Activity,
@@ -13,6 +13,9 @@ import {
   Zap,
   Download,
   Share2,
+  FileText,
+  Users,
+  Building,
 } from 'lucide-react';
 import {
   BarChart,
@@ -32,16 +35,21 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
+  LabelList,
+  PieChart as RePieChart, PieChart
 } from 'recharts';
+import { useRouter } from 'next/navigation';
 
 const AnalysisDashboard = () => {
+  const router = useRouter();
+  const [dashboardData, setDashboardData] = useState(null);
   const [selectedSector, setSelectedSector] = useState('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const styleElement = document.createElement("style");
     async function fetchData() {
       try {
-        const res = await fetch('/api/dashboardsroutes/dashboardAnalisis');
+        const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
         const data = await res.json();
         setDashboardData(data);
         setLoading(false);
@@ -51,6 +59,7 @@ const AnalysisDashboard = () => {
       }
     }
     fetchData();
+    const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
         0% { background-position: 0% 50%; }
@@ -68,6 +77,56 @@ const AnalysisDashboard = () => {
       document.head.removeChild(styleElement);
     };
   }, []);
+
+
+  if (loading) {
+    return <p>Cargando datos...</p>;
+  }
+
+  if (!dashboardData) {
+    return <p>Error al cargar los datos</p>;
+  }
+  const {
+    totalDiagnosticos,
+    totalDiagnosticosUltimoMes,
+    totalEmpresasActivas,
+    porcentajeEmpresasActivasSemana,
+    totalUsuarios,
+    porcentajeUsuariosUltimoMes,
+    diagnosticosPendientes,
+    diagnosticosCompletados,
+    usuariosConEmpresa,
+    empresasConDiagnostico,
+    tiemposPendientes,
+    usuariosNuevos,
+    barChartData,
+    lineChartData,
+    notificaciones,
+    empresasFormateadas,
+    usuariosFormateados,
+    totalEmpresas,
+    newUsersData,
+    userActivityBar,
+    testResulPie,
+    formattedResultsTestCounts,
+    monthlyDiagnosticsData,
+    radarData,
+    menorResultadoDescripcion
+  } = dashboardData;
+
+  const porcentajeD = (diagnosticosCompletados/totalDiagnosticos) * 100
+  const userActivityData = userActivityBar;
+  const sectorDistributionData = formattedResultsTestCounts;
+
+  const userRoleData = testResulPie;
+
+  const pieChartData = [
+    { name: 'Completados', value: diagnosticosCompletados },
+    { name: 'Pendientes', value: diagnosticosPendientes },
+  ];
+
+  const COLORSPruebasUsuarios = ['#4E9419', '#2C5234', '#FE1100', '#FF6B6B', '#3498DB', '#9B59B6', '#E67E22'];
+  const COLORS = ['#4E9419', '#2C5234'];
 
 
 
@@ -89,74 +148,68 @@ const AnalysisDashboard = () => {
     { sector: 'Agricultura', score: 63 },
   ];
 
-  const COLORS = ['#4E9419', '#FFF700', '#FF6B6B', '#36A2EB', '#FF9F40'];
+  const COLORSPie = ['#4E9419', '#2C5234'];
 
-  const radarData = [
-    { subject: 'Finanzas', A: 120, B: 110, fullMark: 150 },
-    { subject: 'Marketing', A: 98, B: 130, fullMark: 150 },
-    { subject: 'Operaciones', A: 86, B: 130, fullMark: 150 },
-    { subject: 'Recursos Humanos', A: 99, B: 100, fullMark: 150 },
-    { subject: 'Tecnología', A: 85, B: 90, fullMark: 150 },
-    { subject: 'Liderazgo', A: 65, B: 85, fullMark: 150 },
-  ];
+  // const radarData = [
+  //   { subject: 'Finanzas', A: 120, B: 110, fullMark: 150 },
+  //   { subject: 'Marketing', A: 98, B: 130, fullMark: 150 },
+  //   { subject: 'Operaciones', A: 86, B: 130, fullMark: 150 },
+  //   { subject: 'Recursos Humanos', A: 99, B: 100, fullMark: 150 },
+  //   { subject: 'Tecnología', A: 85, B: 90, fullMark: 150 },
+  //   { subject: 'Liderazgo', A: 65, B: 85, fullMark: 150 },
+  //   { subject: 'xdfunciona', A: 65, B: 85, fullMark: 150 }
+  // ];
 
-  const trendAnalysisData = [
-    { name: '2018', tecnologia: 4000, manufactura: 2400, servicios: 2400 },
-    { name: '2019', tecnologia: 3000, manufactura: 1398, servicios: 2210 },
-    { name: '2020', tecnologia: 2000, manufactura: 9800, servicios: 2290 },
-    { name: '2021', tecnologia: 2780, manufactura: 3908, servicios: 2000 },
-    { name: '2022', tecnologia: 1890, manufactura: 4800, servicios: 2181 },
-    { name: '2023', tecnologia: 2390, manufactura: 3800, servicios: 2500 },
-  ];
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
         <div className="container mx-auto px-6 py-8">
           <h3 className="text-white text-3xl font-medium mb-4">Análisis de Diagnósticos Empresariales</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Puntuación Promedio</CardTitle>
+                <CardTitle className="text-[#2C5234]">Total Diagnósticos</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">72.5</p>
-                    <p className="text-[#4E9419]">+2.3 vs mes anterior</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalDiagnosticos}</p>
+                    <p className="text-[#4E9419]">{diagnosticosCompletados} completados, {diagnosticosPendientes} pendientes</p>
                   </div>
-                  <TrendingUp className="h-12 w-12 text-[#4E9419]" />
+                  <FileText className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Sector Líder</CardTitle>
+                <CardTitle className="text-[#2C5234]">Usuarios Totales</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">Servicios</p>
-                    <p className="text-[#4E9419]">Puntuación: 82</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsuarios}</p>
+                    <p className="text-[#4E9419]">Usuarios registrados</p>
                   </div>
-                  <Target className="h-12 w-12 text-[#4E9419]" />
+                  <Users className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Área de Mejora</CardTitle>
+                <CardTitle className="text-[#2C5234]">Empresas Totales</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">Liderazgo</p>
-                    <p className="text-[#4E9419]">Puntuación: 65</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{totalEmpresas}</p>
+                    <p className="text-[#4E9419]">Empresas registradas</p>
                   </div>
-                  <TrendingDown className="h-12 w-12 text-[#FF6B6B]" />
+                  <Building className="h-12 w-12 text-[#4E9419]" />
                 </div>
               </CardContent>
             </Card>
@@ -164,7 +217,7 @@ const AnalysisDashboard = () => {
 
           <Card className="bg-white/90 backdrop-blur-sm mb-6">
             <CardHeader>
-              <CardTitle className="text-[#2C5234]">Filtrar por Sector</CardTitle>
+              <CardTitle className="text-[#2C5234]">Filtrar</CardTitle>
             </CardHeader>
             <CardContent>
               <Select onValueChange={setSelectedSector} defaultValue={selectedSector}>
@@ -183,91 +236,224 @@ const AnalysisDashboard = () => {
             </CardContent>
           </Card>
 
+          {/* <Card className="bg-white/90 backdrop-blur-sm mb-6">
+            <CardHeader>
+              <CardTitle className="text-[#2C5234]">Búsqueda de Diagnósticos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-2">
+                <Search className="text-[#4E9419]" />
+                <Input
+                  type="text"
+                  placeholder="Buscar por empresa, sector o estado..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="flex-grow"
+                />
+              </div>
+            </CardContent>
+          </Card> */}
+
+
           <Tabs defaultValue="overall" className="bg-white/90 backdrop-blur-sm rounded-lg p-4">
             <TabsList>
-              <TabsTrigger value="overall">Rendimiento General</TabsTrigger>
-              <TabsTrigger value="comparison">Comparación Sectorial</TabsTrigger>
-              <TabsTrigger value="areas">Áreas de Negocio</TabsTrigger>
+
+              <TabsTrigger value="charts">Gráficos</TabsTrigger>
+              <TabsTrigger value="users">Usuarios</TabsTrigger>
+              <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
+              <TabsTrigger value="prueb">Pruebas</TabsTrigger>
+              <TabsTrigger value="empres">Empresas</TabsTrigger>
             </TabsList>
-            <TabsContent value="overall">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Tendencia de Rendimiento General</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={overallPerformanceData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="score" stroke="#4E9419" activeDot={{ r: 8 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="comparison">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Comparación por Sectores</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={sectorComparisonData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="sector" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="score" fill="#4E9419" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="areas">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Análisis por Áreas de Negocio</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="subject" />
-                      <PolarRadiusAxis />
-                      <Radar name="Empresa" dataKey="A" stroke="#4E9419" fill="#4E9419" fillOpacity={0.6} />
-                      <Radar name="Promedio del Sector" dataKey="B" stroke="#FFF700" fill="#FFF700" fillOpacity={0.6} />
-                      <Legend />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+
+            <TabsContent value="charts">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Estado de Diagnósticos</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={barChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="completados" fill="#4E9419" />
+                        <Bar dataKey="pendientes" fill="#2C5234" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Empresas Activas</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={lineChartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="empresasActivas" stroke="#4E9419" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Distribución de Diagnósticos</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RePieChart>
+                        <Pie
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={100}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {pieChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORSPie[index % COLORSPie.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </RePieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-[#2C5234]">Nuevos Usuarios por Mes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={newUsersData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="nuevosUsuarios" stroke="#4E9419" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Actividad de Usuarios</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={userActivityData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="activos" fill="#4E9419" />
+                        <Bar dataKey="inactivos" fill="#2C5234" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Resultados Maximos De Usuarios Por Prueba</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <PieChart>
+                        <Pie
+                          data={userRoleData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={100}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {userRoleData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORSPruebasUsuarios[index % COLORSPruebasUsuarios.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card className="w-full">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Cantidad de Pruebas</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <BarChart
+                        data={sectorDistributionData}
+                        layout="vertical"
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis type="number" />
+                        <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="value" fill="#4E9419">
+                          <LabelList dataKey="value" position="right" fill="#2C5234" />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-[#2C5234]">Diagnósticos por Mes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={monthlyDiagnosticsData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="diagnosticos" stroke="#4E9419" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Análisis de Tendencias</CardTitle>
+                <CardTitle>Análisis por Áreas de Prueba</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={trendAnalysisData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
+                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                    <Radar name="Pruebas" dataKey="A" stroke="#4E9419" fill="#4E9419" fillOpacity={0.6} />
+
                     <Legend />
-                    <Line type="monotone" dataKey="tecnologia" stroke="#4E9419" />
-                    <Line type="monotone" dataKey="manufactura" stroke="#FFF700" />
-                    <Line type="monotone" dataKey="servicios" stroke="#FF6B6B" />
-                  </LineChart>
+                  </RadarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+
+
 
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
@@ -295,7 +481,7 @@ const AnalysisDashboard = () => {
           <div className="mt-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Insights Clave</CardTitle>
+                <CardTitle className="text-[#2C5234]">Puntos Clave</CardTitle>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[200px]">
@@ -305,8 +491,8 @@ const AnalysisDashboard = () => {
                         <TrendingUp className="h-6 w-6 text-[#4E9419] mr-2" />
                       </div>
                       <div>
-                        <p className="text-[#2C5234] font-semibold">Crecimiento en el sector de servicios</p>
-                        <p className="text-sm text-gray-600">El sector de servicios muestra un crecimiento constante en los últimos 3 meses, superando la media del mercado en un 15%.</p>
+                        <p className="text-[#2C5234] font-semibold">Tasa de finalización</p>
+                        <p className="text-sm text-gray-600">El {porcentajeD}% de los diagnósticos iniciados se completan exitosamente.</p>
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -314,9 +500,8 @@ const AnalysisDashboard = () => {
                         <TrendingDown className="h-6 w-6 text-[#FF6B6B] mr-2" />
                       </div>
                       <div>
-                        <p className="text-[#2C5234] font-sem
-ibold">Desafíos en el liderazgo</p>
-                        <p className="text-sm text-gray-600">Se identifica una oportunidad de mejora en las habilidades de liderazgo en todos los sectores, con una puntuación promedio de 65.</p>
+                        <p className="text-[#2C5234] font-semibold">Área de mejora: {menorResultadoDescripcion}</p>
+                        <p className="text-sm text-gray-600">Es necesario mejorar en los siguientes aspectos de la prueba {menorResultadoDescripcion} del diagnóstico empresarial. Identificar estas áreas permitirá optimizar los resultados y fortalecer el rendimiento general de las empresas.</p>
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -324,8 +509,8 @@ ibold">Desafíos en el liderazgo</p>
                         <Target className="h-6 w-6 text-[#4E9419] mr-2" />
                       </div>
                       <div>
-                        <p className="text-[#2C5234] font-semibold">Potencial en tecnología</p>
-                        <p className="text-sm text-gray-600">El sector tecnológico muestra un alto potencial de crecimiento, con un aumento del 20% en la adopción de nuevas tecnologías.</p>
+                        <p className="text-[#2C5234] font-semibold">Crecimiento de diagnóstico</p>
+                        <p className="text-sm text-gray-600">El número de diagnósticos creados ha aumentado en un 20%.</p>
                       </div>
                     </li>
                   </ul>

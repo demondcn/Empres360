@@ -359,7 +359,7 @@ const UserManagementDashboard = () => {
                   <Button className="bg-[#4E9419] text-white">
                     <UserMinus className="mr-2 h-4 w-4" /> Desactivar Usuario
                   </Button>
-                  <Button className="bg-[#4E9419] text-white">
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
                     <Mail className="mr-2 h-4 w-4" /> Enviar Notificación
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>

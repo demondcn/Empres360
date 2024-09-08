@@ -68,13 +68,14 @@ const AnalysisDashboard = () => {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
         const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
         const data = await res.json();
         setDashboardData(data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+      } finally {
         setLoading(false);
       }
     }

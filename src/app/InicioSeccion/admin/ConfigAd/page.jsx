@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from 'react';
+import React, {useState, Suspense} from 'react';
 import Sidebar from '@/components/AdminDashboardSContent/Sidebar'
 import DashboardContent from '@/components/AdminDashboardSContent/DashboardConfig'
 //import Adminpanel from '@/components/AdminDashboardCompleto';
@@ -20,5 +20,10 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
-
+export default function AdminDashboardContent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminDashboard />
+    </Suspense>
+  );
+}

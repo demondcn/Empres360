@@ -19,6 +19,7 @@ model User {
   empresas   Empresa[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  passwordResets PasswordReset[]
 }
 
 model Diagnosis {

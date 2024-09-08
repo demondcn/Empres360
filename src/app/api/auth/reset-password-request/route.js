@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
+
+import { Resend } from 'resend';
 
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -43,7 +44,7 @@ export async function POST(req) {
 
     try {
       // Enviar el correo electrónico usando Resend
-      await resend.sendEmail(emailContent);
+      await resend.emails.send(emailContent);
       return NextResponse.json({ message: 'Correo de recuperación enviado. Revisa tu bandeja de entrada.' }, { status: 200 });
     } catch (error) {
       console.error('Error al enviar el correo electrónico', error);

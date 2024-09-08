@@ -610,14 +610,14 @@ export async function GET(request) {
                 // Si no hay pruebas o empresas, omitimos este diagnóstico
                 return null;
             }
-        
+
             const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
             const resultGeneralD = (totalResultado / 700) * 100;
-        
+
             // Encontramos la prueba con mayor y menor resultado
             const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
             const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
-        
+
             return {
                 id: diagnosis.user.empresas[0].id,  // ID de la empresa
                 Empresa: diagnosis.user.empresas[0].nombre,  // Nombre de la empresa
@@ -638,14 +638,14 @@ export async function GET(request) {
                 // Si no hay pruebas, omitimos este diagnóstico
                 return null;
             }
-        
+
             const totalResultado = diagnosis.tests.reduce((sum, test) => sum + test.result, 0);
             const resultGeneralD = (totalResultado / 700) * 100;
-        
+
             // Encontramos la prueba con mayor y menor resultado
             const DominPrueba = diagnosis.tests.reduce((prev, current) => (prev.result > current.result ? prev : current));
             const Peorprueva = diagnosis.tests.reduce((prev, current) => (prev.result < current.result ? prev : current));
-        
+
             return {
                 id: diagnosis.id,
                 Empresa: diagnosis.user.name,  // Nombre del usuario
@@ -654,10 +654,9 @@ export async function GET(request) {
                 Peorprueva: Peorprueva.description   // Descripción de la prueba con menor resultado
             };
         });
-        
+
         // Filtramos los nulos
         const UsuariosDiagnosticRR = UsuariosDiagnosticR.filter(item => item !== null);
-        
 
 
 
@@ -666,7 +665,8 @@ export async function GET(request) {
 
 
 
-        
+
+
 
         const testCounts = await prisma.test.groupBy({
             by: ['description'],
@@ -720,7 +720,7 @@ export async function GET(request) {
                 // Si no hay pruebas, omitimos este diagnóstico
                 return [];
             }
-        
+
             // Mapeamos cada test de este diagnóstico a un nuevo formato de objeto
             return diagnosis.tests.map(test => ({
                 id: test.id,                // ID del test
@@ -736,61 +736,61 @@ export async function GET(request) {
 
         const usersExport1 = await prisma.user.findMany({
             include: {
-              empresas: true, // Incluir la relación con empresa
+                empresas: true, // Incluir la relación con empresa
             },
-          });
-      
-          const DiagnosticExport1 = await prisma.diagnosis.findMany({
+        });
+
+        const DiagnosticExport1 = await prisma.diagnosis.findMany({
             include: {
-              user: true, // Incluir la relación con usuario
+                user: true, // Incluir la relación con usuario
             },
-          });
-      
-          const TextExport1 = await prisma.test.findMany({
+        });
+
+        const TextExport1 = await prisma.test.findMany({
             include: {
-              diagnosis: true, // Incluir la relación con diagnóstico
+                diagnosis: true, // Incluir la relación con diagnóstico
             },
-          });
-      
-          const EmpresExport1 = await prisma.empresa.findMany({
+        });
+
+        const EmpresExport1 = await prisma.empresa.findMany({
             include: {
-              user: true, // Incluir la relación con usuario
+                user: true, // Incluir la relación con usuario
             },
-          });
-      
-          // Transforma los datos en el formato deseado
-          const usersExport = usersExport1.map(user => ({
+        });
+
+        // Transforma los datos en el formato deseado
+        const usersExport = usersExport1.map(user => ({
             id: user.id,
             name: user.name,
             email: user.email,
             nombreEmpresa: user.empresas[0]?.nombre || 'No asignado', // Supone que cada usuario tiene solo una empresa
             fechaCreacion: user.createdAt.toISOString().split('T')[0], // Ajusta el formato de fecha si es necesario
-          }));
-      
-          const DiagnosticExport = DiagnosticExport1.map(diagnosis => ({
+        }));
+
+        const DiagnosticExport = DiagnosticExport1.map(diagnosis => ({
             id: diagnosis.id,
             userId: diagnosis.userId,
             status: diagnosis.status,
             fechaCreacion: diagnosis.createdAt.toISOString().split('T')[0],
-          }));
-      
-          const TextExport = TextExport1.map(test => ({
+        }));
+
+        const TextExport = TextExport1.map(test => ({
             id: test.id,
             diagnosisId: test.diagnosisId,
             number: test.number,
             result: test.result,
             description: test.description,
             fechaCreacion: test.createdAt.toISOString().split('T')[0],
-          }));
-      
-          const EmpresExport = EmpresExport1.map(empresa => ({
+        }));
+
+        const EmpresExport = EmpresExport1.map(empresa => ({
             id: empresa.id,
             nombre: empresa.nombre,
             estado: empresa.estado,
             sector: empresa.sector,
             userId: empresa.userId,
             fechaCreacion: empresa.createdAt.toISOString().split('T')[0],
-          }));
+        }));
 
 
 
@@ -842,7 +842,10 @@ export async function GET(request) {
                 TextExport,
                 EmpresExport
             }),
-            { status: 200 }
+            {
+                status: 200,
+                headers: { 'Cache-Control': 'no-store' }  // Evita el cacheo
+            }
         );
     } catch (error) {
         console.error('Error fetching dashboard data:', error);

@@ -99,7 +99,7 @@ export default function Inicio() {
                         })}
                         
                     />
-                    <Components.Anchor href='#'>¿Perdiste tu contraseña?</Components.Anchor>
+                    <Components.Anchor href='/InicioSeccion/ResetConta'>¿Perdiste tu contraseña?</Components.Anchor>
                     <Components.Button >Iniciar sesión</Components.Button>
                 </Components.Form>
             </Components.SignInContainer>

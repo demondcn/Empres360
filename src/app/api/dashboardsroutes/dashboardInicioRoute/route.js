@@ -734,6 +734,66 @@ export async function GET(request) {
 
 
 
+        const usersExport1 = await prisma.user.findMany({
+            include: {
+              empresas: true, // Incluir la relación con empresa
+            },
+          });
+      
+          const DiagnosticExport1 = await prisma.diagnosis.findMany({
+            include: {
+              user: true, // Incluir la relación con usuario
+            },
+          });
+      
+          const TextExport1 = await prisma.test.findMany({
+            include: {
+              diagnosis: true, // Incluir la relación con diagnóstico
+            },
+          });
+      
+          const EmpresExport1 = await prisma.empresa.findMany({
+            include: {
+              user: true, // Incluir la relación con usuario
+            },
+          });
+      
+          // Transforma los datos en el formato deseado
+          const usersExport = usersExport1.map(user => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            nombreEmpresa: user.empresas[0]?.nombre || 'No asignado', // Supone que cada usuario tiene solo una empresa
+            fechaCreacion: user.createdAt.toISOString().split('T')[0], // Ajusta el formato de fecha si es necesario
+          }));
+      
+          const DiagnosticExport = DiagnosticExport1.map(diagnosis => ({
+            id: diagnosis.id,
+            userId: diagnosis.userId,
+            status: diagnosis.status,
+            fechaCreacion: diagnosis.createdAt.toISOString().split('T')[0],
+          }));
+      
+          const TextExport = TextExport1.map(test => ({
+            id: test.id,
+            diagnosisId: test.diagnosisId,
+            number: test.number,
+            result: test.result,
+            description: test.description,
+            fechaCreacion: test.createdAt.toISOString().split('T')[0],
+          }));
+      
+          const EmpresExport = EmpresExport1.map(empresa => ({
+            id: empresa.id,
+            nombre: empresa.nombre,
+            estado: empresa.estado,
+            sector: empresa.sector,
+            userId: empresa.userId,
+            fechaCreacion: empresa.createdAt.toISOString().split('T')[0],
+          }));
+
+
+
 
         return new Response(
             JSON.stringify({
@@ -776,7 +836,11 @@ export async function GET(request) {
                 radarData,
                 UsuariosDiagnosticRR,
                 EmpresasDiagnosticRRR,
-                TestListR
+                TestListR,
+                usersExport,
+                DiagnosticExport,
+                TextExport,
+                EmpresExport
             }),
             { status: 200 }
         );

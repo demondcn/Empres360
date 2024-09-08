@@ -4,9 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   FileSpreadsheet,
   FileText,
   Download,
@@ -17,14 +16,31 @@ import {
   Building,
   Filter,
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
+import { PDFDocument, rgb } from 'pdf-lib';
+
 
 const ReportsDashboard = () => {
   const [selectedReport, setSelectedReport] = useState('');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [selectedFormat, setSelectedFormat] = useState('excel');
   const [selectedFields, setSelectedFields] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/dashboardsroutes/dashboardInicioRoute');
+        const data = await res.json();
+        setDashboardData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    }
+    fetchData();
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
       @keyframes gradientAnimation {
@@ -44,46 +60,119 @@ const ReportsDashboard = () => {
     };
   }, []);
 
+  if (loading) {
+    return <p>Cargando datos...</p>;
+  }
+
+  if (!dashboardData) {
+    return <p>Error al cargar los datos</p>;
+  }
+
+  const {
+    usersExport,
+    DiagnosticExport,
+    TextExport,
+    EmpresExport
+
+  } = dashboardData;
+
   const reportTypes = [
     { id: 'diagnostics', name: 'Diagnósticos', icon: <BarChart2 className="h-5 w-5" /> },
     { id: 'users', name: 'Usuarios', icon: <Users className="h-5 w-5" /> },
     { id: 'companies', name: 'Empresas', icon: <Building className="h-5 w-5" /> },
-    { id: 'sectors', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> },
+    { id: 'text', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> }, // Cambiado a 'pruebas'
   ];
 
-  const fieldOptions = {
-    diagnostics: ['ID', 'Empresa', 'Sector', 'Fecha', 'Puntuación', 'Estado'],
-    users: ['ID', 'Nombre', 'Email', 'Rol', 'Fecha de Registro', 'Último Acceso'],
-    companies: ['ID', 'Nombre', 'Sector', 'Tamaño', 'Fecha de Registro', 'Último Diagnóstico'],
-    sectors: ['Sector', 'Número de Empresas', 'Puntuación Promedio', 'Tendencia'],
+
+
+
+
+
+  const getTableHeaders = () => {
+    switch (selectedReport) {
+      case 'users':
+        return ['id', 'name', 'email', 'nombreEmpresa', 'fechaCreacion'];
+      case 'diagnostics':
+        return ['id', 'userId', 'status', 'fechaCreacion'];
+      case 'text':
+        return ['id', 'diagnosisId', 'number', 'result', 'description', 'fechaCreacion'];
+      case 'companies':
+        return ['id', 'nombre', 'estado', 'sector', 'userId', 'fechaCreacion'];
+      default:
+        return [];
+    }
   };
 
-  const handleFieldToggle = (field) => {
-    setSelectedFields(prev => 
-      prev.includes(field) 
-        ? prev.filter(f => f !== field)
-        : [...prev, field]
-    );
+  const getTableData = () => {
+    switch (selectedReport) {
+      case 'users':
+        return usersExport;
+      case 'diagnostics':
+        return DiagnosticExport;
+      case 'text':
+        return TextExport;
+      case 'companies':
+        return EmpresExport;
+      default:
+        return [];
+    }
   };
 
-  const handleExport = () => {
-    // Esta es una función simulada. En una implementación real, aquí se conectaría con el backend para generar el informe.
-    console.log('Exportando informe:', {
-      tipo: selectedReport,
-      formato: selectedFormat,
-      fechaInicio: dateRange.start,
-      fechaFin: dateRange.end,
-      campos: selectedFields,
-    });
-    alert(`Informe de ${selectedReport} exportado en formato ${selectedFormat}`);
+  const handleExport = async () => {
+    const headers = getTableHeaders();
+    const data = getTableData();
+    const tableData = data.map(item => headers.map(header => item[header]));
+
+    if (selectedFormat === 'excel') {
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...tableData]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+      XLSX.writeFile(wb, 'report.xlsx');
+    } else if (selectedFormat === 'pdf') {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([1000, 600]);
+      const { height } = page.getSize();
+      const fontSize = 10;
+      const margin = 50;
+      const columnWidth = 150; // Ancho de cada columna
+      const rowHeight = fontSize + 10; // Altura de cada fila
+      const drawTable = (headers, rows) => {
+        const tableTop = height - margin - rowHeight;
+  
+        // Dibujar los encabezados
+        headers.forEach((header, i) => {
+          page.drawText(header, { x: margin + i * columnWidth, y: tableTop, size: fontSize, color: rgb(0, 0, 0) });
+        });
+  
+        // Dibujar las filas
+        rows.forEach((row, i) => {
+          row.forEach((cell, j) => {
+            page.drawText(String(cell), { x: margin + j * columnWidth, y: tableTop - (i + 1) * rowHeight, size: fontSize, color: rgb(0, 0, 0) });
+          });
+        });
+      };
+  
+      drawTable(headers, tableData);
+  
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'report.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   };
+
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <main className="flex-1 overflow-x-hidden overflow-y-auto animated-gradient">
         <div className="container mx-auto px-6 py-8">
           <h3 className="text-white text-3xl font-medium mb-4">Generación de Informes</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {reportTypes.map((report) => (
               <Card key={report.id} className="bg-white/90 backdrop-blur-sm">
@@ -94,7 +183,7 @@ const ReportsDashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button 
+                  <Button
                     className="w-full bg-[#4E9419] text-white"
                     onClick={() => setSelectedReport(report.id)}
                   >
@@ -124,7 +213,7 @@ const ReportsDashboard = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-[#2C5234] mb-1">Rango de Fechas</label>
                   <div className="flex space-x-2">
                     <Input
@@ -140,7 +229,7 @@ const ReportsDashboard = () => {
                       className="flex-1"
                     />
                   </div>
-                </div>
+                </div> */}
                 <div>
                   <label className="block text-sm font-medium text-[#2C5234] mb-1">Formato de Exportación</label>
                   <Select value={selectedFormat} onValueChange={setSelectedFormat}>
@@ -160,27 +249,29 @@ const ReportsDashboard = () => {
           {selectedReport && (
             <Card className="bg-white/90 backdrop-blur-sm mb-6">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Campos a Incluir</CardTitle>
+                <CardTitle className="text-[#2C5234]">Datos a Exportar</CardTitle>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[200px]">
-                  <div className="space-y-2">
-                    {fieldOptions[selectedReport].map((field) => (
-                      <div key={field} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={field}
-                          checked={selectedFields.includes(field)}
-                          onCheckedChange={() => handleFieldToggle(field)}
-                        />
-                        <label
-                          htmlFor={field}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {field}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                <ScrollArea className="h-[400px]">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        {getTableHeaders().map((header, index) => (
+                          <th key={index} className="text-left p-2">{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getTableData().map((item, index) => (
+                        <tr key={index} className="border-b">
+                          {getTableHeaders().map((header, idx) => (
+                            <td key={idx} className="p-2">{item[header]}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+
+                  </table>
                 </ScrollArea>
               </CardContent>
             </Card>
@@ -191,7 +282,7 @@ const ReportsDashboard = () => {
               {selectedFormat === 'excel' ? (
                 <FileSpreadsheet className="mr-2 h-4 w-4" />
               ) : (
-                <FileText  className="mr-2 h-4 w-4" />
+                <FileText className="mr-2 h-4 w-4" />
               )}
               Exportar Informe
             </Button>

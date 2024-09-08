@@ -27,24 +27,25 @@ const ISUMDiagnosticInterface = ({onNewDiagnostic, onViewDiagnostics}) => {
 
   return (
     <div 
-      className="flex items-center justify-center min-h-screen"
+      className="relative flex items-center justify-center min-h-screen"
       style={{
         background: 'linear-gradient(-45deg, #FFF700, #4E9419, #2C5234)',
         backgroundSize: '400% 400%',
         animation: 'gradientAnimation 15s ease infinite',
       }}
     >
-      <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm shadow-lg">
+      <Card className="w-full max-w-md bg-[#21323C] shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle 
-            className="text-5xl font-extrabold text-[#4E9419] mb-2"
-            style={{
-              animation: 'glowAnimation 3s ease-in-out infinite',
-            }}
-          >
-            Emprex360
-          </CardTitle>
-          <CardDescription className="text-xl font-semibold text-[#2C5234]">
+        <div className="flex justify-center mb-4">
+            <Image 
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/934998f8-8c24-41fd-bf88-93a6fc55d9fc-8exqPk7JrayPcJsRekohG0YpSGQP9W.jpg" 
+              alt="Empres 360 Pro Logo" 
+              width={400} 
+              height={200}
+              className="object-contain"
+            />
+          </div>
+          <CardDescription className="text-xl font-semibold text-[#17D492]">
             Sistema de Diagnóstico Empresarial
           </CardDescription>
         </CardHeader>

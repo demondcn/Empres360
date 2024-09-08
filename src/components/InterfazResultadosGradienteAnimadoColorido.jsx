@@ -47,12 +47,12 @@ const InterfazResultados = ({
 
   const data = [
     { name: 'Ventas y Marketing', valor: reaultPrueb1 },
-    { name: 'DIRECCIÓN GENERAL', valor: reaultPrueb2 },
-    { name: 'Area Finanzas', valor: reaultPrueb3 },
+    { name: 'Dirección General', valor: reaultPrueb2 },
+    { name: 'Área de Finanzas', valor: reaultPrueb3 },
     { name: 'Talento Humano', valor: reaultPrueb4 },
-    { name: 'Produccion Operaciones', valor: reaultPrueb5 },
-    { name: 'Tecnologias Informacion', valor: reaultPrueb6 },
-    { name: 'Investigacion Desarrollo', valor: reaultPrueb7 },
+    { name: 'Producción y Operaciones', valor: reaultPrueb5 },
+    { name: 'Tecnologías de la Información', valor: reaultPrueb6 },
+    { name: 'Investigación y Desarrollo', valor: reaultPrueb7 },
   ];
   const colorGeneral = (puntaje) => {
     if (puntaje < 33) {
@@ -326,22 +326,22 @@ const InterfazResultados = ({
                 <strong>Ventas y Marketing:</strong> {getMensajeVentasYMarketing(reaultPrueb1)}
               </p>
               <p>
-                <strong>DIRECCIÓN GENERAL:</strong> {getMensajeDireccionGeneral(reaultPrueb2)}
+                <strong>Dirección General:</strong> {getMensajeDireccionGeneral(reaultPrueb2)}
               </p>
               <p>
-                <strong>Area Finanzas:</strong> {getMensajeAreaFinanzas(reaultPrueb3)}
+                <strong>Área de Finanzas:</strong> {getMensajeAreaFinanzas(reaultPrueb3)}
               </p>
               <p>
                 <strong>Talento Humano:</strong> {getMensajeTalentoHumano(reaultPrueb4)}
               </p>
               <p>
-                <strong>Produccion Operaciones:</strong> {getMensajeProduccionOperaciones(reaultPrueb5)}
+                <strong>Producción y Operaciones</strong> {getMensajeProduccionOperaciones(reaultPrueb5)}
               </p>
               <p>
-                <strong>Tecnologias Informacion:</strong> {getMensajeTecnologiasInformacion(reaultPrueb6)}
+                <strong>Tecnologías de la Información:</strong> {getMensajeTecnologiasInformacion(reaultPrueb6)}
               </p>
               <p>
-                <strong>Investigacion Desarrollo:</strong> {getMensajeInvestigacionDesarrollo(reaultPrueb7)}
+                <strong>Investigación y Desarrollo:</strong> {getMensajeInvestigacionDesarrollo(reaultPrueb7)}
               </p>
               <p>
                 {getMensajeResumen(totalEmpres)}

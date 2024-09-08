@@ -1,10 +1,10 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import VentMark from '@/components/ContextTecnologiaInformacion';
 import Navbar from '@/components/Navbar';
 import { useSearchParams } from 'next/navigation';
 
-export default function ListDiag() {
+const ListDiagContent = () =>  {
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
 
@@ -15,5 +15,13 @@ export default function ListDiag() {
       <VentMark userId={userId}/>
     </main>
     </>
+  );
+}
+
+export default function ListDiag() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ListDiagContent />
+    </Suspense>
   );
 }

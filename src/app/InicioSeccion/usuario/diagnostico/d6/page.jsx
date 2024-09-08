@@ -1,10 +1,10 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioTecnologiasInformacion from '@/components/CuestionarioTecnologiasInformacion'
 
-export default function Di6() {
+const Di6Content = () => {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 7;
@@ -59,4 +59,11 @@ export default function Di6() {
     </main>
     </>
   )
+}
+export default function Di6() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Di6Content />
+    </Suspense>
+  );
 }

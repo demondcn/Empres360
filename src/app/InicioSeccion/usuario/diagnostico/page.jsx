@@ -1,10 +1,10 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import ConceptualizacionAreasFunc from '@/components/ConceptualizacionAreasFunc';
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function Diagnostic() {
+const DiagnosticContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId'); // Obtén el userId de la URL
@@ -45,5 +45,13 @@ export default function Diagnostic() {
       />
     </main>
     </>
+  );
+}
+
+export default function Diagnostic() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DiagnosticContent />
+    </Suspense>
   );
 }

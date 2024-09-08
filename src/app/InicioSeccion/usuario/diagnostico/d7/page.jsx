@@ -1,10 +1,10 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioInvestigacionDesarrollo from '@/components/CuestionarioInvestigacionDesarrollo'
 
-export default function Di7() {
+const Di7Content = () => {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const diagnosisId = searchParams.get('diagnosisId');
@@ -58,4 +58,11 @@ export default function Di7() {
     </main>
     </>
   )
+}
+export default function Di7() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Di7Content />
+    </Suspense>
+  );
 }

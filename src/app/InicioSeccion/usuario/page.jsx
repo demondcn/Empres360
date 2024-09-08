@@ -1,11 +1,11 @@
 "use client";
 // pages/User.jsx
-import React from 'react';
+import React, { Suspense } from 'react';
 import ISUMDiagnosticInterface from '@/components/ISUMDiagnosticInterface';
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function User() {
+const UserContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId');
@@ -51,3 +51,10 @@ export default function User() {
   );
 }
 
+export default function User() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserContent />
+    </Suspense>
+  );
+}

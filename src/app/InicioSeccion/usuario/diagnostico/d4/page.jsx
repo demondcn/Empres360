@@ -1,11 +1,11 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioTalentoHumano from '@/components/CuestionarioTalentoHumano'
 
 
-export default function Di4() {
+const Di4Content = () => {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 5;
@@ -60,4 +60,11 @@ export default function Di4() {
     </main>
     </>
   )
+}
+export default function Di4() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Di4Content />
+    </Suspense>
+  );
 }

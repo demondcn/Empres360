@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import InterfazResultados from '@/components/InterfazResultadosGradienteAnimadoColorido';
 
-const Result = () => {
+export default function Result() {
   const searchParams = useSearchParams();
   const diagnosisId = searchParams.get('diagnosisId');
   const userId = searchParams.get('userId');
@@ -54,26 +54,18 @@ const Result = () => {
 
   return (
     <>
-      <Navbar userId={userId} />
-      <InterfazResultados
-        resultadoEmpresarial={percentageTotal}
-        reaultPrueb1={results.reaultPrueb1}
-        reaultPrueb2={results.reaultPrueb2}
-        reaultPrueb3={results.reaultPrueb3}
-        reaultPrueb4={results.reaultPrueb4}
-        reaultPrueb5={results.reaultPrueb5}
-        reaultPrueb6={results.reaultPrueb6}
-        reaultPrueb7={results.reaultPrueb7}
-        onReturnToStart={handleReturnToStart}
-      />
+    <Navbar userId={userId}/>
+    <InterfazResultados 
+      resultadoEmpresarial={percentageTotal}
+      reaultPrueb1={results.reaultPrueb1}
+      reaultPrueb2={results.reaultPrueb2}
+      reaultPrueb3={results.reaultPrueb3}
+      reaultPrueb4={results.reaultPrueb4}
+      reaultPrueb5={results.reaultPrueb5}
+      reaultPrueb6={results.reaultPrueb6}
+      reaultPrueb7={results.reaultPrueb7}
+      onReturnToStart={handleReturnToStart}
+    />
     </>
-  );
-}
-
-export default function Resultd() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Result />
-    </Suspense>
   );
 }

@@ -237,48 +237,6 @@ const AnalysisDashboard = () => {
       return value?.includes(searchTermLowerCase);
     }
   });
-  // const filteredTests = TestListR.filter(test =>
-  //   test &&
-  //   (
-  //     test.id.toString().includes(searchTermTests.toLowerCase()) ||
-  //     test.idD.toString().includes(searchTermTests.toLowerCase()) ||
-  //     test.number?.toString().includes(searchTermTests) ||
-  //     test.result?.toString().includes(searchTermTests.toLowerCase()) ||
-  //     test.name?.toLowerCase().includes(searchTermTests.toLowerCase())
-  //   )
-  // );
-  // const usuariosFiltrados = users.filter(user =>
-  //   user &&
-  //   (
-  //     user.id.toString().includes(searchTermUsers.toLowerCase()) ||
-  //     user.nombre?.toLowerCase().includes(searchTermUsers.toLowerCase()) ||
-  //     user.email?.toLowerCase().includes(searchTermUsers.toLowerCase()) ||
-  //     user.nD?.toString().includes(searchTermUsers) ||
-  //     user.lastActive?.toLowerCase().includes(searchTermUsers.toLowerCase())
-  //   )
-  // );
-  // const filteredDiagnostics = UsuariosDiagnosticRR.filter(diagnostic =>
-  //   diagnostic &&
-  //   (
-  //     diagnostic.id.toString().includes(searchTermDiagnostics.toLowerCase()) ||
-  //     diagnostic.Empresa?.toLowerCase().includes(searchTermDiagnostics.toLowerCase()) ||
-  //     diagnostic.resultGeneralD?.toString().includes(searchTermDiagnostics) ||
-  //     diagnostic.Dominprueba?.toLowerCase().includes(searchTermDiagnostics.toLowerCase()) ||
-  //     diagnostic.Peorprueva?.toLowerCase().includes(searchTermDiagnostics.toLowerCase())
-  //   )
-  // );
-  // const filteredEmpress = EmpresasDiagnosticRRR.filter(empresa =>
-  //   empresa &&
-  //   (
-  //     empresa.id.toString().includes(searchTermEmpress.toLowerCase()) ||
-  //     empresa.Empresa?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
-  //     empresa.sector?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
-  //     empresa.resultGeneralD?.toString().includes(searchTermEmpress) ||
-  //     empresa.Dominprueba?.toLowerCase().includes(searchTermEmpress.toLowerCase()) ||
-  //     empresa.Peorprueva?.toLowerCase().includes(searchTermEmpress.toLowerCase())
-  //   )
-  // );
-
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -537,7 +495,7 @@ const AnalysisDashboard = () => {
                         <option value="all">Todos</option>
                         {users.length > 0 &&
                           Object.keys(users[0]).map((key) => (
-                            <option value={key}>
+                            <option value={key} key={key}>
                               {key.charAt(0).toUpperCase() + key.slice(1)}
                             </option>
                           ))
@@ -604,7 +562,7 @@ const AnalysisDashboard = () => {
                         <option value="all">Todos</option>
                         {UsuariosDiagnosticRR.length > 0 &&
                           Object.keys(UsuariosDiagnosticRR[0]).map((key) => (
-                            <option value={key}>
+                            <option value={key} key={key}>
                               {key.charAt(0).toUpperCase() + key.slice(1)}
                             </option>
                           ))
@@ -675,7 +633,7 @@ const AnalysisDashboard = () => {
                         <option value="all">Todos</option>
                         {EmpresasDiagnosticRRR.length > 0 &&
                           Object.keys(EmpresasDiagnosticRRR[0]).map((key) => (
-                            <option value={key}>
+                            <option value={key} key={key}>
                               {key.charAt(0).toUpperCase() + key.slice(1)}
                             </option>
                           ))
@@ -747,7 +705,7 @@ const AnalysisDashboard = () => {
                         <option value="all">Todos</option>
                         {TestListR.length > 0 &&
                           Object.keys(TestListR[0]).map((key) => (
-                            <option value={key}>
+                            <option value={key} key={key}>
                               {key.charAt(0).toUpperCase() + key.slice(1)}
                             </option>
                           ))

@@ -1,11 +1,11 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioProduccionOperaciones from '@/components/CuestionarioProduccionOperaciones'
 
 
-export default function Di5() {
+const Di5Content = () => {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 6;
@@ -60,4 +60,11 @@ export default function Di5() {
     </main>
     </>
   )
+}
+export default function Di5() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Di5Content />
+    </Suspense>
+  );
 }

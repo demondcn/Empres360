@@ -1,11 +1,11 @@
 "use client";
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioDesarrolloAreaFinanzas from '@/components/CuestionarioDesarrolloAreaFinanzas'
 
 
-export default function Di3() {
+const Di3Content = () => {
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const number = 4;
@@ -58,4 +58,12 @@ export default function Di3() {
     </main>
     </>
   )
+}
+
+export default function Di3() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Di3Content />
+    </Suspense>
+  );
 }

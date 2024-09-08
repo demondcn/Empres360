@@ -841,14 +841,15 @@ export async function GET(request) {
                 DiagnosticExport,
                 TextExport,
                 EmpresExport
-            }),
-            {
+            }), {
                 status: 200,
-                headers: { 'Cache-Control': 'no-store' }  // Evita el cacheo
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
         );
     } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'Error al obtener los datos del dashboard' }), { status: 500,headers: { 'Content-Type': 'application/json' } });
     }
 }

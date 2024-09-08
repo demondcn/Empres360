@@ -56,3 +56,5 @@ model Empresa {
 
   @@map("empresas") // Opcional: especifica un nombre personalizado de la tabla en la base de datos
 }
+
+xd

@@ -3,11 +3,12 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import InterfazResultados from '@/components/InterfazResultadosGradienteAnimadoColorido';
-
+import { useSession } from "next-auth/react";
 const Result = () => {
   const searchParams = useSearchParams();
   const diagnosisId = searchParams.get('diagnosisId');
-  const userId = searchParams.get('userId');
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
   const router = useRouter();
   const [percentageTotal, setPercentageTotal] = useState(0);
   const [results, setResults] = useState({});
@@ -46,7 +47,7 @@ const Result = () => {
   }, [diagnosisId]);
 
   const handleReturnToStart = () => {
-    router.push(`/InicioSeccion/usuario?userId=${userId}`);
+    router.push(`/InicioSeccion/usuario`);
   };
 
   if (loading) return <div>Loading...</div>;

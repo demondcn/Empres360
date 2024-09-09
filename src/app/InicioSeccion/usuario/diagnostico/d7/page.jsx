@@ -3,12 +3,13 @@ import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import CuestionarioInvestigacionDesarrollo from '@/components/CuestionarioInvestigacionDesarrollo'
-
+import { useSession } from "next-auth/react";
 const Di7Content = () => {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const testId = searchParams.get('testId');
   const diagnosisId = searchParams.get('diagnosisId');
-  const userId = searchParams.get('userId');
+  const userId = session?.user?.id;
   const status = 'Completate';
   const router = useRouter();
 
@@ -42,7 +43,7 @@ const Di7Content = () => {
       }
 
       // Redirigir a la página específica con el ID del nuevo test
-      router.push(`/InicioSeccion/usuario/diagnostico/result?diagnosisId=${diagnosisId}&userId=${userId}`);
+      router.push(`/InicioSeccion/usuario/diagnostico/result?diagnosisId=${diagnosisId}`);
   } catch (error) {
       console.error('Error creating test:', error);
     }

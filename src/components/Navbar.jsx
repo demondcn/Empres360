@@ -1,8 +1,12 @@
 import React from 'react';
 import { Home, BarChart2, ClipboardList, LogOut, Menu } from "lucide-react";
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';  // Importa useRoute
 
 const Navbar = ({userId}) => {
+  const status = 'Pending';
+  const createdAt = new Date();
+
   const router = useRouter();
   const navStyle = {
     background: 'linear-gradient(-45deg, #4E9419, #2C5234)',
@@ -25,7 +29,7 @@ const Navbar = ({userId}) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ userId, status, createdAt }),
       });
 
       if (!response.ok) {
@@ -35,10 +39,17 @@ const Navbar = ({userId}) => {
       const { id } = await response.json();
 
       // Redirect to the diagnostics page after creating the diagnostic
-      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}&userId=${userId}`);
+      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}`);
     } catch (error) {
       console.error('Error creating diagnostic:', error);
     }
+  };
+  const handleViewDiagnostics = () => {
+    router.push('/InicioSeccion/usuario/diagnosticos');
+  };
+
+  const handleSignOut = () => {
+    signOut();
   };
 
   return (
@@ -59,23 +70,23 @@ const Navbar = ({userId}) => {
         alignItems: 'center',
         height: '64px',
       }}>
-        <a href={`/InicioSeccion/usuario?userId=${userId}`} style={linkStyle}>
+        <a href={`/InicioSeccion/usuario`} style={linkStyle}>
           <Home style={{ marginRight: '0.5rem' }} />
           Inicio
         </a>
         <div style={{ display: 'flex' }}>
-        <a href="#" onClick={handleNewDiagnostic} style={linkStyle}>
+          <button onClick={handleNewDiagnostic} style={linkStyle}>
             <BarChart2 style={{ marginRight: '0.5rem' }} />
             Nuevo Diagnóstico
-          </a>
-          <a href={`/InicioSeccion/usuario/diagnosticos?userId=${userId}`} style={linkStyle}>
+          </button>
+          <button onClick={handleViewDiagnostics} style={linkStyle}>
             <ClipboardList style={{ marginRight: '0.5rem' }} />
             Ver Diagnósticos
-          </a>
-          <a href="/" style={linkStyle}>
+          </button>
+          <button onClick={handleSignOut} style={linkStyle}>
             <LogOut style={{ marginRight: '0.5rem' }} />
             Cerrar Sesión
-          </a>
+          </button>
         </div>
         <button 
           style={{

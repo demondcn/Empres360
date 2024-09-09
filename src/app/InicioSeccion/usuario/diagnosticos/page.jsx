@@ -1,12 +1,12 @@
 "use client";
+import { useSession } from 'next-auth/react';
 import React, { Suspense } from 'react';
 import DiagnosticList from '@/components/DiagnosticList';
 import Navbar from '@/components/Navbar';
-import { useSearchParams } from 'next/navigation';
 
 const ListDiagContent = () => {
-  const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
+  const {data:session} = useSession();
+  const userId = session?.user?.id;
 
   return (
     <>

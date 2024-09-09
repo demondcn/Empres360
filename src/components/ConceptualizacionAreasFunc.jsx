@@ -14,7 +14,7 @@ import {
   Microscope
 } from 'lucide-react';
 
-const ConceptualizacionAreasFunc = ({Navigate, userId}) => {
+const ConceptualizacionAreasFunc = ({Navigate}) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const ConceptualizacionAreasFunc = ({Navigate, userId}) => {
                 <Card 
                   key={index} 
                   className="w-full bg-white/50 hover:bg-white/70 transition-all duration-300 cursor-pointer"
-                  onClick={() => router.push(`/InicioSeccion/usuario/area/${areasNameroot[index]}?userId=${userId}`)}
+                  onClick={() => router.push(`/InicioSeccion/usuario/area/${areasNameroot[index]}`)}
                 >
                   <CardContent className="p-6 flex items-start space-x-6">
                     <div className="flex-shrink-0">

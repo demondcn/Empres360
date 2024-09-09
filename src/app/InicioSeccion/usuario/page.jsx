@@ -4,11 +4,15 @@ import React, { Suspense } from 'react';
 import ISUMDiagnosticInterface from '@/components/ISUMDiagnosticInterface';
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from "next-auth/react";
+
 
 const UserContent = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  //const userId = searchParams.get('userId');
+
   const status = 'Pending';
   const createdAt = new Date();
 
@@ -29,13 +33,13 @@ const UserContent = () => {
       const { id } = await response.json();
 
       // Redirect to the diagnostics page after creating the diagnostic
-      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}&userId=${userId}`);
+      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}`);
     } catch (error) {
       console.error('Error creating diagnostic:', error);
     }
   };
   const handleViewDiagnostics = () => {
-    router.push(`/InicioSeccion/usuario/diagnosticos?userId=${userId}`); 
+    router.push(`/InicioSeccion/usuario/diagnosticos`); 
   };
 
   return (

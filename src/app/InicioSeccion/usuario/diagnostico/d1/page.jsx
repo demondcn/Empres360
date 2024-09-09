@@ -3,13 +3,14 @@ import React, { Suspense } from 'react';
 import CuestionarioVentasMark from '@/components/CuestionarioVentasMark'
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
-
+import { useSession } from "next-auth/react";
 const Di1Content = () => {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
   const testId = searchParams.get('testId');
   const number = 2;
   const diagnosisId = searchParams.get('diagnosisId');
-  const userId = searchParams.get('userId');
+  const userId = session?.user?.id;
   const router = useRouter();
 
   const handleNavigation = async (average) => {
@@ -42,7 +43,7 @@ const Di1Content = () => {
 
       const { id } = await response.json();
 
-      router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&userId=${userId}&testId=${id}`);
+      router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&testId=${id}`);
     } catch (error) {
       console.error('Error creating test:', error);
     }

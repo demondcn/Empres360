@@ -2,6 +2,8 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import db from '@/libs/db'
 import bcrypt from 'bcrypt'
+import { sign } from "crypto";
+import { signIn } from "next-auth/react";
 
 const authOptions = {
     providers: [
@@ -34,6 +36,9 @@ const authOptions = {
             },
         }),
     ],
+    pages:{
+        signIn: "/"
+    },
     callbacks: {
         async jwt({ token, user }) {
             // Añadir el id del usuario al token JWT

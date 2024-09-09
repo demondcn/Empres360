@@ -3,11 +3,13 @@ import React, { Suspense } from 'react';
 import ConceptualizacionAreasFunc from '@/components/ConceptualizacionAreasFunc';
 import Navbar from '@/components/Navbar';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from "next-auth/react";
 
 const DiagnosticContent = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
-  const userId = searchParams.get('userId'); // Obtén el userId de la URL
+  const userId = session?.user?.id;
   const diagnosticId = searchParams.get('id');
   const testId = 1;
   const BotonRespuesta = async () => {
@@ -29,7 +31,7 @@ const DiagnosticContent = () => {
       const { id } = await response.json();
 
       // Redirigir a la página específica con el ID del nuevo test
-      router.push(`/InicioSeccion/usuario/diagnostico/d${testId}?diagnosisId=${diagnosticId}&userId=${userId}&testId=${id}`);
+      router.push(`/InicioSeccion/usuario/diagnostico/d${testId}?diagnosisId=${diagnosticId}&testId=${id}`);
     } catch (error) {
       console.error('Error creating test:', error);
     }
@@ -40,7 +42,6 @@ const DiagnosticContent = () => {
     <Navbar userId={userId}/>
     <main>
       <ConceptualizacionAreasFunc
-        userId={userId} 
         Navigate={BotonRespuesta}  
       />
     </main>

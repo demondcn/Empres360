@@ -37,7 +37,8 @@ export default function Inicio() {
             if (session && session.user) {
                 const userId = session.user.id;
                 // Redirige a la página con el userId en la URL
-                window.location.replace(`/InicioSeccion/usuario?userId=${userId}`);
+                //window.location.replace(`/InicioSeccion/usuario?userId=${userId}`);
+                window.location.replace(`/InicioSeccion/usuario`);
             } else {
                 alert("No se pudo obtener el id del usuario.");
             }

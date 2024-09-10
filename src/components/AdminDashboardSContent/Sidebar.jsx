@@ -8,12 +8,16 @@ import {
   PieChart,
   Bell,
   FileOutput,
-  Settings
+  Settings,
+  LogOut
 } from 'lucide-react';
 import { useRouter} from 'next/navigation';
-
+import { signOut } from 'next-auth/react';
 const Sidebar = ({ onSelectSection }) => {
   const router = useRouter();
+  const handleSignOut = () => {
+    signOut();
+  };
   return (
     <div className="bg-[#4E9419] w-64 shadow-lg">
       <div className="p-4">
@@ -37,6 +41,9 @@ const Sidebar = ({ onSelectSection }) => {
         </Button>
         <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
           <FileOutput className="mr-2 h-4 w-4" /> Informes
+        </Button>
+        <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" /> Cerrar
         </Button>
       </nav>
     </div>

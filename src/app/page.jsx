@@ -35,10 +35,11 @@ export default function Inicio() {
             // Espera a que se cargue la sesión para obtener el id del usuario
             const session = await getSession();
             if (session && session.user) {
-                const userId = session.user.id;
-                // Redirige a la página con el userId en la URL
-                //window.location.replace(`/InicioSeccion/usuario?userId=${userId}`);
-                window.location.replace(`/InicioSeccion/usuario`);
+                if (session.user.isAdmin) {
+                    window.location.replace(`/InicioSeccion/admin/InicioAd`);
+                } else {
+                    window.location.replace(`/InicioSeccion/usuario`);
+                }
             } else {
                 alert("No se pudo obtener el id del usuario.");
             }

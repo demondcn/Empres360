@@ -2,8 +2,6 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import db from '@/libs/db'
 import bcrypt from 'bcrypt'
-import { sign } from "crypto";
-import { signIn } from "next-auth/react";
 
 const authOptions = {
     providers: [
@@ -50,6 +48,7 @@ const authOptions = {
         async session({ session, token }) {
             // Añadir el id del usuario a la sesión
             session.user.id = token.id;
+            session.user.isAdmin = token.email === adminEmail;
             return session;
         },
     },

@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import db from '@/libs/db'
 import bcrypt from 'bcrypt'
 
+const adminEmail = "oagudelod@ucundinamarca.edu.co";
 const authOptions = {
     providers: [
         CredentialsProvider({

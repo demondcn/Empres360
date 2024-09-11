@@ -136,17 +136,7 @@ const DiagnosticManagementDashboard = () => {
   //   { name: 'Jun', diagnosticos: 150 },
   // ];
 
-  const sectorDistributionData = 
-  [
-    { name: 'Ventas y Marketing', promedio: 70 },
-    { name: 'DESARROLLO DE LA DIRECCIÓN GENERAL', promedio: 65 },
-    { name: 'DESARROLLO DE LA Area Finanzas', promedio: 57 },
-    { name: 'Talento Humano', promedio: 62 },
-    { name: 'Produccion Operaciones', promedio: 59 },
-    { name: 'Tecnologias Informacion', promedio: 53 },
-    { name: 'Investigacion Desarrollo', promedio: 67 }
-  ];
-  // resultadosPromedio
+  const sectorDistributionData = resultadosPromedio;
 
 
 

@@ -154,7 +154,7 @@ const AnalysisDashboard = () => {
     EmpresasDiagnosticRRR,
     descriptionMasBajoArea,
     porcentajeAumento,
-    
+    resultadosPromedio,
     usersFormatedFix
   } = dashboardData;
 
@@ -172,17 +172,7 @@ const AnalysisDashboard = () => {
   const COLORSPruebasUsuarios = ['#4E9419', '#2C5234', '#FE1100', '#FF6B6B', '#3498DB', '#9B59B6', '#E67E22'];
 
 
-  const resultadosPromedio = 
-  [
-    { name: 'Ventas y Marketing', promedio: 70 },
-    { name: 'DESARROLLO DE LA DIRECCIÓN GENERAL', promedio: 65 },
-    { name: 'DESARROLLO DE LA Area Finanzas', promedio: 57 },
-    { name: 'Talento Humano', promedio: 62 },
-    { name: 'Produccion Operaciones', promedio: 59 },
-    { name: 'Tecnologias Informacion', promedio: 53 },
-    { name: 'Investigacion Desarrollo', promedio: 67 }
-  ];
-  // resultadosPromedio
+
 
 
 

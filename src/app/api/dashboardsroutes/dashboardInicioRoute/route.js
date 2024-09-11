@@ -849,6 +849,8 @@ export async function GET(request) {
                 promedio: Math.floor(promedio),
             };
         });
+
+        console.log(resultadosPromedio)
         // Encontramos el promedio más bajo y el más alto
         const promedioMasBajoo = resultadosPromedio.reduce((min, item) => item.promedio < min.promedio ? item : min, resultadosPromedio[0]);
         const promedioMasAltoo = resultadosPromedio.reduce((max, item) => item.promedio > max.promedio ? item : max, resultadosPromedio[0]);
@@ -881,6 +883,7 @@ export async function GET(request) {
                 },
             },
         });
+
         // Calcular el porcentaje de aumento
         const aumento = diagnosticosActuales - diagnosticosAnteriores;
         const porcentajeAumentoo = diagnosticosAnteriores > 0

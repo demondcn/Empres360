@@ -46,6 +46,13 @@ import {
   PieChart as RePieChart, PieChart
 } from 'recharts';
 import { useRouter } from 'next/navigation';
+import DeleteUserDialog from '@/components/AdminDashboardSContent/DeleteUserDialog'
+import DeleteEmpresDialog from '@/components/AdminDashboardSContent/DeleteEmpresDialog'
+import DeleteAreasDialog from '@/components/AdminDashboardSContent/DeleteAreaDialog'
+import DeleteDiagnosticDialog from '@/components/AdminDashboardSContent/DeleteDiagnosticDialog'
+import UpdateEmpresDialog from '@/components/AdminDashboardSContent/EditEmpresDialog'
+import UpdateAreasDialog from '@/components/AdminDashboardSContent/EditAreasDialog'
+import UpdateUserDialog from '@/components/AdminDashboardSContent/EditUserDialog'
 
 const AnalysisDashboard = () => {
   const router = useRouter();
@@ -62,6 +69,17 @@ const AnalysisDashboard = () => {
   const [filterDiagnostic, setFilterDiagnostic] = useState("all");
   const [filterEmpres, setFilterEmpres] = useState("all");
   const [filterPrue, setFilterPrue] = useState("all");
+  const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(null)
+  const [isUpdateUserDialogOpen, setIsUpdateUserDialogOpen] = useState(null)
+  const [isDeleteDiagnosticDialogOpen, setIsDeleteDiagnosticDialogOpen] = useState(null)
+  const [isDeleteAreasDialopgOen, setIsDeleteAreasDialogOpen] = useState(null)
+  const [isUpdateAreasDialogOpen, setIsUpdateAreasDialogOpen] = useState(null)
+  const [isDeleteEmpresDialogOpen, setIsDeleteEmpresDialogOpen] = useState(null)
+  const [isUpdateEmpresDialogOpen, setIsUpdateEmpresDialogOpen] = useState(null)
+
+
+
+
 
   useEffect(() => {
     async function fetchData() {
@@ -118,22 +136,11 @@ const AnalysisDashboard = () => {
   }
   const {
     totalDiagnosticos,
-    totalDiagnosticosUltimoMes,
-    totalEmpresasActivas,
-    porcentajeEmpresasActivasSemana,
     totalUsuarios,
-    porcentajeUsuariosUltimoMes,
     diagnosticosPendientes,
     diagnosticosCompletados,
-    usuariosConEmpresa,
-    empresasConDiagnostico,
-    tiemposPendientes,
-    usuariosNuevos,
     barChartData,
     lineChartData,
-    notificaciones,
-    empresasFormateadas,
-    usuariosFormateados,
     totalEmpresas,
     newUsersData,
     userActivityBar,
@@ -141,17 +148,20 @@ const AnalysisDashboard = () => {
     formattedResultsTestCounts,
     monthlyDiagnosticsData,
     radarData,
-    menorResultadoDescripcion,
     usersFormated,
     UsuariosDiagnosticRR,
     TestListR,
-    EmpresasDiagnosticRRR
+    EmpresasDiagnosticRRR,
+    descriptionMasBajoArea,
+    porcentajeAumento,
+    resultadosPromedio,
+    usersFormatedFix
   } = dashboardData;
 
-  const porcentajeD = (diagnosticosCompletados / totalDiagnosticos) * 100
+  const porcentajeD = Math.floor((diagnosticosCompletados / totalDiagnosticos) * 100)
   const userActivityData = userActivityBar;
   const sectorDistributionData = formattedResultsTestCounts;
-  const users = usersFormated;
+  const users = usersFormatedFix;
   const userRoleData = testResulPie;
 
   const pieChartData = [
@@ -293,7 +303,7 @@ const AnalysisDashboard = () => {
               <TabsTrigger value="charts">Gráficos</TabsTrigger>
               <TabsTrigger value="users">Usuarios</TabsTrigger>
               <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
-              <TabsTrigger value="tests">Pruebas</TabsTrigger>
+              <TabsTrigger value="tests">Áreas</TabsTrigger>
               <TabsTrigger value="empres">Empresas</TabsTrigger>
             </TabsList>
 
@@ -438,8 +448,8 @@ const AnalysisDashboard = () => {
                         <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="value" fill="#4E9419">
-                          <LabelList dataKey="value" position="right" fill="#2C5234" />
+                        <Bar dataKey="cantidad" fill="#4E9419">
+                          <LabelList dataKey="cantidad" position="right" fill="#2C5234" />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -461,7 +471,32 @@ const AnalysisDashboard = () => {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
+
               </div>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Promedio Entre Áreas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                      data={resultadosPromedio}
+                      layout="vertical"
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="promedio" fill="#4E9419">
+                        <LabelList dataKey="promedio" position="right" fill="#2C5234" />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
             </TabsContent>
             <TabsContent value="users">
               <Card>
@@ -519,10 +554,10 @@ const AnalysisDashboard = () => {
                             <td className="p-2">{user.nombre}</td>
                             <td className="p-2">{user.email}</td>
                             <td className="p-2">{user.nD}</td>
-                            <td className="p-2">{user.lastActive}</td>
+                            <td className="p-2">{user.UltimaActividad}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">Editar</Button>
-                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                              <DeleteUserDialog isOpen={isDeleteUserDialogOpen === user.id} onOpenChange={(isOpen) => setIsDeleteUserDialogOpen(isOpen ? user.id : null)} id={user.id} userName={user.nombre} />
+                              <UpdateUserDialog isOpen={isUpdateUserDialogOpen === user.id} onOpenChange={(isOpen) => setIsUpdateUserDialogOpen(isOpen ? user.id : null)} id={user.id} />
                             </td>
                           </tr>
                         ))}
@@ -588,12 +623,10 @@ const AnalysisDashboard = () => {
                             <td className="p-2">{diagnostic.Dominprueba}</td>
                             <td className="p-2">{diagnostic.Peorprueva}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">
+                              <Button variant="ghost" className="mr-2" onClick={() => router.push(`/InicioSeccion/usuario/diagnostico/result?diagnosisId=${diagnostic.id}`)}>
                                 <FileText className="h-4 w-4 mr-1" /> Ver
                               </Button>
-                              <Button variant="ghost" className="text-red-500">
-                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                              </Button>
+                              <DeleteDiagnosticDialog isOpen={isDeleteDiagnosticDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} />
                             </td>
                           </tr>
                         ))}
@@ -664,9 +697,7 @@ const AnalysisDashboard = () => {
                               <Button variant="ghost" className="mr-2">
                                 <FileText className="h-4 w-4 mr-1" /> Ver
                               </Button>
-                              <Button variant="ghost" className="text-red-500">
-                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                              </Button>
+                              <DeleteEmpresDialog isOpen={isDeleteEmpresDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsDeleteEmpresDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} empresName={diagnostic.Empresa} />
                             </td>
                           </tr>
                         ))}
@@ -679,7 +710,7 @@ const AnalysisDashboard = () => {
             <TabsContent value="tests">
               <Card>
                 <CardHeader>
-                  <CardTitle>Gestión de Tests</CardTitle>
+                  <CardTitle>Gestión de Área</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-between mb-4">
@@ -714,11 +745,11 @@ const AnalysisDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left p-2">Id Test</th>
+                          <th className="text-left p-2">Id Área</th>
                           <th className="text-left p-2">Id Diagnóstico</th>
                           <th className="text-left p-2">Número</th>
                           <th className="text-left p-2">Resultado</th>
-                          <th className="text-left p-2">NombreTest</th>
+                          <th className="text-left p-2">NombreÁrea</th>
                           <th className="text-center p-2">Acciones</th>
                         </tr>
                       </thead>
@@ -727,16 +758,12 @@ const AnalysisDashboard = () => {
                           <tr key={test.id} className="border-b">
                             <td className="p-2">{test.id}</td>
                             <td className="p-2">{test.idD}</td>
-                            <td className="p-2">{test.number}</td>
-                            <td className="p-2">{test.result}</td>
-                            <td className="p-2">{test.name}</td>
+                            <td className="p-2">{test.numero}</td>
+                            <td className="p-2">{test.resultado}</td>
+                            <td className="p-2">{test.nombre}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">
-                                <FileText className="h-4 w-4 mr-1" /> Ver
-                              </Button>
-                              <Button variant="ghost" className="text-red-500">
-                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                              </Button>
+                            <DeleteAreasDialog isOpen={isDeleteAreasDialopgOen === test.id} onOpenChange={(isOpen) => setIsDeleteAreasDialogOpen(isOpen ? test.id : null)} id={test.id} testName={test.name} />
+                            <UpdateAreasDialog isOpen={isUpdateAreasDialogOpen === test.id} onOpenChange={(isOpen) => setIsUpdateAreasDialogOpen(isOpen ? test.id : null)} id={test.id} />
                             </td>
                           </tr>
                         ))}
@@ -753,7 +780,7 @@ const AnalysisDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>Análisis por Áreas de Prueba</CardTitle>
+                <CardTitle>Análisis por Áreas</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
@@ -786,8 +813,8 @@ const AnalysisDashboard = () => {
                   <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
                     <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
                   </Button>
-                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/AnalisisAd')}>
-                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Análisis
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
+                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Notificaciones
                   </Button>
                 </div>
               </CardContent>
@@ -816,8 +843,8 @@ const AnalysisDashboard = () => {
                         <TrendingDown className="h-6 w-6 text-[#FF6B6B] mr-2" />
                       </div>
                       <div>
-                        <p className="text-[#2C5234] font-semibold">Área de mejora: {menorResultadoDescripcion}</p>
-                        <p className="text-sm text-gray-600">Es necesario mejorar en los siguientes aspectos de la prueba {menorResultadoDescripcion} del diagnóstico empresarial. Identificar estas áreas permitirá optimizar los resultados y fortalecer el rendimiento general de las empresas.</p>
+                        <p className="text-[#2C5234] font-semibold">Área de mejora: {descriptionMasBajoArea}</p>
+                        <p className="text-sm text-gray-600">Es necesario mejorar en los siguientes aspectos el Área de {descriptionMasBajoArea} del diagnóstico empresarial. Identificar estas áreas permitirá optimizar los resultados y fortalecer el rendimiento general de las empresas.</p>
                       </div>
                     </li>
                     <li className="flex items-start">
@@ -826,7 +853,7 @@ const AnalysisDashboard = () => {
                       </div>
                       <div>
                         <p className="text-[#2C5234] font-semibold">Crecimiento de diagnóstico</p>
-                        <p className="text-sm text-gray-600">El número de diagnósticos creados ha aumentado en un 20%.</p>
+                        <p className="text-sm text-gray-600">El número de diagnósticos creados ha aumentado en un {Math.floor(porcentajeAumento)}%.</p>
                       </div>
                     </li>
                   </ul>

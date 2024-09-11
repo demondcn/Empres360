@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
+import DeleteDialog from '@/components/AdminDashboardSContent/DeleteUserDialog'
+import UpdateDialog from '@/components/AdminDashboardSContent/EditUserDialog'
 import {
   Users,
   UserPlus,
@@ -37,7 +39,6 @@ import {
   Pie,
   Cell
 } from 'recharts';
-import Result from '@/app/InicioSeccion/usuario/diagnostico/result/page';
 
 const UserManagementDashboard = () => {
   const router = useRouter();
@@ -45,6 +46,8 @@ const UserManagementDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDeleteDiagnosticDialogOpen, setIsDeleteDiagnosticDialogOpen] = useState(null)
+  const [isUpdateUserDialogOpen, setIsUpdateUserDialogOpen] = useState(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -94,48 +97,24 @@ const UserManagementDashboard = () => {
     return <p>Error al cargar los datos</p>;
   }
   const {
-    totalDiagnosticos,
-    totalDiagnosticosUltimoMes,
-    totalEmpresasActivas,
-    porcentajeEmpresasActivasSemana,
     totalUsuarios,
     totalUsuariosUltimoMes,
     totalUsersSemana,
     porcentajeUsuariosActivosSeman,
-    registrosIn7days,
-    porcentajeUsuariosUltimoMes,
-    diagnosticosPendientes,
-    diagnosticosCompletados,
-    usuariosConEmpresa,
-    empresasConDiagnostico,
-    tiemposPendientes,
-    usuariosNuevos,
-    barChartData,
-    lineChartData,
-    notificaciones,
-    empresasFormateadas,
-    usuariosFormateados,
     usersFormated,
     newUsersData,
     userActivityBar,
     usersConDiagnoses,
     usersWithCompletedDiagnoses,
     usersNotAffiliated,
-    testResulPie
+    testResulPie,
+    UsuariosActivosSemana
 
   } = dashboardData;
 
   const users = usersFormated;
   const userActivityData = userActivityBar;
 
-  // const userActivityData = [
-  //   { name: 'Ene', activos: 300, inactivos: 100 },
-  //   { name: 'Feb', activos: 400, inactivos: 120 },
-  //   { name: 'Mar', activos: 500, inactivos: 90 },
-  //   { name: 'Abr', activos: 470, inactivos: 110 },
-  //   { name: 'May', activos: 550, inactivos: 100 },
-  //   { name: 'Jun', activos: 600, inactivos: 80 },
-  // ];
 
   const userRoleData = testResulPie;
 
@@ -157,7 +136,7 @@ const UserManagementDashboard = () => {
     user.id.toString().includes(searchTerm.toLowerCase()) ||
     user.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.nD.toString().includes(searchTerm.toLowerCase()) 
+    user.nD.toString().includes(searchTerm.toLowerCase())
   );
 
 
@@ -191,8 +170,8 @@ const UserManagementDashboard = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-3xl font-semibold text-[#2C5234]">{totalUsersSemana}</p>
-                    <p className="text-[#4E9419]">{porcentajeUsuariosActivosSeman}% del total</p>
+                    <p className="text-3xl font-semibold text-[#2C5234]">{UsuariosActivosSemana}</p>
+                    <p className="text-[#4E9419]">{Math.floor(porcentajeUsuariosActivosSeman)}% Usuarios activos en la semana</p>
                   </div>
                   <UserCog className="h-12 w-12 text-[#4E9419]" />
                 </div>
@@ -237,7 +216,7 @@ const UserManagementDashboard = () => {
             <TabsList>
               <TabsTrigger value="users">Lista de Usuarios</TabsTrigger>
               <TabsTrigger value="activity">Actividad de Usuarios</TabsTrigger>
-              <TabsTrigger value="roles">Pruebas Por Usuario</TabsTrigger>
+              <TabsTrigger value="roles">Área Por Usuario</TabsTrigger>
             </TabsList>
             <TabsContent value="users">
               <Card>
@@ -269,8 +248,10 @@ const UserManagementDashboard = () => {
                             <td className="p-2">{user.nD}</td>
                             <td className="p-2">{user.lastActive}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">Editar</Button>
-                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                              <div className="flex space-x-2">
+                                <DeleteDialog isOpen={isDeleteDiagnosticDialogOpen === user.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? user.id : null)} id={user.id} userName={user.nombre} />
+                                <UpdateDialog isOpen={isUpdateUserDialogOpen === user.id} onOpenChange={(isOpen) => setIsUpdateUserDialogOpen(isOpen ? user.id : null)} id={user.id} />
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -303,7 +284,7 @@ const UserManagementDashboard = () => {
             <TabsContent value="roles">
               <Card>
                 <CardHeader>
-                  <CardTitle>Resultados Maximos De Usuarios Por Prueba</CardTitle>
+                  <CardTitle>Resultados Maximos De Usuarios Por Área</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -378,7 +359,7 @@ const UserManagementDashboard = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center">
-                    <SquareUser  className="h-6 w-6 text-[#4E9419] mr-2" />
+                    <SquareUser className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
                       <p className="text-[#2C5234] font-semibold">Usuarios con Diagnósticos</p>
                       <p className="text-[#4E9419]">{usersConDiagnoses}</p>

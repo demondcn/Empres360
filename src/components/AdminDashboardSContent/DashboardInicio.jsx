@@ -6,13 +6,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
 import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgregarDiagnostico';
+import DeleteDialog from '@/components/AdminDashboardSContent/DeleteEmpresDialog'
+import DeleteUserDialog from '@/components/AdminDashboardSContent/DeleteUserDialog'
+import UpdateUserDialog from '@/components/AdminDashboardSContent/EditUserDialog'
 import {
   Users,
   ShoppingCart,
   FileText,
-  Settings,
-  UserPlus,
-  FileSignature,
   AlertTriangle,
   FileOutput,
   HelpCircle,
@@ -42,7 +42,10 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
   const [isNewDiagnosticDialogOpen, setIsNewDiagnosticDialogOpen] = useState(false)
-
+  const [isDeleteDiagnosticDialogOpen, setIsDeleteDiagnosticDialogOpen] = useState(false)
+  const [isDeleteEmpressDialogOpen, setIsDeleteEmpressDialogOpen] = useState(null)
+  const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(null)
+  const [isUpdateUserDialogOpen, setIsUpdateUserDialogOpen] = useState(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -121,12 +124,8 @@ const AdminDashboard = () => {
     totalEmpresasActivas,
     porcentajeEmpresasActivasSemana,
     totalUsuarios,
-    porcentajeUsuariosUltimoMes,
     diagnosticosPendientes,
     diagnosticosCompletados,
-    usuariosConEmpresa,
-    empresasConDiagnostico,
-    tiemposPendientes,
     usuariosNuevos,
     barChartData,
     lineChartData,
@@ -148,6 +147,7 @@ const AdminDashboard = () => {
   ];
 
   const COLORS = ['#4E9419', '#2C5234'];
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -206,7 +206,7 @@ const AdminDashboard = () => {
             <TabsList>
               <TabsTrigger value="charts">Gráficos</TabsTrigger>
               <TabsTrigger value="users">Usuarios</TabsTrigger>
-              <TabsTrigger value="diagnostics">Diagnósticos</TabsTrigger>
+              <TabsTrigger value="diagnostics">Empresas</TabsTrigger>
             </TabsList>
             <TabsContent value="charts">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
@@ -299,8 +299,8 @@ const AdminDashboard = () => {
                             <td className="p-2">{users.email}</td>
                             <td className="p-2">{users.nD}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">Editar</Button>
-                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                              <DeleteUserDialog isOpen={isDeleteUserDialogOpen === users.id} onOpenChange={(isOpen) => setIsDeleteUserDialogOpen(isOpen ? users.id : null)} id={users.id} userName={users.nombre} />
+                              <UpdateUserDialog isOpen={isUpdateUserDialogOpen === users.id} onOpenChange={(isOpen) => setIsUpdateUserDialogOpen(isOpen ? users.id : null)} id={users.id} />
                             </td>
                           </tr>
                         ))}
@@ -313,7 +313,7 @@ const AdminDashboard = () => {
             <TabsContent value="diagnostics">
               <Card>
                 <CardHeader>
-                  <CardTitle>Gestión de Diagnósticos</CardTitle>
+                  <CardTitle>Gestión de Empresas</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-end mb-4">
@@ -323,6 +323,7 @@ const AdminDashboard = () => {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
+                          <th className="text-left p-2">Id</th>
                           <th className="text-left p-2">Empresa</th>
                           <th className="text-left p-2">Fecha</th>
                           <th className="text-left p-2">Estado</th>
@@ -332,12 +333,13 @@ const AdminDashboard = () => {
                       <tbody>
                         {empresas.map((empresa) => (
                           <tr key={empresa.id} className="border-b">
+                            <td className="p-2">{empresa.id}</td>
                             <td className="p-2">{empresa.nombre}</td>
                             <td className="p-2">{empresa.fecha}</td>
                             <td className="p-2">{empresa.estado}</td>
                             <td className="p-2">
                               <Button variant="ghost" className="mr-2">Editar</Button>
-                              <Button variant="ghost" className="text-red-500">Eliminar</Button>
+                              <DeleteDialog isOpen={isDeleteDiagnosticDialogOpen === empresa.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? empresa.id : null)} id={empresa.id} empresName={empresa.nombre} />
                             </td>
                           </tr>
                         ))}
@@ -393,25 +395,25 @@ const AdminDashboard = () => {
           <div className="mt-6">
             <Card className="bg-white/90 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-[#2C5234]">Soporte y Ayuda</CardTitle>
+                <CardTitle className="text-[#2C5234]">Otras Acciones Rapidas</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <HelpCircle className="h-6 w-6 text-[#4E9419] mr-2" />
-                    <span className="text-[#2C5234]">Centro de Ayuda</span>
+                    <span className="text-[#2C5234]">Enviar Correos</span>
                   </div>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                    Acceder
+                    Ver Notificaciones
                   </Button>
                 </div>
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center">
                     <Link className="h-6 w-6 text-[#4E9419] mr-2" />
-                    <span className="text-[#2C5234]">Documentación</span>
+                    <span className="text-[#2C5234]">Administrar Usuarios</span>
                   </div>
-                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
-                    Ver
+                  <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/UserAd')}>
+                    Ver Usuarios
                   </Button>
                 </div>
               </CardContent>

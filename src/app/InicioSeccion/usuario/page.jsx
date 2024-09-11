@@ -1,64 +1,66 @@
-"use client";
 // pages/User.jsx
-import React, { Suspense } from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import ISUMDiagnosticInterface from '@/components/ISUMDiagnosticInterface';
 import Navbar from '@/components/Navbar';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
-
 
 const UserContent = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  //const userId = searchParams.get('userId');
 
-  const status = 'Pending';
-  const createdAt = new Date();
+  const [hasCompanies, setHasCompanies] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleNewDiagnostic = async () => {
-    try {
-      const response = await fetch('/api/diagnostics', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, status, createdAt }),
-      });
+  useEffect(() => {
+    const checkUserCompanies = async () => {
+      try {
+        const response = await fetch('/api/checkUserHasCompanies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to create diagnostic');
+        const data = await response.json();
+        setHasCompanies(data.hasCompanies);
+      } catch (error) {
+        console.error('Error checking user companies:', error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const { id } = await response.json();
-
-      // Redirect to the diagnostics page after creating the diagnostic
-      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}`);
-    } catch (error) {
-      console.error('Error creating diagnostic:', error);
+    if (userId) {
+      checkUserCompanies();
     }
+  }, [userId]);
+
+  const handleNewDiagnostic = () => {
+    router.push(`/InicioSeccion/usuario/diagnostico`);
   };
+
   const handleViewDiagnostics = () => {
-    router.push(`/InicioSeccion/usuario/diagnosticos`); 
+    router.push(`/InicioSeccion/usuario/diagnosticos`);
+  };
+
+  const handleRegisterEmpress = () => {
+    router.push(`/InicioSeccion/usuario/RegisterEmpress`);
   };
 
   return (
-  <>
-    <Navbar userId={userId}/>
     <main>
-      <ISUMDiagnosticInterface 
+      <Navbar userId={userId} />
+      <ISUMDiagnosticInterface
         onNewDiagnostic={handleNewDiagnostic}
         onViewDiagnostics={handleViewDiagnostics}
+        onRegister={handleRegisterEmpress}
+        hasCompanies={hasCompanies}
+        loading={loading}
       />
     </main>
-    </>
   );
-}
+};
 
-export default function User() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UserContent />
-    </Suspense>
-  );
-}
+export default UserContent;

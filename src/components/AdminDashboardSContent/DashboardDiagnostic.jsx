@@ -6,10 +6,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgregarDiagnostico';
+import DeleteDialog from '@/components/AdminDashboardSContent/DeleteDiagnosticDialog'
+import NewUserDialog from '@/components/AdminDashboardSContent/DialogAgregarUsers';
 import {
   ClipboardList,
   BarChart2,
-
+  RefreshCcw,
 
   Search,
   FileText,
@@ -45,7 +47,7 @@ const DiagnosticManagementDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isNewUserDialogOpen, setIsNewUserDialogOpen] = useState(false)
   const [isNewDiagnosticDialogOpen, setIsNewDiagnosticDialogOpen] = useState(false)
-
+  const [isDeleteDiagnosticDialogOpen, setIsDeleteDiagnosticDialogOpen] = useState(null)
 
 
   useEffect(() => {
@@ -99,31 +101,8 @@ const DiagnosticManagementDashboard = () => {
   const {
     totalDiagnosticos,
     totalDiagnosticosUltimoMes,
-    totalEmpresasActivas,
-    porcentajeEmpresasActivasSemana,
-    totalUsuarios,
-    totalUsuariosUltimoMes,
-    totalUsersSemana,
-    porcentajeUsuariosActivosSeman,
-    registrosIn7days,
-    porcentajeUsuariosUltimoMes,
     diagnosticosPendientes,
     diagnosticosCompletados,
-    usuariosConEmpresa,
-    empresasConDiagnostico,
-    tiemposPendientes,
-    usuariosNuevos,
-    barChartData,
-    lineChartData,
-    notificaciones,
-    empresasFormateadas,
-    usuariosFormateados,
-    usersFormated,
-    newUsersData,
-    userActivityBar,
-    usersConDiagnoses,
-    usersWithCompletedDiagnoses,
-    usersNotAffiliated,
     monthlyDiagnosticsData,
     mayorResultado,
     menorResultado,
@@ -131,7 +110,11 @@ const DiagnosticManagementDashboard = () => {
     menorResultadoDescripcion,
     ResultadoGeneralMasAlto,
     EmpresasDiagnosticRR,
-    formattedResultsTestCounts
+    resultadosPromedio,
+    promedioAreaMasBajo,
+    promedioAreaMasAlto,
+    descriptionMasBajoArea,
+    descriptionMasAltoArea
 
   } = dashboardData;
 
@@ -157,7 +140,7 @@ const DiagnosticManagementDashboard = () => {
   //   { name: 'Jun', diagnosticos: 150 },
   // ];
 
-  const sectorDistributionData = formattedResultsTestCounts;
+  const sectorDistributionData = resultadosPromedio;
 
 
 
@@ -172,6 +155,8 @@ const DiagnosticManagementDashboard = () => {
       diagnostic.Peorprueva?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
+
+
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -248,7 +233,7 @@ const DiagnosticManagementDashboard = () => {
             <TabsList>
               <TabsTrigger value="list">Lista de Diagnósticos</TabsTrigger>
               <TabsTrigger value="status">Estado de Diagnósticos</TabsTrigger>
-              <TabsTrigger value="sectors">Distribución por Prueba</TabsTrigger>
+              <TabsTrigger value="sectors">Distribución por Áreas</TabsTrigger>
             </TabsList>
             <TabsContent value="list">
               <Card>
@@ -258,6 +243,11 @@ const DiagnosticManagementDashboard = () => {
                 <CardContent>
                   <div className="flex justify-end mb-4">
                     <NewDiagnosticDialog isOpen={isNewDiagnosticDialogOpen} onOpenChange={setIsNewDiagnosticDialogOpen} onSubmit={handleNewDiagnostic} />
+                  </div>
+                  <div className="flex justify-end mb-4">
+                    <Button className="bg-[#4E9419] text-white " onClick={() => router.push('/InicioSeccion/admin/DiagnAd')}>
+                      <RefreshCcw className="mr-0 h-4 w-4" />
+                    </Button>
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
@@ -282,12 +272,10 @@ const DiagnosticManagementDashboard = () => {
                             <td className="p-2">{diagnostic.Dominprueba}</td>
                             <td className="p-2">{diagnostic.Peorprueva}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">
+                              <Button variant="ghost" className="mr-2" onClick={() => router.push(`/InicioSeccion/usuario/diagnostico/result?diagnosisId=${diagnostic.id}`)}>
                                 <FileText className="h-4 w-4 mr-1" /> Ver
                               </Button>
-                              <Button variant="ghost" className="text-red-500">
-                                <Trash2 className="h-4 w-4 mr-1" /> Eliminar
-                              </Button>
+                              <DeleteDialog isOpen={isDeleteDiagnosticDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} />
                             </td>
                           </tr>
                         ))}
@@ -329,7 +317,7 @@ const DiagnosticManagementDashboard = () => {
             <TabsContent value="sectors">
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Cantidad de Pruebas</CardTitle>
+                  <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Promedio Entre Áreas</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={400}>
@@ -343,8 +331,8 @@ const DiagnosticManagementDashboard = () => {
                       <YAxis dataKey="name" type="category" width={150} tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="value" fill="#4E9419">
-                        <LabelList dataKey="value" position="right" fill="#2C5234" />
+                      <Bar dataKey="promedio" fill="#4E9419">
+                        <LabelList dataKey="promedio" position="right" fill="#2C5234" />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
@@ -402,22 +390,22 @@ const DiagnosticManagementDashboard = () => {
                   <div className="flex items-center">
                     <Clock className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Resultado Mas Alto</p>
+                      <p className="text-[#2C5234] font-semibold">Resultado General Alto</p>
                       <p className="text-[#4E9419]">{ResultadoGeneralMasAlto}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Prueba Debil</p>
-                      <p className="text-[#4E9419]">{menorResultadoDescripcion} ({menorResultado})%</p>
+                      <p className="text-[#2C5234] font-semibold">Área Debil</p>
+                      <p className="text-[#4E9419]">{descriptionMasBajoArea} ({Math.floor(promedioAreaMasBajo)})%</p>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <PieChart className="h-6 w-6 text-[#4E9419] mr-2" />
                     <div>
-                      <p className="text-[#2C5234] font-semibold">Prueba Predominante</p>
-                      <p className="text-[#4E9419]"> {mayorResultadoDescripcion} ({mayorResultado}%)</p>
+                      <p className="text-[#2C5234] font-semibold">Área Predominante</p>
+                      <p className="text-[#4E9419]"> {descriptionMasAltoArea} ({Math.floor(promedioAreaMasAlto)}%)</p>
                     </div>
                   </div>
                 </div>

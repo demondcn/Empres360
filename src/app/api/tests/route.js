@@ -10,7 +10,7 @@ export async function POST(request) {
 
 
     
-    var describcion = number === 1 ? "Ventas y Marketing" : number === 2 ? "DESARROLLO DE LA DIRECCIÓN GENERAL" :number === 3 ? "DESARROLLO DE LA Area Finanzas" :number === 4 ? "Talento Humano" :number === 5 ? "Produccion Operaciones" :number === 6 ? "Tecnologias Informacion" :
+    var describcion = number === 1 ? "Ventas y Marketing" : number === 2 ? "Dirrección General" :number === 3 ? "Área Finanzas" :number === 4 ? "Talento Humano" :number === 5 ? "Produccion Operaciones" :number === 6 ? "Tecnologias Informacion" :
   number === 7 ? "Investigacion Desarrollo" :"Descripción desconocida";
 
     // Crear un nuevo test en la base de datos
@@ -24,7 +24,7 @@ export async function POST(request) {
     });
 
     // Responder con el ID del nuevo test
-    return new Response(JSON.stringify({ id: newTest.id }), {
+    return new Response(JSON.stringify({ idtest: newTest.id }), {
       status: 201,
       headers: {
         'Content-Type': 'application/json',

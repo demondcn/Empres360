@@ -12,8 +12,6 @@ import {
   Palette,
   Bell,
   Shield,
-  Users,
-  Mail,
   Save,
   RefreshCw,
 } from 'lucide-react';

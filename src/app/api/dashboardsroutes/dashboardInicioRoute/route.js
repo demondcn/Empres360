@@ -843,7 +843,8 @@ export async function GET(request) {
         // Calculamos el promedio para cada número de test y formateamos el resultado
         const resultadosPromedio = Object.keys(sumsAndCounts).map(number => {
             const { sum, count, description } = sumsAndCounts[number];
-            const promedio = sum / count;
+            //const promedio = sum / count;
+            const promedio = 1;
             return {
                 name: description,
                 promedio: Math.floor(promedio),
@@ -881,8 +882,6 @@ export async function GET(request) {
                 },
             },
         });
-        console.log(diagnosticosActuales)
-        console.log(diagnosticosAnteriores)
 
         // Calcular el porcentaje de aumento
         const aumento = diagnosticosActuales - diagnosticosAnteriores;

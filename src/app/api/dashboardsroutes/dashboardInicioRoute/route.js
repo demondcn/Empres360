@@ -881,9 +881,6 @@ export async function GET(request) {
                 },
             },
         });
-        console.log(diagnosticosActuales)
-        console.log(diagnosticosAnteriores)
-
         // Calcular el porcentaje de aumento
         const aumento = diagnosticosActuales - diagnosticosAnteriores;
         const porcentajeAumentoo = diagnosticosAnteriores > 0

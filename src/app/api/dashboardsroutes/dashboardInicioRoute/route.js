@@ -89,12 +89,12 @@ export async function GET(request) {
         // Cantidad total de diagnósticos en status "pending" y "completed"
         const diagnosticosPendientes = await prisma.diagnosis.count({
             where: {
-                status: 'pending',
+                status: 'Pending',
             },
         });
         const diagnosticosCompletados = await prisma.diagnosis.count({
             where: {
-                status: 'completate',
+                status: 'Completate',
             },
         });
 
@@ -256,7 +256,7 @@ export async function GET(request) {
         // Información sobre el tiempo de diagnóstico en status "pending"
         const diagnosticosPendientesConTiempo = await prisma.diagnosis.findMany({
             where: {
-                status: 'pending',
+                status: 'Pending',
             },
             select: {
                 createdAt: true,
@@ -530,7 +530,7 @@ export async function GET(request) {
 
         const diagnosticosS = await prisma.diagnosis.findMany({
             where: {
-                status: 'completate',
+                status: 'Completate',
             },
             include: {
                 tests: true
@@ -573,7 +573,7 @@ export async function GET(request) {
 
         const DiagnosticEmpresList = await prisma.diagnosis.findMany({
             where: {
-                status: 'completate', // Verifica que este estado sea correcto
+                status: 'Completate', // Verifica que este estado sea correcto
             },
             include: {
                 user: {
@@ -688,7 +688,7 @@ export async function GET(request) {
         }));
         const completedDiagnosis = await prisma.diagnosis.findMany({
             where: {
-                status: 'completate', // Filtrar diagnósticos por estado completado
+                status: 'Completate', // Filtrar diagnósticos por estado completado
             },
             select: {
                 id: true, // Seleccionar solo los IDs de los diagnósticos completados

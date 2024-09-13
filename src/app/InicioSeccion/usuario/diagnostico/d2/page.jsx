@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 const Di2Content = () => {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const testId = searchParams.get('testId');
+  const testId = searchParams.get('id');
   const number = 3;
   const diagnosisId = searchParams.get('diagnosisId');
   const userId = session?.user?.id;

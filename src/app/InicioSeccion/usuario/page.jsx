@@ -11,6 +11,7 @@ const UserContent = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
+  const hastrue = true;
   const [hasCompanies, setHasCompanies] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +57,7 @@ const UserContent = () => {
         onNewDiagnostic={handleNewDiagnostic}
         onViewDiagnostics={handleViewDiagnostics}
         onRegister={handleRegisterEmpress}
-        hasCompanies={hasCompanies}
+        hasCompanies={hastrue}
         loading={loading}
       />
     </main>

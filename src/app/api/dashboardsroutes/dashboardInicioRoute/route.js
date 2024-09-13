@@ -817,7 +817,7 @@ export async function GET(request) {
 
         const completadosDiagnosticos = await prisma.diagnosis.findMany({
             where: {
-                status: 'completate',
+                status: 'Completate',
             },
             include: {
                 tests: true,

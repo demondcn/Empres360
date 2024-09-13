@@ -41,9 +41,9 @@ const Di1Content = () => {
         throw new Error('Failed to create test');
       }
 
-      const { id } = await response.json();
+      const { idtest } = await response.json();
 
-      router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&testId=${id}`);
+      router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&testId=${idtest}`);
     } catch (error) {
       console.error('Error creating test:', error);
     }

@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 const Di2Content = () => {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const testId = searchParams.get('id');
+  const testId = searchParams.get('testId');
   const number = 3;
   const diagnosisId = searchParams.get('diagnosisId');
   const userId = session?.user?.id;
@@ -42,10 +42,10 @@ const Di2Content = () => {
     }
 
     // Obtener el nuevo test del cuerpo de la respuesta
-    const { id } = await response.json();
+    const { idtest } = await response.json();
 
     // Redirigir a la página específica con el ID del nuevo test
-    router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&testId=${id}`);
+    router.push(`/InicioSeccion/usuario/diagnostico/d${number}?diagnosisId=${diagnosisId}&testId=${idtest}`);
 } catch (error) {
     console.error('Error creating test:', error);
   }

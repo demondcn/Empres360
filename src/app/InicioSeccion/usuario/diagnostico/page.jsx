@@ -56,6 +56,20 @@ const DiagnosticContent = () => {
         throw new Error('Failed to update user');
       }
 
+      // Paso 3: Actualizar fecha updatedAt del usuario
+      const response4 = await fetch('/api/updateEmpresAtivate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (!response4.ok) {
+        throw new Error('Failed to update empres');
+      }
+
+
       // Redirigir a la página específica con el ID del nuevo test
       router.push(`/InicioSeccion/usuario/diagnostico/d${testId}?diagnosisId=${id}&testId=${idtest}`);
     } catch (error) {

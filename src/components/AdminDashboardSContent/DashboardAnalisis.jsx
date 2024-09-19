@@ -22,7 +22,9 @@ import {
   Filter,
   BarChart2,
   FileOutput,
-
+  Briefcase,
+  SquarePlus,
+  SquareMinus
 } from 'lucide-react';
 import {
   BarChart,
@@ -50,7 +52,7 @@ import DeleteUserDialog from '@/components/AdminDashboardSContent/DeleteUserDial
 import DeleteEmpresDialog from '@/components/AdminDashboardSContent/DeleteEmpresDialog'
 import DeleteAreasDialog from '@/components/AdminDashboardSContent/DeleteAreaDialog'
 import DeleteDiagnosticDialog from '@/components/AdminDashboardSContent/DeleteDiagnosticDialog'
-import UpdateEmpresDialog from '@/components/AdminDashboardSContent/EditEmpresDialog'
+import UpdateDialog from '@/components/AdminDashboardSContent/EditEmpresDialog'
 import UpdateAreasDialog from '@/components/AdminDashboardSContent/EditAreasDialog'
 import UpdateUserDialog from '@/components/AdminDashboardSContent/EditUserDialog'
 
@@ -75,7 +77,8 @@ const AnalysisDashboard = () => {
   const [isDeleteAreasDialopgOen, setIsDeleteAreasDialogOpen] = useState(null)
   const [isUpdateAreasDialogOpen, setIsUpdateAreasDialogOpen] = useState(null)
   const [isDeleteEmpresDialogOpen, setIsDeleteEmpresDialogOpen] = useState(null)
-  const [isUpdateEmpresDialogOpen, setIsUpdateEmpresDialogOpen] = useState(null)
+  const [isUpdateCompanyDialogOpen, setIsUpdateCompanyDialogOpen] = useState(null)
+  const [filterRange, setFilterRange] = useState([null, null]);
 
 
 
@@ -155,7 +158,11 @@ const AnalysisDashboard = () => {
     descriptionMasBajoArea,
     porcentajeAumento,
     resultadosPromedio,
-    usersFormatedFix
+    usersFormatedFix,
+    empresasPorSector,
+    numeroDeSectores,
+    EmpresActivity
+
   } = dashboardData;
 
   const porcentajeD = Math.floor((diagnosticosCompletados / totalDiagnosticos) * 100)
@@ -172,8 +179,19 @@ const AnalysisDashboard = () => {
   const COLORSPruebasUsuarios = ['#4E9419', '#2C5234', '#FE1100', '#FF6B6B', '#3498DB', '#9B59B6', '#E67E22'];
 
 
+  function generateColor(index) {
+    const hue = index * 137.508; // 137.508° es el ángulo dorado para una buena distribución de colores
+    return `hsl(${hue % 360}, 70%, 50%)`; // Mantén la saturación y la luminosidad fijas
+  }
 
-
+  const getInfiniteColors = (count) => {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      colors.push(generateColor(i));
+    }
+    return colors;
+  }
+  const COLORS = getInfiniteColors(numeroDeSectores);
 
 
 
@@ -181,7 +199,10 @@ const AnalysisDashboard = () => {
 
   const usuariosFiltrados = users.filter(user => {
     const searchTermLowerCase = searchTermUsers.toLowerCase();
-
+    const isInRange = (value, min, max) => {
+      const numericValue = parseFloat(value);
+      return numericValue >= min && numericValue <= max;
+    };
     if (filterUser === "all") {
       // Si el filtro es "all", buscamos en todas las llaves
       return Object.keys(user).some(key => {
@@ -191,6 +212,10 @@ const AnalysisDashboard = () => {
     } else {
       // Si hay un filtro específico, buscamos solo en la llave seleccionada
       const value = user[filterUser]?.toString().toLowerCase();
+      if (filterRange[0] !== null && filterRange[1] !== null) {
+        const [min, max] = filterRange.map(val => parseFloat(val));
+        return isInRange(value, min, max);
+      }
       return value?.includes(searchTermLowerCase);
     }
   });
@@ -199,7 +224,10 @@ const AnalysisDashboard = () => {
   const filteredTests = TestListR.filter(user => {
     const searchTermLowerCase = searchTermTests.toLowerCase();
     // Filtrado por estado
-
+    const isInRange = (value, min, max) => {
+      const numericValue = parseFloat(value);
+      return numericValue >= min && numericValue <= max;
+    };
     if (filterPrue === "all") {
       // Si el filtro es "all", buscamos en todas las llaves
       return Object.keys(user).some(key => {
@@ -209,13 +237,20 @@ const AnalysisDashboard = () => {
     } else {
       // Si hay un filtro específico, buscamos solo en la llave seleccionada
       const value = user[filterPrue]?.toString().toLowerCase();
+      if (filterRange[0] !== null && filterRange[1] !== null) {
+        const [min, max] = filterRange.map(val => parseFloat(val));
+        return isInRange(value, min, max);
+      }
       return value?.includes(searchTermLowerCase);
     }
   });
 
   const filteredDiagnostics = UsuariosDiagnosticRR.filter(user => {
     const searchTermLowerCase = searchTermDiagnostics.toLowerCase();
-
+    const isInRange = (value, min, max) => {
+      const numericValue = parseFloat(value);
+      return numericValue >= min && numericValue <= max;
+    };
     if (filterDiagnostic === "all") {
       // Si el filtro es "all", buscamos en todas las llaves
       return Object.keys(user).some(key => {
@@ -225,13 +260,20 @@ const AnalysisDashboard = () => {
     } else {
       // Si hay un filtro específico, buscamos solo en la llave seleccionada
       const value = user[filterDiagnostic]?.toString().toLowerCase();
+      if (filterRange[0] !== null && filterRange[1] !== null) {
+        const [min, max] = filterRange.map(val => parseFloat(val));
+        return isInRange(value, min, max);
+      }
       return value?.includes(searchTermLowerCase);
     }
   });
 
   const filteredEmpress = EmpresasDiagnosticRRR.filter(user => {
     const searchTermLowerCase = searchTermEmpress.toLowerCase();
-
+    const isInRange = (value, min, max) => {
+      const numericValue = parseFloat(value);
+      return numericValue >= min && numericValue <= max;
+    };
     if (filterEmpres === "all") {
       // Si el filtro es "all", buscamos en todas las llaves
       return Object.keys(user).some(key => {
@@ -241,6 +283,10 @@ const AnalysisDashboard = () => {
     } else {
       // Si hay un filtro específico, buscamos solo en la llave seleccionada
       const value = user[filterEmpres]?.toString().toLowerCase();
+      if (filterRange[0] !== null && filterRange[1] !== null) {
+        const [min, max] = filterRange.map(val => parseFloat(val));
+        return isInRange(value, min, max);
+      }
       return value?.includes(searchTermLowerCase);
     }
   });
@@ -432,6 +478,49 @@ const AnalysisDashboard = () => {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Distribución de Empresas por Sector</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={empresasPorSector}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={100}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {empresasPorSector.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+                <Card className="bg-white/90 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="text-[#2C5234]">Nuevas Empresas por Mes</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={EmpresActivity}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="nuevasEmpresas" stroke="#4E9419" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
                 <Card className="w-full">
                   <CardHeader>
                     <CardTitle className="text-lg font-semibold text-[#2C5234]">Distribución por Cantidad de Pruebas</CardTitle>
@@ -534,6 +623,24 @@ const AnalysisDashboard = () => {
                         }
                       </select>
                     </div>
+                    <SquareMinus className="text-[#4E9419] mr-2" />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        placeholder="Mínimo"
+                        value={filterRange[0] || ''}
+                        onChange={e => setFilterRange([e.target.value || null, filterRange[1]])}
+                        className="border p-2 rounded w-20"
+                      />
+                    <SquarePlus className="text-[#4E9419] mr-2" />
+                      <input
+                        type="number"
+                        placeholder="Máximo"
+                        value={filterRange[1] || ''}
+                        onChange={e => setFilterRange([filterRange[0], e.target.value || null])}
+                        className="border p-2 rounded w-20"
+                      />
+                    </div>
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
@@ -600,6 +707,24 @@ const AnalysisDashboard = () => {
                           ))
                         }
                       </select>
+                    </div>
+                    <SquareMinus className="text-[#4E9419] mr-2" />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        placeholder="Mínimo"
+                        value={filterRange[0] || ''}
+                        onChange={e => setFilterRange([e.target.value || null, filterRange[1]])}
+                        className="border p-2 rounded w-20"
+                      />
+                    <SquarePlus className="text-[#4E9419] mr-2" />
+                      <input
+                        type="number"
+                        placeholder="Máximo"
+                        value={filterRange[1] || ''}
+                        onChange={e => setFilterRange([filterRange[0], e.target.value || null])}
+                        className="border p-2 rounded w-20"
+                      />
                     </div>
                   </div>
                   <ScrollArea className="h-[400px]">
@@ -670,6 +795,24 @@ const AnalysisDashboard = () => {
                         }
                       </select>
                     </div>
+                    <SquareMinus className="text-[#4E9419] mr-2" />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        placeholder="Mínimo"
+                        value={filterRange[0] || ''}
+                        onChange={e => setFilterRange([e.target.value || null, filterRange[1]])}
+                        className="border p-2 rounded w-20"
+                      />
+                    <SquarePlus className="text-[#4E9419] mr-2" />
+                      <input
+                        type="number"
+                        placeholder="Máximo"
+                        value={filterRange[1] || ''}
+                        onChange={e => setFilterRange([filterRange[0], e.target.value || null])}
+                        className="border p-2 rounded w-20"
+                      />
+                    </div>
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
@@ -694,9 +837,7 @@ const AnalysisDashboard = () => {
                             <td className="p-2">{diagnostic.Dominprueba}</td>
                             <td className="p-2">{diagnostic.Peorprueva}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">
-                                <FileText className="h-4 w-4 mr-1" /> Ver
-                              </Button>
+                              <UpdateDialog isOpen={isUpdateCompanyDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsUpdateCompanyDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} />
                               <DeleteEmpresDialog isOpen={isDeleteEmpresDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsDeleteEmpresDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} empresName={diagnostic.Empresa} />
                             </td>
                           </tr>
@@ -740,6 +881,24 @@ const AnalysisDashboard = () => {
                         }
                       </select>
                     </div>
+                    <SquareMinus className="text-[#4E9419] mr-2" />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        placeholder="Mínimo"
+                        value={filterRange[0] || ''}
+                        onChange={e => setFilterRange([e.target.value || null, filterRange[1]])}
+                        className="border p-2 rounded w-20"
+                      />
+                    <SquarePlus className="text-[#4E9419] mr-2" />
+                      <input
+                        type="number"
+                        placeholder="Máximo"
+                        value={filterRange[1] || ''}
+                        onChange={e => setFilterRange([filterRange[0], e.target.value || null])}
+                        className="border p-2 rounded w-20"
+                      />
+                    </div>
                   </div>
                   <ScrollArea className="h-[400px]">
                     <table className="w-full">
@@ -762,8 +921,8 @@ const AnalysisDashboard = () => {
                             <td className="p-2">{test.resultado}</td>
                             <td className="p-2">{test.nombre}</td>
                             <td className="p-2">
-                            <DeleteAreasDialog isOpen={isDeleteAreasDialopgOen === test.id} onOpenChange={(isOpen) => setIsDeleteAreasDialogOpen(isOpen ? test.id : null)} id={test.id} testName={test.name} />
-                            <UpdateAreasDialog isOpen={isUpdateAreasDialogOpen === test.id} onOpenChange={(isOpen) => setIsUpdateAreasDialogOpen(isOpen ? test.id : null)} id={test.id} />
+                              <DeleteAreasDialog isOpen={isDeleteAreasDialopgOen === test.id} onOpenChange={(isOpen) => setIsDeleteAreasDialogOpen(isOpen ? test.id : null)} id={test.id} testName={test.name} />
+                              <UpdateAreasDialog isOpen={isUpdateAreasDialogOpen === test.id} onOpenChange={(isOpen) => setIsUpdateAreasDialogOpen(isOpen ? test.id : null)} id={test.id} />
                             </td>
                           </tr>
                         ))}
@@ -814,7 +973,7 @@ const AnalysisDashboard = () => {
                     <FileOutput className="mr-2 h-4 w-4" /> Generar Informe
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                    <BarChart2 className="mr-2 h-4 w-4" /> Ver Notificaciones
+                    <Briefcase className="mr-2 h-4 w-4" /> Andministrar Empresas
                   </Button>
                 </div>
               </CardContent>

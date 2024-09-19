@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import Email from 'next-auth/providers/email';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,13 @@ export async function GET(request) {
         // Total de diagnósticos creados el último mes
         const fechaUltimoMes = new Date();
         fechaUltimoMes.setMonth(fechaUltimoMes.getMonth() - 1);
+        const totalEmpresasUltimoMes = await prisma.empresa.count({
+            where: {
+                createdAt: {
+                    gte: fechaUltimoMes,
+                },
+            },
+        });
         const totalDiagnosticosUltimoMes = await prisma.diagnosis.count({
             where: {
                 createdAt: {
@@ -264,20 +272,6 @@ export async function GET(request) {
         });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         const currentDate = new Date();
         const tiemposPendientes = diagnosticosPendientesConTiempo.map(diagnostico => {
             const tiempo = Math.floor((currentDate - new Date(diagnostico.createdAt)) / (1000 * 60 * 60 * 24)); // Diferencia en días
@@ -291,12 +285,49 @@ export async function GET(request) {
             take: totalEmpresas, // Limitar el número de empresas a 10
         });
 
+        const convertBooleanToYesNo = (value) => {
+            return value ? "Sí" : "No";
+        };
         // Formatear los datos de las empresas
         const empresasFormateadas = empresas.map(empresa => ({
             id: empresa.id,
             nombre: empresa.nombre,
             fecha: empresa.createdAt.toLocaleDateString(), // Formatear la fecha
             estado: empresa.estado,
+            sector: empresa.sector,
+            tipeEmp: empresa.tipoEmpresa,
+            Autorized: convertBooleanToYesNo(empresa.emailAuthorization),
+        }));
+        const empresasFormated = empresas.map(empresa => ({
+            id: empresa.id,
+            nit: empresa.nit,
+            nombre: empresa.nombre,
+            tipoEmpresa: empresa.tipoEmpresa,
+            sector: empresa.sector,
+            AñoFundacion: empresa.anoFundacion
+        }));
+        const empresasFormated2 = empresas.map(empresa => ({
+            id: empresa.id,
+            correocontac: empresa.correoElectronico,
+            nombrecontac: empresa.nombreContacto,
+            Autoriza: convertBooleanToYesNo(empresa.emailAuthorization),
+            Ubicacion: empresa.ubicacion,
+            userId: empresa.userId
+        }));
+        const empresasFormated3 = empresas.map(empresa => ({
+            id: empresa.id,
+            nombre: empresa.nombre,
+            ingresoA: empresa.ingresosAnuales,
+            ActivosActuales: empresa.activosTotales,
+            patrimonio: empresa.patrimonio,
+        }));
+        const empresasFormated4 = empresas.map(empresa => ({
+            id: empresa.id,
+            nombre: empresa.nombre,
+            numeroEmple: empresa.numeroEmpleados,
+            CanalesDist: empresa.canalesDistribucion,
+            PrincipalesCli: empresa.principalesClientes,
+            Tecnologi: empresa.tecnologiaUtilizada
         }));
 
         const users = await prisma.user.findMany({
@@ -352,6 +383,44 @@ export async function GET(request) {
         }))
 
 
+        const EmpresasCreadoPorMes = await prisma.empresa.groupBy({
+            by: ['createdAt'],
+            _count: {
+                id: true, // Contamos el número de usuarios
+            },
+            where: {
+                createdAt: {
+                    gte: startDate, // Desde la fecha de inicio
+                    lte: endDate,   // Hasta la fecha actual
+                },
+            },
+        });
+
+        // Crear un mapa para acumular el conteo de usuarios creados por mes y año
+        const countsMapEmpresS = EmpresasCreadoPorMes.reduce((acc, item) => {
+            const monthYear = item.createdAt.toLocaleString('default', { month: 'short', year: 'numeric' }); // Formateamos como "Mes Año"
+            if (!acc[monthYear]) {
+                acc[monthYear] = 0;
+            }
+            acc[monthYear] += item._count.id; // Acumula el conteo de usuarios
+            return acc;
+        }, {});
+
+        // Ordenar las claves de los meses en orden ascendente
+        const sortedKeysEmpresS = Object.keys(countsMapEmpresS).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return (aYear - bYear) || (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(aMonth) - ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(bMonth));
+        });
+
+        // Formatear los datos para el gráfico en el formato requerido
+        const formattedLineChartEmpresS = sortedKeysEmpresS.map((key) => ({
+            name: key,
+            nuevasEmpresas: countsMapEmpresS[key],
+        }));
+
+        // Invertir los datos si es necesario para mostrar desde la fecha más reciente
+        const EmpresActivity = formattedLineChartEmpresS.slice().reverse();
         const usuariosCreadoPorMes = await prisma.user.groupBy({
             by: ['createdAt'],
             _count: {
@@ -390,6 +459,12 @@ export async function GET(request) {
 
         // Invertir los datos si es necesario para mostrar desde la fecha más reciente
         const userActivity = formattedLineChartData2.slice().reverse();
+
+
+
+
+
+
 
 
 
@@ -849,8 +924,6 @@ export async function GET(request) {
                 promedio: Math.floor(promedio),
             };
         });
-
-        console.log(resultadosPromedio)
         // Encontramos el promedio más bajo y el más alto
         const promedioMasBajoo = resultadosPromedio.reduce((min, item) => item.promedio < min.promedio ? item : min, resultadosPromedio[0]);
         const promedioMasAltoo = resultadosPromedio.reduce((max, item) => item.promedio > max.promedio ? item : max, resultadosPromedio[0]);
@@ -884,19 +957,71 @@ export async function GET(request) {
             },
         });
 
+        const tipoEmpresaMayorSeleccion = await prisma.empresa.groupBy({
+            by: ['tipoEmpresa'],
+            _count: {
+                tipoEmpresa: true,
+            },
+            orderBy: {
+                _count: {
+                    tipoEmpresa: 'desc',
+                },
+            },
+            take: 1, // Para obtener solo el tipo con más empresas
+        });
+
+        const empresasConEmailAutorizado = await prisma.empresa.count({
+            where: {
+                emailAuthorization: true,
+            },
+        });
+
+        const tipoConMayorSeleccion = tipoEmpresaMayorSeleccion[0].tipoEmpresa;
+        const sectorMayorSeleccion = await prisma.empresa.groupBy({
+            by: ['sector'],
+            _count: {
+                sector: true,
+            },
+            orderBy: {
+                _count: {
+                    sector: 'desc',
+                },
+            },
+            take: 1, // Para obtener solo el sector con más empresas
+        });
+
+        const empresasPorSectorConsult = await prisma.empresa.groupBy({
+            by: ['sector'],  // Agrupamos por el campo sector
+            _count: {
+              sector: true,  // Contamos cuántas empresas hay en cada sector
+            },
+          });
+        const numeroDeSectores = empresasPorSectorConsult.length;
+          
+          // Transformamos el resultado para que coincida con el formato deseado
+        const empresasPorSector = empresasPorSectorConsult.map((item) => ({
+            name: item.sector,
+            value: item._count.sector,
+          }));
+
+        const sectorConMayorSeleccion = sectorMayorSeleccion[0].sector;
+
         // Calcular el porcentaje de aumento
         const aumento = diagnosticosActuales - diagnosticosAnteriores;
         const porcentajeAumentoo = diagnosticosAnteriores > 0
             ? (aumento / diagnosticosAnteriores) * 100
             : 0; // Evita la división por cero
 
-            const porcentajeAumento = porcentajeAumentoo > 100
+        const porcentajeAumento = porcentajeAumentoo > 100
             ? porcentajeAumentoo / 100
             : porcentajeAumentoo;
 
 
+
         return new Response(
             JSON.stringify({
+                totalEmpresasSemana,
+                totalEmpresasUltimoMes,
                 totalDiagnosticos,
                 totalDiagnosticosUltimoMes,
                 totalEmpresasActivas,
@@ -948,7 +1073,17 @@ export async function GET(request) {
                 descriptionMasAltoArea,
                 porcentajeAumento,
                 resultadosPromedio,
-                usersFormatedFix
+                usersFormatedFix,
+                empresasFormated,
+                empresasFormated2,
+                empresasFormated3,
+                empresasFormated4,
+                tipoConMayorSeleccion,
+                sectorConMayorSeleccion,
+                empresasConEmailAutorizado,
+                empresasPorSector,
+                numeroDeSectores,
+                EmpresActivity
 
             }),
             { status: 200 }

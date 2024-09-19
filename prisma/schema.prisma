@@ -47,17 +47,31 @@ model Test {
 }
 
 model Empresa {
-  id         Int      @id @default(autoincrement())
-  nombre     String
-  estado     String   
-  sector     String
-  userId     Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  nombre              String
+  estado              String   
+  correoElectronico   String
+  telefonos           String
+  nombreContacto      String
+  nit                 String
+  tipoEmpresa         String
+  sector              String
+  anoFundacion        Int
+  ubicacion           String
+  ingresosAnuales     String
+  activosTotales      String
+  patrimonio          String
+  numeroEmpleados     String
+  canalesDistribucion String
+  principalesClientes String
+  tecnologiaUtilizada String
+  emailAuthorization  Boolean
+  userId              Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id])
 
-  user       User     @relation(fields: [userId], references: [id])
-
-  @@map("empresas") 
+  @@map("empresas") // Opcional: especifica un nombre personalizado de la tabla en la base de datos
 }
 
 model PasswordReset {

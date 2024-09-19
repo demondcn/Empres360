@@ -12,7 +12,6 @@ import {
   ClipboardList,
   BarChart2,
   RefreshCcw,
-
   Search,
   FileText,
   CheckCircle,
@@ -21,6 +20,7 @@ import {
   Plus,
   Download,
   Trash2,
+  Briefcase
 } from 'lucide-react';
 import {
   PieChart,
@@ -268,7 +268,7 @@ const DiagnosticManagementDashboard = () => {
                             <td className="p-2">{diagnostic.Dominprueba}</td>
                             <td className="p-2">{diagnostic.Peorprueva}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2" onClick={() => router.push(`/InicioSeccion/usuario/diagnostico/result?diagnosisId=${diagnostic.id}`)}>
+                              <Button variant="ghost" className="mr-2" onClick={() => router.push(`/InicioSeccion/admin/DiagnAd/result?diagnosisId=${diagnostic.id}`)}>
                                 <FileText className="h-4 w-4 mr-1" /> Ver
                               </Button>
                               <DeleteDialog isOpen={isDeleteDiagnosticDialogOpen === diagnostic.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? diagnostic.id : null)} id={diagnostic.id} />
@@ -366,7 +366,7 @@ const DiagnosticManagementDashboard = () => {
                     <Download className="mr-2 h-4 w-4" /> Exportar Informes
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                    <AlertTriangle className="mr-2 h-4 w-4" /> Ver Notificaciones
+                    <Briefcase className="mr-2 h-4 w-4" /> Andministrar Empresas
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/AnalisisAd')}>
                     <BarChart2 className="mr-2 h-4 w-4" /> Ver Análisis

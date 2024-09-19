@@ -45,15 +45,15 @@ model Test {
   diagnosis     Diagnosis @relation(fields: [diagnosisId], references: [id])
 }
 model Empresa {
-  id      Int      @id @default(autoincrement())
-  nombre  String
-  estado  String   
+  id                  Int      @id @default(autoincrement())
+  nombre              String
+  estado              String   
   correoElectronico   String
-  telefonos           Int
+  telefonos           String
   nombreContacto      String
-  nit                 Int
+  nit                 String
   tipoEmpresa         String
-  sector  String
+  sector              String
   anoFundacion        Int
   ubicacion           String
   ingresosAnuales     String
@@ -63,15 +63,15 @@ model Empresa {
   canalesDistribucion String
   principalesClientes String
   tecnologiaUtilizada String
-  inversionID         String
-  adopcionTecnologia  String
-  userId  Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user    User     @relation(fields: [userId], references: [id])
+  emailAuthorization  Boolean
+  userId              Int
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id])
 
   @@map("empresas") // Opcional: especifica un nombre personalizado de la tabla en la base de datos
 }
+
 
 model PasswordReset {
   id        Int      @id @default(autoincrement())

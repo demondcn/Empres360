@@ -9,6 +9,7 @@ import NewDiagnosticDialog from '@/components/AdminDashboardSContent/DialogAgreg
 import DeleteDialog from '@/components/AdminDashboardSContent/DeleteEmpresDialog'
 import DeleteUserDialog from '@/components/AdminDashboardSContent/DeleteUserDialog'
 import UpdateUserDialog from '@/components/AdminDashboardSContent/EditUserDialog'
+import UpdateDialog from '@/components/AdminDashboardSContent/EditEmpresDialog'
 import {
   Users,
   ShoppingCart,
@@ -46,7 +47,8 @@ const AdminDashboard = () => {
   const [isDeleteEmpressDialogOpen, setIsDeleteEmpressDialogOpen] = useState(null)
   const [isDeleteUserDialogOpen, setIsDeleteUserDialogOpen] = useState(null)
   const [isUpdateUserDialogOpen, setIsUpdateUserDialogOpen] = useState(null)
-
+  const [isDeleteCompanyDialogOpen, setIsDeleteCompanyDialogOpen] = useState(null)
+  const [isUpdateCompanyDialogOpen, setIsUpdateCompanyDialogOpen] = useState(null)
   useEffect(() => {
     async function fetchData() {
       try {
@@ -327,6 +329,9 @@ const AdminDashboard = () => {
                           <th className="text-left p-2">Empresa</th>
                           <th className="text-left p-2">Fecha</th>
                           <th className="text-left p-2">Estado</th>
+                          <th className="text-left p-2">Sector</th>
+                          <th className="text-left p-2">TipoEmpresa</th>
+                          <th className="text-left p-2">AutorizaEnvioCorreos</th>
                           <th className="text-left p-2">Acciones</th>
                         </tr>
                       </thead>
@@ -337,8 +342,11 @@ const AdminDashboard = () => {
                             <td className="p-2">{empresa.nombre}</td>
                             <td className="p-2">{empresa.fecha}</td>
                             <td className="p-2">{empresa.estado}</td>
+                            <td className="p-2">{empresa.sector}</td>
+                            <td className="p-2">{empresa.tipeEmp}</td>
+                            <td className="p-2">{empresa.Autorized}</td>
                             <td className="p-2">
-                              <Button variant="ghost" className="mr-2">Editar</Button>
+                            <UpdateDialog isOpen={isUpdateCompanyDialogOpen === empresa.id} onOpenChange={(isOpen) => setIsUpdateCompanyDialogOpen(isOpen ? empresa.id : null)} id={empresa.id} />
                               <DeleteDialog isOpen={isDeleteDiagnosticDialogOpen === empresa.id} onOpenChange={(isOpen) => setIsDeleteDiagnosticDialogOpen(isOpen ? empresa.id : null)} id={empresa.id} empresName={empresa.nombre} />
                             </td>
                           </tr>
@@ -401,10 +409,10 @@ const AdminDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <HelpCircle className="h-6 w-6 text-[#4E9419] mr-2" />
-                    <span className="text-[#2C5234]">Enviar Correos</span>
+                    <span className="text-[#2C5234]">Administrar Empresas</span>
                   </div>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                    Ver Notificaciones
+                    Ver Empresas
                   </Button>
                 </div>
                 <div className="flex items-center justify-between mt-4">

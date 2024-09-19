@@ -24,7 +24,7 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
       document.head.removeChild(styleElement);
     };
   }, []);
-  console.log(hasCompanies)
+
 
   return (
     <div 

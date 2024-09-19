@@ -14,10 +14,9 @@ import {
   UserPlus,
   UserMinus,
   UserCog,
-  Mail,
   Search,
   BarChart2,
-
+  Briefcase,
   SquareUser,
   FileCheck,
   UserRoundX
@@ -341,7 +340,7 @@ const UserManagementDashboard = () => {
                     <UserMinus className="mr-2 h-4 w-4" /> Desactivar Usuario
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/SoportAd')}>
-                    <Mail className="mr-2 h-4 w-4" /> Enviar Notificación
+                    <Briefcase className="mr-2 h-4 w-4" /> Andministrar Empresas
                   </Button>
                   <Button className="bg-[#4E9419] text-white" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
                     <BarChart2 className="mr-2 h-4 w-4" /> Generar Reporte

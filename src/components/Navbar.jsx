@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Home, BarChart2, ClipboardList, LogOut, Menu } from "lucide-react";
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';  // Importa useRoute
-
-const Navbar = ({userId}) => {
+import { useSession } from "next-auth/react";
+const Navbar = ({ userId }) => {
   const status = 'Pending';
   const createdAt = new Date();
-
+  const { data: session } = useSession();
+  const [hasCompanies, setHasCompanies] = useState(false);
   const router = useRouter();
   const navStyle = {
     background: 'linear-gradient(-45deg, #4E9419, #2C5234)',
@@ -22,27 +23,33 @@ const Navbar = ({userId}) => {
     textDecoration: 'none',
     transition: 'color 0.3s ease',
   };
-  const handleNewDiagnostic = async () => {
-    try {
-      const response = await fetch('/api/diagnostics', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, status, createdAt }),
-      });
+  useEffect(() => {
+    const checkUserCompanies = async () => {
+      try {
+        const response = await fetch('/api/checkUserHasCompanies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to create diagnostic');
+        const data = await response.json();
+        setHasCompanies(data.hasCompanies);
+      } catch (error) {
+        console.error('Error checking user companies:', error);
       }
+    };
 
-      const { id } = await response.json();
-
-      // Redirect to the diagnostics page after creating the diagnostic
-      router.push(`/InicioSeccion/usuario/diagnostico?id=${id}`);
-    } catch (error) {
-      console.error('Error creating diagnostic:', error);
+    if (userId) {
+      checkUserCompanies();
     }
+  }, [userId]);
+  const disabledButtonStyle = {
+    ...linkStyle,
+    cursor: 'not-allowed',  // Añade estilo de cursor
+    opacity: 0.5,           // Baja la opacidad para un efecto visual de "deshabilitado"
+  };
+  const handleNewDiagnostic = async () => {
+    router.push(`/InicioSeccion/usuario/diagnostico`);
   };
   const handleViewDiagnostics = () => {
     router.push('/InicioSeccion/usuario/diagnosticos');
@@ -75,11 +82,19 @@ const Navbar = ({userId}) => {
           Inicio
         </a>
         <div style={{ display: 'flex' }}>
-          <button onClick={handleNewDiagnostic} style={linkStyle}>
+          <button
+            onClick={hasCompanies ? handleNewDiagnostic : null}  // Solo permite click si hasCompanies es true
+            style={hasCompanies ? linkStyle : disabledButtonStyle}  // Cambia el estilo según el estado
+            disabled={!hasCompanies}  // Deshabilita el botón si hasCompanies es false
+          >
             <BarChart2 style={{ marginRight: '0.5rem' }} />
             Nuevo Diagnóstico
           </button>
-          <button onClick={handleViewDiagnostics} style={linkStyle}>
+          <button 
+            onClick={hasCompanies ? handleViewDiagnostics : null}  // Solo permite click si hasCompanies es true
+            style={hasCompanies ? linkStyle : disabledButtonStyle}  // Cambia el estilo según el estado
+            disabled={!hasCompanies}  // Deshabilita el botón si hasCompanies es false
+          >
             <ClipboardList style={{ marginRight: '0.5rem' }} />
             Ver Diagnósticos
           </button>
@@ -88,7 +103,7 @@ const Navbar = ({userId}) => {
             Cerrar Sesión
           </button>
         </div>
-        <button 
+        <button
           style={{
             display: 'none',
             background: 'none',

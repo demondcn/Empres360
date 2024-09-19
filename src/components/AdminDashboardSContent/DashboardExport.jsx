@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import {
   FileSpreadsheet,
   FileText,
-  Download,
-  Calendar,
   BarChart2,
   PieChart,
   Users,
   Building,
   Filter,
+  SquareMinus,
+  SquarePlus
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { PDFDocument, rgb } from 'pdf-lib';
@@ -22,11 +22,12 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 const ReportsDashboard = () => {
   const [selectedReport, setSelectedReport] = useState('');
-  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [selectedFormat, setSelectedFormat] = useState('excel');
-  const [selectedFields, setSelectedFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterRange, setFilterRange] = useState([null, null]);
 
   useEffect(() => {
     async function fetchData() {
@@ -72,32 +73,53 @@ const ReportsDashboard = () => {
     usersExport,
     DiagnosticExport,
     TextExport,
-    EmpresExport
+    EmpresExport,
+    empresasFormateadas,
+    empresasFormated,
+    empresasFormated2,
+    empresasFormated3,
+    empresasFormated4,
+    usersFormatedFix,
+    EmpresasDiagnosticRR
 
   } = dashboardData;
 
   const reportTypes = [
     { id: 'diagnostics', name: 'Diagnósticos', icon: <BarChart2 className="h-5 w-5" /> },
+    { id: 'diagnostics2', name: 'Diagnósticos-Completados', icon: <BarChart2 className="h-5 w-5" /> },
     { id: 'users', name: 'Usuarios', icon: <Users className="h-5 w-5" /> },
+    { id: 'users2', name: 'UsuariosInfo', icon: <Users className="h-5 w-5" /> },
     { id: 'companies', name: 'Empresas', icon: <Building className="h-5 w-5" /> },
-    { id: 'text', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> }, // Cambiado a 'pruebas'
+    { id: 'text', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> },
+    { id: 'companies1', name: 'Empresas1', icon: <Building className="h-5 w-5" /> },
+    { id: 'companies2', name: 'Empresas2', icon: <Building className="h-5 w-5" /> },
+    { id: 'companies3', name: 'Empresas3', icon: <Building className="h-5 w-5" /> },
+    { id: 'companies4', name: 'Empresas4', icon: <Building className="h-5 w-5" /> },
   ];
-
-
-
-
 
 
   const getTableHeaders = () => {
     switch (selectedReport) {
       case 'users':
-        return ['id', 'name', 'email', 'nombreEmpresa', 'fechaCreacion'];
+        return ['id', 'name', 'email', 'nombreEmpresa', 'fechaCreacion']; //
+      case 'users2':
+        return ['id', 'nombre', 'email', 'nD', 'UltimaActividad'];//
       case 'diagnostics':
-        return ['id', 'userId', 'status', 'fechaCreacion'];
+        return ['id', 'userId', 'status', 'fechaCreacion'];//
+      case 'diagnostics2':
+        return ['id', 'Empresa', 'sector', 'resultGeneralD', 'Dominprueba', 'Peorprueva']; //
       case 'text':
-        return ['id', 'diagnosisId', 'number', 'result', 'description', 'fechaCreacion'];
+        return ['id', 'diagnosisId', 'number', 'result', 'description', 'fechaCreacion'];//
       case 'companies':
-        return ['id', 'nombre', 'estado', 'sector', 'userId', 'fechaCreacion'];
+        return ['id', 'nombre', 'fecha', 'estado', 'sector', 'tipeEmp', 'Autorized'];
+      case 'companies1':
+        return ['id', 'nit', 'nombre', 'tipoEmpresa', 'sector', 'AñoFundacion'];
+      case 'companies2':
+        return ['id', 'correocontac', 'nombrecontac', 'Autoriza', 'Ubicacion', 'userId'];
+      case 'companies3':
+        return ['id', 'nombre', 'ingresoA', 'ActivosActuales', 'patrimonio'];
+      case 'companies4':
+        return ['id', 'nombre', 'numeroEmple', 'CanalesDist', 'PrincipalesCli', 'Tecnologi'];
       default:
         return [];
     }
@@ -107,20 +129,55 @@ const ReportsDashboard = () => {
     switch (selectedReport) {
       case 'users':
         return usersExport;
+      case 'users2':
+        return usersFormatedFix;
       case 'diagnostics':
         return DiagnosticExport;
+      case 'diagnostics2':
+        return EmpresasDiagnosticRR;
       case 'text':
         return TextExport;
       case 'companies':
-        return EmpresExport;
+        return empresasFormateadas;
+      case 'companies1':
+        return empresasFormated;
+      case 'companies2':
+        return empresasFormated2;
+      case 'companies3':
+        return empresasFormated3;
+      case 'companies4':
+        return empresasFormated4;
       default:
         return [];
     }
   };
 
+  const filteredData = getTableData().filter(item => {
+    const searchTermLowerCase = searchTerm.toLowerCase();
+    const isInRange = (value, min, max) => {
+      const numericValue = parseFloat(value);
+      return numericValue >= min && numericValue <= max;
+    };
+
+    if (filter === "all") {
+      // Si el filtro es "all", buscar en todos los campos
+      return Object.keys(item).some(key => {
+        const value = item[key]?.toString().toLowerCase();
+        return value?.includes(searchTermLowerCase);
+      });
+    } else {
+      // Si se selecciona un campo específico
+      const value = item[filter]?.toString().toLowerCase();
+      const isValueInRange = filterRange[0] !== null && filterRange[1] !== null
+        ? isInRange(item[filter], filterRange[0], filterRange[1])
+        : true;
+      return value?.includes(searchTermLowerCase) && isValueInRange;
+    }
+  });
+
   const handleExport = async () => {
     const headers = getTableHeaders();
-    const data = getTableData();
+    const data = filteredData;
     const tableData = data.map(item => headers.map(header => item[header]));
 
     if (selectedFormat === 'excel') {
@@ -138,12 +195,12 @@ const ReportsDashboard = () => {
       const rowHeight = fontSize + 10; // Altura de cada fila
       const drawTable = (headers, rows) => {
         const tableTop = height - margin - rowHeight;
-  
+
         // Dibujar los encabezados
         headers.forEach((header, i) => {
           page.drawText(header, { x: margin + i * columnWidth, y: tableTop, size: fontSize, color: rgb(0, 0, 0) });
         });
-  
+
         // Dibujar las filas
         rows.forEach((row, i) => {
           row.forEach((cell, j) => {
@@ -151,9 +208,9 @@ const ReportsDashboard = () => {
           });
         });
       };
-  
+
       drawTable(headers, tableData);
-  
+
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
@@ -213,23 +270,6 @@ const ReportsDashboard = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#2C5234] mb-1">Rango de Fechas</label>
-                  <div className="flex space-x-2">
-                    <Input
-                      type="date"
-                      value={dateRange.start}
-                      onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                      className="flex-1"
-                    />
-                    <Input
-                      type="date"
-                      value={dateRange.end}
-                      onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                      className="flex-1"
-                    />
-                  </div>
-                </div> */}
                 <div>
                   <label className="block text-sm font-medium text-[#2C5234] mb-1">Formato de Exportación</label>
                   <Select value={selectedFormat} onValueChange={setSelectedFormat}>
@@ -243,6 +283,52 @@ const ReportsDashboard = () => {
                   </Select>
                 </div>
               </div>
+              <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+                <div className="flex items-center flex-grow">
+
+                  <input
+                    type="text"
+                    placeholder={`Buscar por ${filter}...`}
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="border p-2 rounded"
+                  />
+                </div>
+                {/* Filter Dropdown */}
+                <div className="flex items-center">
+                  <Filter className="text-[#4E9419] mr-2" />
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="border border-gray-300 rounded-md p-2"
+                  >
+                    <option value="all">Todos</option>
+                    {getTableHeaders().map((key) => (
+                      <option value={key} key={key}>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <SquareMinus className="text-[#4E9419] mr-2" />
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    placeholder="Mínimo"
+                    value={filterRange[0] || ''}
+                    onChange={e => setFilterRange([e.target.value || null, filterRange[1]])}
+                    className="border p-2 rounded w-20"
+                  />
+                  <SquarePlus className="text-[#4E9419] mr-2" />
+                  <input
+                    type="number"
+                    placeholder="Máximo"
+                    value={filterRange[1] || ''}
+                    onChange={e => setFilterRange([filterRange[0], e.target.value || null])}
+                    className="border p-2 rounded w-20"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -253,7 +339,7 @@ const ReportsDashboard = () => {
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[400px]">
-                  <table className="w-full">
+                  <table className="w-full border-collapse">
                     <thead>
                       <tr className="border-b">
                         {getTableHeaders().map((header, index) => (
@@ -262,7 +348,7 @@ const ReportsDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {getTableData().map((item, index) => (
+                      {filteredData.map((item, index) => (
                         <tr key={index} className="border-b">
                           {getTableHeaders().map((header, idx) => (
                             <td key={idx} className="p-2">{item[header]}</td>

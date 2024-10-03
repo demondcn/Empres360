@@ -40,93 +40,85 @@ const CuestionarioInvestigacionDesarrollo = ({ onNavigate }) => {
         number: 1,
         text: "¿Cuál es el objetivo principal del área de Investigación y Desarrollo (I+D) en nuestra organización?",
         options: [
-          { value: "5", label: "El objetivo principal del área de I+D es impulsar la innovación y el desarrollo de productos o servicios de vanguardia que nos posicionen como líderes en nuestro mercado" },
-          { value: "3", label: "El área de I+D tiene como objetivo principal el desarrollo y la mejora de productos o servicios existentes, aunque aún hay margen para explorar nuevas oportunidades de innovación" },
-          { value: "1", label: "El área de I+D no tiene un objetivo principal claramente definido o no está contribuyendo de manera significativa a la innovación en la organización, lo que requiere una revisión urgente de su enfoque y estrategia" },
-        ]
+          { value: "5", label: "Óptima: El área de I+D impulsa la innovación y desarrolla productos o servicios de vanguardia para liderar el mercado." },
+          { value: "3", label: "Media: El área de I+D se centra en mejorar productos existentes, pero hay oportunidades para innovar más." },
+          { value: "1", label: "Baja: El área de I+D carece de un objetivo claro y no contribuye significativamente a la innovación, lo que requiere una revisión urgente." },
+        ],
       },
       {
         number: 2,
         text: "¿Cuáles son los proyectos de investigación y desarrollo actuales en los que está trabajando el equipo de I+D?",
         options: [
-          { value: "5", label: "Nuestro equipo de I+D está involucrado en proyectos altamente innovadores y estratégicos que tienen el potencial de transformar nuestra industria y generar un gran valor para la organización" },
-          { value: "3", label: "El equipo de I+D está trabajando en proyectos importantes, aunque algunos de ellos pueden considerarse más rutinarios o menos estratégicos en comparación con otros" },
-          { value: "1", label: "El equipo de I+D no está trabajando en proyectos significativos de investigación y desarrollo en este momento, lo que sugiere la necesidad de revisar y redefinir nuestras prioridades en esta área" },
-        ]
+          { value: "5", label: "Óptima: El equipo de I+D trabaja en proyectos innovadores y estratégicos con gran potencial para transformar la industria." },
+          { value: "3", label: "Media: El equipo de I+D está involucrado en proyectos importantes, aunque algunos son más rutinarios que estratégicos." },
+          { value: "1", label: "Baja: El equipo de I+D no trabaja en proyectos significativos en este momento, lo que requiere una revisión de prioridades." },
+        ],
       },
       {
         number: 3,
         text: "¿Qué recursos (humanos, tecnológicos, financieros) se han asignado al área de I+D?",
         options: [
-          { value: "5", label: "Hemos asignado recursos significativos y de alta calidad al área de I+D, incluyendo un equipo talentoso, tecnología de vanguardia y una inversión financiera sólida para impulsar la innovación" },
-          { value: "3", label: "Hemos asignado algunos recursos al área de I+D, aunque aún hay margen para aumentar la inversión y fortalecer nuestro equipo y tecnología" },
-          { value: "1", label: "Los recursos asignados al área de I+D son limitados o insuficientes, lo que representa un obstáculo importante para nuestra capacidad de innovación y desarrollo" },
-        ]
+          { value: "5", label: "Óptima: Se han asignado recursos significativos y de alta calidad, incluyendo un equipo talentoso, tecnología avanzada y sólida inversión financiera." },
+          { value: "3", label: "Media: Se han asignado algunos recursos, aunque hay margen para aumentar la inversión y fortalecer el equipo y la tecnología." },
+          { value: "1", label: "Baja: Los recursos son limitados o insuficientes, lo que obstaculiza nuestra capacidad de innovación y desarrollo." },
+        ],
       },
       {
         number: 4,
         text: "¿Cuál es el presupuesto anual destinado a actividades de I+D?",
         options: [
-          { value: "5", label: "Tenemos un presupuesto anual significativo y sólido destinado a actividades de I+D que nos permite llevar a cabo proyectos innovadores y estratégicos" },
-          { value: "3", label: "Contamos con un presupuesto anual para actividades de I+D, aunque este podría aumentar para respaldar proyectos más ambiciosos y de mayor impacto" },
-          { value: "1", label: "Nuestro presupuesto anual para actividades de I+D es limitado o insuficiente, lo que podría limitar nuestra capacidad de innovación y desarrollo" },
-        ]
+          { value: "5", label: "Óptima: Hay un presupuesto anual significativo que permite llevar a cabo proyectos innovadores y estratégicos." },
+          { value: "3", label: "Media: Contamos con un presupuesto, pero podría aumentar para respaldar proyectos más ambiciosos." },
+          { value: "1", label: "Baja: El presupuesto es limitado o insuficiente, lo que podría restringir nuestra capacidad de innovación y desarrollo." },
+        ],
       },
       {
         number: 5,
         text: "¿Existen procedimientos establecidos para el seguimiento y control de los proyectos de I+D? Si es así, ¿cómo se lleva a cabo este seguimiento?",
         options: [
-          { value: "5", label: "Tenemos procedimientos sólidos y altamente efectivos para el seguimiento y control de proyectos de I+D, que incluyen hitos claramente definidos, métricas de rendimiento y revisión regular del progreso" },
-          { value: "3", label: "Contamos con algunos procedimientos para el seguimiento y control de proyectos de I+D, aunque podríamos mejorar la estructura y rigor en la gestión de estos proyectos" },
-          { value: "1", label: "No tenemos procedimientos establecidos para el seguimiento y control de proyectos de I+D, lo que representa un desafío significativo en la gestión de estos proyectos" },
-        ]
+          { value: "5", label: "Óptima: Existen procedimientos sólidos y efectivos con hitos claros, métricas de rendimiento y revisiones regulares." },
+          { value: "3", label: "Media: Hay algunos procedimientos, pero se pueden mejorar en estructura y rigor." },
+          { value: "1", label: "Baja: No hay procedimientos establecidos, lo que dificulta la gestión de los proyectos." },
+        ],
       },
       {
         number: 6,
         text: "¿Qué metodologías se utilizan para la gestión de proyectos de I+D (por ejemplo, Agile, Waterfall)?",
         options: [
-          { value: "5", label: "Utilizamos metodologías avanzadas y ágiles, como Agile o Scrum, que nos permiten gestionar proyectos de I+D de manera eficiente y adaptarnos rápidamente a cambios" },
-          { value: "3", label: "Utilizamos algunas metodologías de gestión de proyectos de I+D, aunque podríamos diversificar y mejorar nuestra selección para adaptarnos mejor a las necesidades de cada proyecto" },
-          { value: "1", label: "No utilizamos metodologías específicas para la gestión de proyectos de I+D o dependemos en gran medida de enfoques tradicionales como Waterfall, lo que podría limitar nuestra capacidad de innovación" },
-        ]
+          { value: "5", label: "Óptima: Utilizamos metodologías avanzadas y ágiles (como Agile o Scrum) para una gestión eficiente y adaptable." },
+          { value: "3", label: "Media: Empleamos algunas metodologías, pero podríamos diversificar y mejorar nuestra selección." },
+          { value: "1", label: "Baja: No utilizamos metodologías específicas o dependemos de enfoques tradicionales, limitando nuestra innovación." },
+        ],
       },
       {
         number: 7,
         text: "¿Cómo se promueve la colaboración y el intercambio de ideas entre el equipo de I+D y otros departamentos de la organización?",
         options: [
-          { value: "5", label: "Fomentamos activamente la colaboración y el intercambio de ideas entre el equipo de I+D y otros departamentos mediante reuniones regulares, proyectos conjuntos y una cultura de innovación abierta" },
-          { value: "3", label: "Existe algún grado de colaboración e intercambio de ideas entre el equipo de I+D y otros departamentos, pero podríamos mejorar nuestras prácticas y procesos para promoverlo de manera más efectiva" },
-          { value: "1", label: "La colaboración y el intercambio de ideas entre el equipo de I+D y otros departamentos son limitados o inexistentes, lo que podría ser un obstáculo para la innovación y el desarrollo conjunto de proyectos" },
-        ]
+          { value: "5", label: "Óptima: Fomentamos activamente la colaboración a través de reuniones, proyectos conjuntos y una cultura de innovación abierta." },
+          { value: "3", label: "Media: Hay algún grado de colaboración, pero se pueden mejorar las prácticas y procesos para promoverlo." },
+          { value: "1", label: "Baja: La colaboración es limitada o inexistente, lo que obstaculiza la innovación y el desarrollo conjunto." },
+        ],
       },
       {
         number: 8,
         text: "¿Se realizan análisis de competitividad y benchmarking en el área de I+D? ¿Cuáles han sido los principales hallazgos?",
         options: [
-          { value: "5", label: "Realizamos análisis de competitividad y benchmarking de manera regular y sistemática en el área de I+D, lo que nos ha permitido identificar oportunidades de mejora y mantenernos a la vanguardia en innovación" },
-          { value: "3", label: "Realizamos ocasionalmente análisis de competitividad y benchmarking en el área de I+D, aunque podríamos hacerlo de manera más regular para obtener mejores perspectivas de la competencia y el mercado" },
-          { value: "1", label: "No realizamos análisis de competitividad ni benchmarking en el área de I+D, lo que limita nuestra capacidad para evaluar nuestro desempeño en comparación con otros y detectar áreas de mejora" },
-        ]
+          { value: "5", label: "Óptima: Realizamos análisis de competitividad y benchmarking de manera regular, identificando oportunidades de mejora y manteniéndonos a la vanguardia en innovación." },
+          { value: "3", label: "Media: Realizamos ocasionalmente análisis, pero podríamos ser más regulares para obtener mejores perspectivas del mercado." },
+          { value: "1", label: "Baja: No realizamos análisis de competitividad ni benchmarking, limitando nuestra capacidad para evaluar nuestro desempeño y detectar áreas de mejora." },
+        ],
       },
       {
         number: 9,
         text: "¿Se miden y evalúan los resultados y el impacto de las actividades de I+D? ¿Qué indicadores se utilizan?",
         options: [
-          { value: "5", label: "Medimos y evaluamos de manera sistemática los resultados y el impacto de las actividades de I+D utilizando indicadores clave como retorno de la inversión (ROI), tiempo de comercialización, número de patentes, y satisfacción del cliente" },
-          { value: "3", label: "Realizamos alguna medición y evaluación de los resultados de I+D, aunque podríamos mejorar en la selección y seguimiento de indicadores para evaluar de manera más completa el impacto" },
-          { value: "1", label: "No medimos ni evaluamos sistemáticamente los resultados o el impacto de las actividades de I+D, lo que dificulta la comprensión de su efectividad" },
-        ]
+          { value: "5", label: "Óptima: Medimos sistemáticamente los resultados e impacto de I+D con indicadores clave como ROI, tiempo de comercialización, número de patentes y satisfacción del cliente." },
+          { value: "3", label: "Media: Realizamos algunas mediciones de resultados de I+D, pero podemos mejorar en la selección y seguimiento de indicadores." },
+          { value: "1", label: "Baja: No medimos ni evaluamos sistemáticamente los resultados o impacto de I+D, dificultando la comprensión de su efectividad." },
+        ],
       },
-      {
-        number: 10,
-        text: "¿Se lleva a cabo una gestión del conocimiento en el área de I+D? ¿Cómo se captura, comparte y aprovecha el conocimiento generado?",
-        options: [
-          { value: "5", label: "Realizamos una gestión integral del conocimiento en el área de I+D, donde capturamos, compartimos y aprovechamos el conocimiento de manera efectiva mediante bases de datos, reuniones de intercambio y una cultura de aprendizaje continuo" },
-          { value: "3", label: "Realizamos alguna gestión del conocimiento en el área de I+D, aunque podríamos mejorar en la formalización y sistematización de procesos para una mejor captura y aprovechamiento del conocimiento" },
-          { value: "1", label: "No llevamos a cabo una gestión del conocimiento en el área de I+D, lo que puede limitar nuestra capacidad para capitalizar el conocimiento generado" },
-        ]
-      }
     ];
+    
 
     // Mezclar las opciones de cada pregunta al montar el componente
     const initializeQuestions = () => {
@@ -153,7 +145,7 @@ const CuestionarioInvestigacionDesarrollo = ({ onNavigate }) => {
     const values = Object.values(responses).map(Number);
     const total = values.reduce((acc, val) => acc + val, 0);
     
-    const maxScore = 50; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
+    const maxScore = 45;
     const percentage = (total / maxScore) * 100;
     
     return percentage;

@@ -5,9 +5,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
-import { ArrowLeft } from 'lucide-react';
-
-const InterfazResultados = ({ 
+import { ArrowLeft, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+const InterfazResultados = ({
   resultadoEmpresarial,
   reaultPrueb1,
   reaultPrueb2,
@@ -43,7 +43,7 @@ const InterfazResultados = ({
   }, []);
 
   const totalEmpres = Math.floor(resultadoEmpresarial);
-  
+
 
   const data = [
     { name: 'Ventas y Marketing', valor: reaultPrueb1 },
@@ -78,33 +78,33 @@ const InterfazResultados = ({
     }
   };
   const colorDIRECCIÓNGENERAL = (puntaje) => {
-    if (puntaje < 59) {
+    if (puntaje < 60) {
       return "#FF0000";
-    } else if (puntaje >= 59 && puntaje < 82) {
+    } else if (puntaje >= 60 && puntaje < 80) {
       return "#FFFF00";
-    } else if (puntaje >= 82 && puntaje < 100) {
+    } else if (puntaje >= 80 && puntaje < 100) {
       return "#008000";
     } else {
       return "#008000";
     }
   };
-  const colorAreaFinanzas = (puntaje) => {
-    if (puntaje < 60) {
+  const colorAreaFinanzas = (puntaje) => { //?
+    if (puntaje < 64) {
       return "#FF0000";
-    } else if (puntaje >= 60 && puntaje < 83) {
+    } else if (puntaje >= 64 && puntaje < 84) {
       return "#FFFF00";
-    } else if (puntaje >= 83 && puntaje < 100) {
+    } else if (puntaje >= 84 && puntaje < 100) {
       return "#008000";
     } else {
       return "#008000";
     }
   };
   const colorTalentoHumano = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 58) {
       return "#FF0000";
-    } else if (puntaje >= 60 && puntaje < 80) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "#FFFF00";
-    } else if (puntaje >= 80 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "#008000";
     } else {
       return "#008000";
@@ -122,34 +122,30 @@ const InterfazResultados = ({
     }
   };
   const colorTecnologiasInformacion = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 58) {
       return "#FF0000";
-    } else if (puntaje >= 60 && puntaje < 80) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "#FFFF00";
-    } else if (puntaje >= 80 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "#008000";
     } else {
       return "#008000";
     }
   };
   const colorInvestigacionDesarrollo = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 58) {
       return "#FF0000";
-    } else if (puntaje >= 60 && puntaje < 80) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "#FFFF00";
-    } else if (puntaje >= 80 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "#008000";
     } else {
       return "#008000";
     }
   };
 
-
-
-
-
   const colors = [
-    colorVentasYMarketing(reaultPrueb1), 
+    colorVentasYMarketing(reaultPrueb1),
     colorDIRECCIÓNGENERAL(reaultPrueb2), // Color para DIRECCIÓN GENERAL
     colorAreaFinanzas(reaultPrueb3), // Color para Area Finanzas
     colorTalentoHumano(reaultPrueb4), // Color para Talento Humano
@@ -162,11 +158,11 @@ const InterfazResultados = ({
     const { x, y, width, height, index } = props;
     return (
       <g>
-        <rect 
-          x={x} 
-          y={y} 
-          width={width} 
-          height={height} 
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
           fill={colors[index]} // Usa el color correspondiente
         />
       </g>
@@ -176,7 +172,11 @@ const InterfazResultados = ({
   const CustomLabel = (props) => {
     const { x, y, width, value } = props;
     return (
-      <text x={x + width + 5} y={y + 15} fill="#2C5234" fontWeight="bold">
+      <text x={x + width + 5} 
+      y={y + 15} fill="#2C5234" 
+      fontWeight="bold"
+      fontSize={20} 
+      >
         {`${value}%`}
       </text>
     );
@@ -216,11 +216,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeDireccionGeneral = (puntaje) => {
-    if (puntaje < 59) {
+    if (puntaje < 60) {
       return "La dirección general presenta un bajo rendimiento, con deficiencias en la toma de decisiones y en la comunicación estratégica. Se recomienda una revisión profunda de los procesos de gestión y la implementación de una estrategia más cohesiva y orientada a resultados. Mejorar la comunicación interna y el liderazgo es crucial para el éxito.";
-    } else if (puntaje >= 59 && puntaje < 82) {
+    } else if (puntaje >= 60 && puntaje < 80) {
       return "El rendimiento en dirección general es medio. Aunque la estrategia general está en marcha, hay áreas de mejora en la toma de decisiones y la implementación de estrategias. Considerar una revisión de los procesos de gestión y promover una mayor colaboración entre los equipos puede ser beneficioso.";
-    } else if (puntaje >= 82 && puntaje < 100) {
+    } else if (puntaje >= 80 && puntaje < 100) {
       return "La dirección general muestra un buen desempeño con una estrategia clara y bien implementada. Sin embargo, siempre hay espacio para la mejora. Evaluar las áreas de oportunidad para afinar la toma de decisiones y fortalecer la comunicación interna puede mejorar aún más los resultados.";
     } else {
       return "La dirección general está funcionando a un nivel excelente, con una estrategia muy bien ejecutada y una toma de decisiones eficaz. Se recomienda seguir con las prácticas actuales y continuar buscando formas innovadoras de mejorar aún más la eficiencia y la comunicación.";
@@ -228,11 +228,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeAreaFinanzas = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 64) {
       return "El área de finanzas muestra un bajo rendimiento, con problemas significativos en la gestión de costos y presupuestos. Se recomienda una revisión exhaustiva de las prácticas financieras y una implementación de controles más estrictos para mejorar la rentabilidad.";
-    } else if (puntaje >= 60 && puntaje < 83) {
+    } else if (puntaje >= 64 && puntaje < 84) {
       return "El área de finanzas presenta un desempeño medio. Aunque se están cumpliendo las expectativas básicas, hay oportunidades para optimizar la gestión de costos y presupuestos. Revisar y ajustar las estrategias financieras puede mejorar los resultados.";
-    } else if (puntaje >= 83 && puntaje < 100) {
+    } else if (puntaje >= 84 && puntaje < 100) {
       return "El desempeño en el área de finanzas es bueno, pero siempre hay oportunidades para mejorar. Revisar los procesos actuales y buscar nuevas oportunidades para optimizar la gestión financiera puede contribuir a una mayor eficiencia.";
     } else {
       return "El área de finanzas está funcionando de manera excelente, con una gestión de costos y presupuestos muy efectiva. Continuar con las prácticas actuales y explorar nuevas estrategias para mantener y mejorar esta eficiencia es lo más recomendable.";
@@ -240,11 +240,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeTalentoHumano = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 58) {
       return "El área de talento humano muestra un bajo rendimiento, con problemas en la motivación y productividad del personal. Se recomienda implementar programas de desarrollo profesional y mejorar la comunicación y evaluación de desempeño para elevar el nivel de los empleados.";
-    } else if (puntaje >= 60 && puntaje < 80) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "El desempeño en talento humano es medio. Existen algunas áreas de mejora en cuanto a la motivación y capacitación del personal. Mejorar los programas de formación y establecer un sistema de evaluación de desempeño más efectivo puede ser beneficioso.";
-    } else if (puntaje >= 80 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "El área de talento humano muestra un buen desempeño, pero siempre hay espacio para mejorar. Continuar con los programas de capacitación y evaluación del personal puede contribuir a una mayor motivación y productividad.";
     } else {
       return "El desempeño en talento humano es excelente. Los programas de formación y evaluación están funcionando muy bien, y el equipo está altamente motivado. Mantener estas prácticas y buscar nuevas oportunidades para seguir desarrollando al personal es lo más recomendable.";
@@ -264,11 +264,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeTecnologiasInformacion = (puntaje) => {
-    if (puntaje < 60) {
+    if (puntaje < 58) {
       return "La tecnología de la información muestra un bajo rendimiento, con deficiencias en la infraestructura y soporte. Se recomienda una revisión completa de la infraestructura tecnológica y una actualización de los sistemas para mejorar el rendimiento general.";
-    } else if (puntaje >= 60 && puntaje < 80) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "El desempeño en tecnologías de información es medio. Aunque los sistemas actuales cumplen con las necesidades básicas, hay oportunidades para mejorar la infraestructura y el soporte técnico. Considerar una actualización tecnológica puede ser beneficioso.";
-    } else if (puntaje >= 80 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "La tecnología de la información muestra un buen desempeño, pero siempre hay oportunidades para mejorar. Revisar la infraestructura tecnológica y explorar nuevas soluciones puede ayudar a mantener y mejorar el rendimiento.";
     } else {
       return "Las tecnologías de información están funcionando a un nivel excelente, con una infraestructura sólida y un soporte técnico eficaz. Mantener estas prácticas y continuar explorando nuevas tecnologías para mantener el alto rendimiento es lo más recomendable.";
@@ -276,11 +276,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeInvestigacionDesarrollo = (puntaje) => {
-    if (puntaje < 33) {
+    if (puntaje < 58) {
       return "La investigación y desarrollo muestran un bajo rendimiento, con una falta de innovación y avances significativos. Se recomienda una revisión de la estrategia de I+D y una mayor inversión en nuevas investigaciones para fomentar la innovación.";
-    } else if (puntaje >= 33 && puntaje < 66) {
+    } else if (puntaje >= 58 && puntaje < 78) {
       return "El desempeño en investigación y desarrollo es medio. Aunque hay algunas iniciativas en marcha, hay oportunidades para aumentar la inversión y enfocar mejor los esfuerzos de I+D. Considerar una revisión de las estrategias actuales puede ser beneficioso.";
-    } else if (puntaje >= 66 && puntaje < 100) {
+    } else if (puntaje >= 78 && puntaje < 100) {
       return "La investigación y desarrollo muestran un buen desempeño, con iniciativas y avances positivos. Sin embargo, siempre hay espacio para mejorar. Continuar con la inversión en I+D y explorar nuevas áreas de innovación puede llevar a mejores resultados.";
     } else {
       return "La investigación y desarrollo están funcionando a un nivel excelente, con innovaciones y avances significativos. Mantener las estrategias actuales y seguir invirtiendo en nuevas investigaciones es lo más recomendable para mantener el éxito.";
@@ -294,7 +294,7 @@ const InterfazResultados = ({
           <CardTitle className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#2C5234] mb-2">
             Resultados
           </CardTitle>
-          <motion.h2 
+          <motion.h2
             className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#4E9419]"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -302,7 +302,7 @@ const InterfazResultados = ({
           >
             Resultado empresarial es
           </motion.h2>
-          <motion.div 
+          <motion.div
             className={`text-4xl sm:text-5xl md:text-6xl font-bold text-[${colorg}] drop-shadow-lg`}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -313,7 +313,7 @@ const InterfazResultados = ({
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[60vh]">
-            <motion.div 
+            <motion.div
               className="space-y-4 text-[#2C5234]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -365,21 +365,45 @@ const InterfazResultados = ({
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" domain={[0, 100]} />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
+                <YAxis
+                  dataKey="name"
+                  type="category"
                   width={150}
                   tick={{ fill: '#2C5234', fontWeight: 'bold' }}
                 />
                 <Tooltip />
-                <Bar dataKey="valor" shape={<CustomBar />}>
+                <Bar dataKey="valor" shape={<CustomBar />} barSize={20}>
                   <LabelList content={<CustomLabel />} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
         </CardContent>
-        <CardFooter className="flex justify-center mt-6">
+        <CardFooter className="flex flex-col items-center mt-6 space-y-4">
+          <motion.div
+            className="text-center text-[#2C5234] mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1 }}
+          >
+            <p className="font-semibold mb-4" style={{ fontSize: '24px' }}>
+              <strong>¿Necesitas asesoría para mejorar el desempeño de tu empresa?</strong>
+            </p>
+            <p>Consulta al programa de Administración de Empresas Fusagasugá para obtener apoyo especializado.</p>
+            <p>En el siguiente correo: lppinto@ucundinamarca.edu.co</p>
+            <p className=" mb-4"><strong>¡Estamos aquí para ayudarte!</strong></p>
+            <p>Tambien puedes consultar los cursos de Especialización:</p>
+            <div className="mt-2 space-y-2">
+              <Link href="https://www.ucundinamarca.edu.co/index.php/posgradoelementomenu2022/especializaciones/marketing-digital" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center text-[#4E9419] hover:text-[#2C5234] transition-colors duration-300">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Especialización en Marketing Digital
+              </Link>
+              <Link href="https://www.ucundinamarca.edu.co/index.php/posgradoelementomenu2022" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center text-[#4E9419] hover:text-[#2C5234] transition-colors duration-300">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                Oferta Posgradual de la Universidad
+              </Link>
+            </div>
+          </motion.div>
           <Button
             onClick={onReturnToStart}
             className="bg-[#4E9419] hover:bg-[#2C5234] text-white font-bold py-2 px-4 rounded transition-colors duration-300"

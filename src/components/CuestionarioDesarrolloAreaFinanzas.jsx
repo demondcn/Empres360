@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { BarChart2, Check } from "lucide-react";
 
-const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
+const CuestionarioDesarrolloAreaFinanzas = ({ onNavigate }) => {
   const [responses, setResponses] = useState({});
   const [shuffledQuestions, setShuffledQuestions] = useState([]);
   const [allAnswered, setAllAnswered] = useState(false);
@@ -146,7 +146,6 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
         ]
       }
     ];
-    
 
     // Mezclar las opciones de cada pregunta al montar el componente
     const initializeQuestions = () => {
@@ -172,16 +171,16 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
   const calculatePercentage = () => {
     const values = Object.values(responses).map(Number);
     const total = values.reduce((acc, val) => acc + val, 0);
-    
+
     const maxScore = 60; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
     const percentage = (total / maxScore) * 100;
-    
+
     return percentage;
   };
 
   const handleSubmit = () => {
     const percentage = calculatePercentage();
-    onNavigate(percentage); 
+    onNavigate(percentage);
   };
 
 
@@ -189,7 +188,7 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
 
 
   return (
-    <div 
+    <div
       className="flex items-center justify-center min-h-screen p-4"
       style={{
         background: 'linear-gradient(-45deg, #FFF700, #4E9419, #2C5234)',
@@ -202,7 +201,7 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
           <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2C5234] mb-2 break-words hyphens-auto flex items-center justify-center">
             <BarChart2 className="mr-2 h-8 w-8" />
             DESARROLLO DEL ÁREA DE FINANZAS
-            </CardTitle>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <ScrollArea className="h-[60vh]">
@@ -232,9 +231,8 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
 
 
                         <motion.div
-                          className={`w-6 h-6 rounded-full border-2 border-[#4E9419] flex items-center justify-center cursor-pointer ${
-                            responses[question.number] === option.value ? 'bg-[#4E9419]' : 'bg-white'
-                          }`}
+                          className={`w-6 h-6 rounded-full border-2 border-[#4E9419] flex items-center justify-center cursor-pointer ${responses[question.number] === option.value ? 'bg-[#4E9419]' : 'bg-white'
+                            }`}
                           onClick={() => handleResponseChange(question.number, option.value)}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -250,8 +248,8 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
                             </motion.div>
                           )}
                         </motion.div>
-                        <Label 
-                          htmlFor={`q${question.number}-${option.value}`} 
+                        <Label
+                          htmlFor={`q${question.number}-${option.value}`}
                           className="cursor-pointer"
                           onClick={() => handleResponseChange(question.number, option.value)}
                         >
@@ -274,8 +272,8 @@ const CuestionarioDesarrolloAreaFinanzas = ({onNavigate  }) => {
               onClick={handleSubmit}
               disabled={!allAnswered} // Deshabilitar el botón si no están todas las respuestas
               style={{
-                background: allAnswered 
-                  ? 'linear-gradient(-45deg, #FFF700, #4E9419, #2C5234)' 
+                background: allAnswered
+                  ? 'linear-gradient(-45deg, #FFF700, #4E9419, #2C5234)'
                   : 'gray',
                 backgroundSize: '400% 400%',
                 animation: allAnswered ? 'gradientAnimation 15s ease infinite' : 'none',

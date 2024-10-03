@@ -14,7 +14,7 @@ export async function POST(request) {
     } = await request.json();
 
     // Validación básica de campos requeridos
-    if (!companyName || !nit || !email || !userId) {
+    if (!companyName || !email || !userId) {
       return new Response(JSON.stringify({ error: 'Faltan datos requeridos' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }

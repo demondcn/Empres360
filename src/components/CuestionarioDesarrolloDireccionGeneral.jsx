@@ -40,102 +40,94 @@ const CuestionarioDesarrolloDireccionGeneral = ({ onNavigate }) => {
         number: 1,
         text: "¿Cuál es la visión y misión de la empresa? ¿Son conocidas y compartidas por todos los miembros del equipo directivo?",
         options: [
-          { value: "5", label: "Sí, la visión y misión de la empresa son conocidas y compartidas por todos los miembros del equipo directivo" },
-          { value: "3", label: "Algunos miembros del equipo directivo conocen y comparten la visión y misión de la empresa, pero no todos" },
-          { value: "1", label: "No, la visión y misión de la empresa no son conocidas ni compartidas por los miembros del equipo directivo" },
+          { value: "5", label: "Sí, todos los miembros del equipo directivo conocen y comparten la visión y misión." },
+          { value: "3", label: "Parcialmente, algunos miembros las conocen y comparten, pero no todos." },
+          { value: "1", label: "No, la visión y misión no son conocidas ni compartidas por el equipo directivo." },
         ]
       },
       {
         number: 2,
         text: "¿Existe un plan estratégico establecido? ¿Ha sido comunicado y se está implementando de manera efectiva?",
         options: [
-          { value: "5", label: "Sí, existe un plan estratégico claro y detallado que ha sido comunicado y se está implementando de manera efectiva" },
-          { value: "3", label: "Sí, existe un plan estratégico, pero no ha sido completamente comunicado o implementado de manera efectiva" },
-          { value: "1", label: "No, no hay un plan estratégico establecido ni se ha comunicado o implementado efectivamente" },
+          { value: "5", label: "Sí, el plan estratégico está claro, comunicado y se implementa efectivamente." },
+          { value: "3", label: "Sí, pero no ha sido totalmente comunicado o implementado." },
+          { value: "1", label: "No, no existe un plan estratégico establecido ni implementado." },
         ]
       },
       {
         number: 3,
         text: "¿Existe un plan estratégico consensuado con los directivos de la empresa que se proyecta en un horizonte de tiempo de 3 a 5 años y está actualizado?",
         options: [
-          { value: "5", label: "Sí, contamos con un plan estratégico consensuado con los directivos que se proyecta en un horizonte de tiempo de 3 a 5 años y está actualizado en el momento" },
-          { value: "3", label: "Sí, tenemos un plan estratégico con los directivos, pero no se proyecta en un horizonte de tiempo específico de 3 a 5 años o no está completamente actualizado en el momento" },
-          { value: "1", label: "No, no tenemos un plan estratégico consensuado con los directivos de la empresa o no se ha actualizado en mucho tiempo" },
+          { value: "5", label: "Sí, hay un plan estratégico consensuado a 3-5 años y está actualizado." },
+          { value: "3", label: "Sí, pero no tiene un horizonte de 3-5 años o no está totalmente actualizado." },
+          { value: "1", label: "No, no hay un plan estratégico consensuado o está desactualizado." },
         ]
       },
       {
         number: 4,
         text: "¿Cómo se toman las decisiones estratégicas en la organización? ¿Se sigue un proceso estructurado y participativo?",
         options: [
-          { value: "5", label: "Se sigue un proceso estructurado y participativo" },
-          { value: "3", label: "A veces se sigue un proceso estructurado y participativo" },
-          { value: "1", label: "No se sigue un proceso estructurado y participativo" },
+          { value: "5", label: "Se sigue un proceso estructurado y participativo." },
+          { value: "3", label: "A veces se sigue un proceso estructurado y participativo." },
+          { value: "1", label: "No se sigue un proceso estructurado y participativo." },
         ]
       },
       {
         number: 5,
         text: "¿Se fomenta y promueve la innovación en la organización? ¿Se implementan nuevas ideas y propuestas?",
         options: [
-          { value: "5", label: "Sí, hay un fuerte énfasis en la innovación y se promueve activamente la generación y el desarrollo de nuevas ideas y propuestas" },
-          { value: "3", label: "Algunas veces se fomenta la innovación y se implementan nuevas ideas y propuestas, pero no de manera consistente o sistemática" },
-          { value: "1", label: "No se fomenta ni promueve la innovación en la organización y rara vez se implementan nuevas ideas o propuestas" },
+          { value: "5", label: "Sí, se promueve activamente la innovación y el desarrollo de nuevas ideas." },
+          { value: "3", label: "A veces, se fomenta la innovación, pero no de manera constante." },
+          { value: "1", label: "No, no se promueve ni implementan nuevas ideas." },
         ]
       },
       {
         number: 6,
         text: "¿Existen indicadores clave de desempeño (KPIs) establecidos para medir el éxito de la estrategia y los procesos directivos?",
         options: [
-          { value: "5", label: "Sí, se han establecido KPIs claros y medibles que evalúan el éxito de la estrategia y los procesos directivos" },
-          { value: "3", label: "Sí, hay algunos KPIs establecidos, pero podrían ser más específicos y medibles" },
-          { value: "1", label: "No, no existen KPIs establecidos para evaluar el éxito de la estrategia y los procesos directivos" },
+          { value: "5", label: "Sí, hay KPIs claros y medibles para evaluar el éxito de la estrategia." },
+          { value: "3", label: "Sí, pero los KPIs podrían ser más específicos y medibles." },
+          { value: "1", label: "No, no hay KPIs establecidos para evaluar el éxito." },
         ]
       },
       {
         number: 7,
-        text: "¿Cómo se lleva a cabo la comunicación y colaboración entre los miembros del equipo directivo?",
+        text: "¿Se realizan reuniones periódicas con el equipo directivo para abordar temas estratégicos y evaluar el progreso?",
         options: [
-          { value: "5", label: "La comunicación y colaboración entre los miembros del equipo directivo se realiza de manera fluida y constante, utilizando herramientas tecnológicas modernas y fomentando reuniones periódicas para intercambiar información y tomar decisiones conjuntas" },
-          { value: "3", label: "La comunicación y colaboración entre los miembros del equipo directivo se lleva a cabo de forma regular, pero puede haber algunos retrasos en la transmisión de información y falta de coordinación en ciertas ocasiones" },
-          { value: "1", label: "La comunicación y colaboración entre los miembros del equipo directivo es limitada, hay poca interacción y falta de coordinación, lo que puede llevar a retrasos en la toma de decisiones y dificultades para trabajar en equipo" },
+          { value: "5", label: "Sí, se realizan reuniones periódicas para temas estratégicos y evaluar el progreso." },
+          { value: "3", label: "A veces, se realizan reuniones, pero no de manera constante." },
+          { value: "1", label: "No, no se realizan reuniones periódicas para estos temas." },
         ]
       },
       {
         number: 8,
-        text: "¿Se realizan reuniones periódicas con el equipo directivo para abordar temas estratégicos y evaluar el progreso?",
+        text: "¿Se fomenta el desarrollo y crecimiento de las habilidades directivas dentro del equipo?",
         options: [
-          { value: "5", label: "Sí, se realizan reuniones periódicas con el equipo directivo para abordar temas estratégicos y evaluar el progreso" },
-          { value: "3", label: "A veces, se realizan reuniones periódicas con el equipo directivo para abordar temas estratégicos y evaluar el progreso" },
-          { value: "1", label: "No, no se realizan reuniones periódicas con el equipo directivo para abordar temas estratégicos y evaluar el progreso" },
+          { value: "5", label: "Sí, se fomenta activamente el desarrollo de habilidades directivas." },
+          { value: "3", label: "En parte, se ofrecen oportunidades de desarrollo, pero limitadas." },
+          { value: "1", label: "No, el desarrollo de habilidades directivas no es una prioridad." },
         ]
       },
       {
         number: 9,
-        text: "¿Se fomenta el desarrollo y crecimiento de las habilidades directivas dentro del equipo?",
+        text: "¿Se han establecido mecanismos de seguimiento y evaluación del desempeño del área de Dirección General?",
         options: [
-          { value: "5", label: "Sí, se fomenta activamente el desarrollo y crecimiento de las habilidades directivas del equipo" },
-          { value: "3", label: "En cierta medida, se ofrece apoyo y oportunidades para el desarrollo de habilidades directivas" },
-          { value: "1", label: "No, el desarrollo y crecimiento de las habilidades directivas no son una prioridad dentro del equipo" },
+          { value: "5", label: "Sí, hay mecanismos de seguimiento y evaluación efectivos para Dirección General." },
+          { value: "3", label: "Sí, pero los mecanismos podrían mejorarse." },
+          { value: "1", label: "No, no hay mecanismos de seguimiento y evaluación establecidos." },
         ]
       },
       {
         number: 10,
-        text: "¿Se han establecido mecanismos de seguimiento y evaluación del desempeño del área de Dirección General?",
-        options: [
-          { value: "5", label: "Sí, se han establecido mecanismos de seguimiento y evaluación del desempeño del área de Dirección General y son altamente efectivos" },
-          { value: "3", label: "Sí, se han establecido mecanismos de seguimiento y evaluación del desempeño del área de Dirección General, pero podrían mejorarse" },
-          { value: "1", label: "No, no se han establecido mecanismos de seguimiento y evaluación del desempeño del área de Dirección General" },
-        ]
-      },
-      {
-        number: 11,
         text: "¿Cómo se ha implementado la mejora continua en los procesos directivos de la organización?",
         options: [
-          { value: "5", label: "Se han establecido sistemas de gestión de calidad basados en estándares reconocidos internacionalmente, como ISO 9001, y se realizan auditorías periódicas para asegurar el cumplimiento y la mejora continua de los procesos directivos" },
-          { value: "3", label: "Se han realizado algunas iniciativas de mejora continua en los procesos directivos, pero no se cuenta con un sistema formal de gestión de calidad ni se realizan auditorías periódicas" },
-          { value: "1", label: "No se ha implementado ninguna mejora continua en los procesos directivos de la organización" },
+          { value: "5", label: "Sí, hay sistemas de gestión de calidad, como ISO 9001, y auditorías periódicas para la mejora continua." },
+          { value: "3", label: "Parcialmente, hay iniciativas de mejora continua, pero sin un sistema formal ni auditorías." },
+          { value: "1", label: "No, no se ha implementado ninguna mejora continua en los procesos directivos." },
         ]
       }
     ];
+    
     
     // Mezclar las opciones de cada pregunta al montar el componente
     const initializeQuestions = () => {
@@ -161,10 +153,8 @@ const CuestionarioDesarrolloDireccionGeneral = ({ onNavigate }) => {
   const calculatePercentage = () => {
     const values = Object.values(responses).map(Number);
     const total = values.reduce((acc, val) => acc + val, 0);
-    
-    const maxScore = 55; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
+    const maxScore = 50; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
     const percentage = (total / maxScore) * 100;
-    
     return percentage;
   };
 

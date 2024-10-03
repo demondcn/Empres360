@@ -5,15 +5,17 @@ import ISUMDiagnosticInterface from '@/components/ISUMDiagnosticInterface';
 import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
-
+import MessageAlAdmin from '@/components/AdminDashboardSContent/MesajeAdminFuntion'
 const UserContent = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hasCompanies, setHasCompanies] = useState(false);
   const [loading, setLoading] = useState(true);
+  const handleOpenChange = (open) => {
+    setIsDialogOpen(open);
+  };
 
   useEffect(() => {
     const checkUserCompanies = async () => {
@@ -49,6 +51,10 @@ const UserContent = () => {
   const handleRegisterEmpress = () => {
     router.push(`/InicioSeccion/AutorizedDates`);
   };
+  const MensajeAdmin = () => {
+    setIsDialogOpen(true);
+  };
+
 
   return (
     <main>
@@ -59,6 +65,12 @@ const UserContent = () => {
         onRegister={handleRegisterEmpress}
         hasCompanies={hasCompanies}
         loading={loading}
+        Mensaje={MensajeAdmin}
+      />
+      <MessageAlAdmin
+        isOpen={isDialogOpen}
+        onOpenChange={handleOpenChange}
+        id={userId} 
       />
     </main>
   );

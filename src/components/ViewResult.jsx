@@ -276,11 +276,11 @@ const InterfazResultados = ({
   };
 
   const getMensajeInvestigacionDesarrollo = (puntaje) => {
-    if (puntaje < 33) {
+    if (puntaje < 60) {
       return "La investigación y desarrollo muestran un bajo rendimiento, con una falta de innovación y avances significativos. Se recomienda una revisión de la estrategia de I+D y una mayor inversión en nuevas investigaciones para fomentar la innovación.";
-    } else if (puntaje >= 33 && puntaje < 66) {
+    } else if (puntaje >= 60 && puntaje < 80) {
       return "El desempeño en investigación y desarrollo es medio. Aunque hay algunas iniciativas en marcha, hay oportunidades para aumentar la inversión y enfocar mejor los esfuerzos de I+D. Considerar una revisión de las estrategias actuales puede ser beneficioso.";
-    } else if (puntaje >= 66 && puntaje < 100) {
+    } else if (puntaje >= 80 && puntaje < 100) {
       return "La investigación y desarrollo muestran un buen desempeño, con iniciativas y avances positivos. Sin embargo, siempre hay espacio para mejorar. Continuar con la inversión en I+D y explorar nuevas áreas de innovación puede llevar a mejores resultados.";
     } else {
       return "La investigación y desarrollo están funcionando a un nivel excelente, con innovaciones y avances significativos. Mantener las estrategias actuales y seguir invirtiendo en nuevas investigaciones es lo más recomendable para mantener el éxito.";

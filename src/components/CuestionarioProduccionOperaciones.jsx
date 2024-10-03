@@ -40,93 +40,94 @@ const CuestionarioProduccionOperaciones = ({ onNavigate }) => {
         number: 1,
         text: "¿Cuántos productos o servicios hemos ampliado o introducido al mercado en los últimos años?",
         options: [
-          { value: "1", label: "Hemos ampliado o introducido múltiples productos o servicios con éxito en los últimos años, lo que ha contribuido significativamente al crecimiento de nuestra empresa" },
-          { value: "2", label: "Hemos ampliado o introducido algunos productos o servicios en los últimos años, pero no en gran cantidad ni con un impacto significativo en nuestro crecimiento" },
-          { value: "3", label: "No hemos ampliado ni introducido nuevos productos o servicios en los últimos años, lo que requiere una atención inmediata para diversificar nuestro portafolio" }
+          { value: "5", label: "Óptima: Hemos ampliado o introducido varios productos o servicios con éxito, contribuyendo significativamente al crecimiento de la empresa." },
+          { value: "3", label: "Media: Hemos ampliado o introducido algunos productos o servicios, pero con un impacto limitado en el crecimiento." },
+          { value: "1", label: "Baja: No hemos ampliado ni introducido nuevos productos o servicios, lo que requiere atención urgente." }
         ]
       },
       {
         number: 2,
         text: "¿Cuál ha sido el crecimiento porcentual de nuestra capacidad de producción en los últimos años?",
         options: [
-          { value: "1", label: "Hemos experimentado un crecimiento porcentual significativo en nuestra capacidad de producción en los últimos años, superando ampliamente las expectativas" },
-          { value: "2", label: "Hemos experimentado un crecimiento porcentual moderado en nuestra capacidad de producción en los últimos años, en línea con las metas establecidas" },
-          { value: "3", label: "Nuestro crecimiento porcentual en capacidad de producción en los últimos años ha sido limitado o nulo, lo que requiere una revisión urgente de nuestras estrategias de crecimiento" }
+          { value: "5", label: "Óptima: Hemos tenido un crecimiento significativo en la capacidad de producción, superando ampliamente las expectativas." },
+          { value: "3", label: "Media: El crecimiento en la capacidad de producción ha sido moderado, en línea con las metas." },
+          { value: "1", label: "Baja: El crecimiento ha sido limitado o nulo, lo que requiere una revisión urgente de las estrategias." }
         ]
       },
       {
         number: 3,
         text: "¿Cómo han mejorado nuestros tiempos de entrega y cumplimiento de pedidos?",
         options: [
-          { value: "1", label: "Nuestros tiempos de entrega se han reducido significativamente y nuestro cumplimiento de pedidos es excepcional, superando consistentemente las expectativas de nuestros clientes" },
-          { value: "2", label: "Hemos realizado mejoras en nuestros tiempos de entrega y cumplimiento de pedidos, aunque aún hay margen para seguir mejorando y mantenernos competitivos" },
-          { value: "3", label: "No hemos experimentado mejoras significativas en nuestros tiempos de entrega y cumplimiento de pedidos, lo que requiere una revisión urgente de nuestros procesos operativos" }
+          { value: "5", label: "Óptima: Los tiempos de entrega han mejorado significativamente y el cumplimiento de pedidos supera las expectativas." },
+          { value: "3", label: "Media: Se han hecho mejoras, pero aún hay margen para mejorar y mantener la competitividad." },
+          { value: "1", label: "Baja: No ha habido mejoras significativas en los tiempos de entrega y cumplimiento, lo que requiere una revisión urgente." }
         ]
       },
       {
         number: 4,
         text: "¿Cuántas nuevas tecnologías o herramientas hemos implementado en el área de producción u operaciones?",
         options: [
-          { value: "1", label: "Hemos implementado múltiples nuevas tecnologías y herramientas en el área de producción u operaciones, lo que ha mejorado significativamente nuestra eficiencia y competitividad" },
-          { value: "2", label: "Hemos implementado algunas nuevas tecnologías y herramientas en el área de producción u operaciones, pero aún hay margen para expandir estas innovaciones" },
-          { value: "3", label: "No hemos implementado nuevas tecnologías o herramientas en el área de producción u operaciones, lo que requiere una revisión urgente de nuestra estrategia tecnológica" }
+          { value: "5", label: "Óptima: Se han implementado múltiples tecnologías y herramientas que mejoran significativamente la eficiencia y competitividad." },
+          { value: "3", label: "Media: Se han implementado algunas tecnologías, pero hay margen para más innovaciones." },
+          { value: "1", label: "Baja: No se han implementado nuevas tecnologías, lo que requiere una revisión urgente de la estrategia tecnológica." }
         ]
       },
       {
         number: 5,
         text: "¿Cuál ha sido el porcentaje de reducción de costos en la producción?",
         options: [
-          { value: "1", label: "Hemos logrado una reducción de costos en la producción superior al 20%, lo que ha mejorado significativamente nuestra rentabilidad y eficiencia " },
-          { value: "2", label: "Hemos logrado una reducción de costos en la producción entre el 10% y el 20%, lo que representa un avance significativo pero aún hay margen para mejorar " },
-          { value: "3", label: "No hemos logrado una reducción significativa de costos en la producción, lo que requiere una revisión urgente de nuestras estrategias de eficiencia " }
+          { value: "5", label: "Óptima: Hemos logrado una reducción de costos en la producción superior al 20%, lo que ha mejorado significativamente nuestra rentabilidad y eficiencia." },
+          { value: "3", label: "Media: Hemos logrado una reducción de costos en la producción entre el 10% y el 20%, lo que representa un avance significativo pero aún hay margen para mejorar." },
+          { value: "1", label: "Baja: No hemos logrado una reducción significativa de costos en la producción, lo que requiere una revisión urgente de nuestras estrategias de eficiencia." }
         ]
       },
       {
         number: 6,
         text: "¿Cómo hemos mejorado la eficiencia y productividad de nuestro personal en el área de producción u operaciones?",
         options: [
-          { value: "1", label: "Hemos implementado una serie de medidas y programas de capacitación que han llevado a una mejora sustancial en la eficiencia y productividad de nuestro personal en el área de producción u operaciones " },
-          { value: "2", label: "Hemos realizado algunas mejoras en la eficiencia y productividad del personal en el área de producción u operaciones, pero aún hay áreas en las que podemos seguir trabajando " },
-          { value: "3", label: "No hemos implementado medidas significativas para mejorar la eficiencia y productividad de nuestro personal en el área de producción u operaciones, lo que requiere una revisión inmediata de nuestras estrategias de gestión de personal " }
+          { value: "5", label: "Óptima: Se han implementado medidas y capacitaciones que mejoran sustancialmente la eficiencia y productividad del personal." },
+          { value: "3", label: "Media: Se han hecho algunas mejoras, pero aún hay áreas por desarrollar." },
+          { value: "1", label: "Baja: No se han tomado medidas significativas, lo que requiere una revisión inmediata de las estrategias de gestión de personal." }
         ]
       },
       {
         number: 7,
         text: "¿Cuáles son los indicadores clave de rendimiento (KPI) que utilizamos para medir el desempeño del área de producción u operaciones?",
         options: [
-          { value: "1", label: "Utilizamos una amplia variedad de KPIs específicos y medibles que abarcan todos los aspectos del área de producción u operaciones, y estos nos proporcionan una visión completa y en tiempo real de su desempeño " },
-          { value: "2", label: "Utilizamos algunos KPIs para medir el desempeño del área de producción u operaciones, pero hay oportunidades para ampliar y mejorar nuestra medición " },
-          { value: "3", label: "No utilizamos KPIs para medir el desempeño del área de producción u operaciones, lo que requiere una revisión urgente de nuestras prácticas de medición " }
+          { value: "5", label: "Óptima: Utilizamos una amplia variedad de KPIs específicos y medibles que ofrecen una visión completa del desempeño del área de producción u operaciones." },
+          { value: "3", label: "Media: Utilizamos algunos KPIs, pero hay oportunidades para ampliar y mejorar la medición." },
+          { value: "1", label: "Baja: No utilizamos KPIs, lo que requiere una revisión urgente de nuestras prácticas de medición." }
         ]
       },
       {
         number: 8,
         text: "¿Hemos implementado prácticas de gestión de calidad y mejora continua en el área de producción u operaciones?",
         options: [
-          { value: "1", label: "Hemos implementado prácticas de gestión de calidad y mejora continua de manera integral en el área de producción u operaciones, lo que ha resultado en un alto nivel de eficiencia y calidad en nuestros procesos " },
-          { value: "2", label: "Hemos implementado algunas prácticas de gestión de calidad y mejora continua en el área de producción u operaciones, pero aún hay áreas donde podemos fortalecer estas iniciativas " },
-          { value: "3", label: "No hemos implementado prácticas significativas de gestión de calidad y mejora continua en el área de producción u operaciones, lo que requiere una atención inmediata para mejorar nuestros procesos " }
+          { value: "5", label: "Óptima: Hemos implementado prácticas de gestión de calidad y mejora continua de manera integral, logrando alta eficiencia y calidad en nuestros procesos." },
+          { value: "3", label: "Media: Hemos implementado algunas prácticas, pero hay áreas donde podemos fortalecer estas iniciativas." },
+          { value: "1", label: "Baja: No hemos implementado prácticas significativas, lo que requiere atención inmediata para mejorar nuestros procesos." }
         ]
       },
       {
         number: 9,
         text: "¿Cómo hemos mejorado la seguridad y salud laboral en el área de producción u operaciones?",
         options: [
-          { value: "1", label: "Hemos implementado medidas exhaustivas que han llevado a una mejora significativa en la seguridad y salud laboral en el área de producción u operaciones, y hemos alcanzado estándares de seguridad excepcionales " },
-          { value: "2", label: "Hemos realizado mejoras en la seguridad y salud laboral en el área de producción u operaciones, pero aún hay áreas en las que podemos fortalecer nuestras prácticas " },
-          { value: "3", label: "No hemos realizado mejoras significativas en la seguridad y salud laboral en el área de producción u operaciones, lo que requiere una atención urgente para garantizar la seguridad de nuestros empleados " }
+          { value: "5", label: "Óptima: Hemos implementado medidas exhaustivas que han mejorado significativamente la seguridad y salud laboral, alcanzando estándares excepcionales." },
+          { value: "3", label: "Media: Hemos realizado mejoras, pero hay áreas donde podemos fortalecer nuestras prácticas." },
+          { value: "1", label: "Baja: No hemos hecho mejoras significativas, lo que requiere atención urgente para garantizar la seguridad de nuestros empleados." }
         ]
       },
       {
         number: 10,
         text: "¿Qué acciones hemos tomado para reducir el impacto ambiental de nuestras operaciones de producción?",
         options: [
-          { value: "1", label: "Hemos implementado una amplia gama de acciones que han reducido significativamente el impacto ambiental de nuestras operaciones de producción, cumpliendo con altos estándares de sostenibilidad " },
-          { value: "2", label: "Hemos tomado algunas acciones para reducir el impacto ambiental de nuestras operaciones de producción, pero aún hay margen para mejorar y alcanzar mayores niveles de sostenibilidad " },
-          { value: "3", label: "No hemos tomado acciones significativas para reducir el impacto ambiental de nuestras operaciones de producción, lo que requiere una revisión urgente de nuestras prácticas para cumplir con las normativas ambientales " }
+          { value: "5", label: "Óptima: Hemos implementado diversas acciones que han reducido significativamente el impacto ambiental, cumpliendo altos estándares de sostenibilidad." },
+          { value: "3", label: "Media: Hemos tomado algunas acciones, pero hay margen para mejorar y alcanzar mayores niveles de sostenibilidad." },
+          { value: "1", label: "Baja: No hemos tomado acciones significativas, lo que requiere una revisión urgente de nuestras prácticas ambientales." }
         ]
       }
     ];
+    
 
     // Mezclar las opciones de cada pregunta al montar el componente
     const initializeQuestions = () => {

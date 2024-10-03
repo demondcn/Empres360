@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import {
@@ -75,6 +75,7 @@ const ReportsDashboard = () => {
     TextExport,
     EmpresExport,
     empresasFormateadas,
+    empresasFormateadasplus,
     empresasFormated,
     empresasFormated2,
     empresasFormated3,
@@ -86,15 +87,15 @@ const ReportsDashboard = () => {
 
   const reportTypes = [
     { id: 'diagnostics', name: 'Diagnósticos', icon: <BarChart2 className="h-5 w-5" /> },
-    { id: 'diagnostics2', name: 'Diagnósticos-Completados', icon: <BarChart2 className="h-5 w-5" /> },
+    { id: 'diagnostics2', name: "DiagCompletados", icon: <BarChart2 className="h-5 w-5" /> },
     { id: 'users', name: 'Usuarios', icon: <Users className="h-5 w-5" /> },
     { id: 'users2', name: 'UsuariosInfo', icon: <Users className="h-5 w-5" /> },
     { id: 'companies', name: 'Empresas', icon: <Building className="h-5 w-5" /> },
     { id: 'text', name: 'Pruebas', icon: <PieChart className="h-5 w-5" /> },
-    { id: 'companies1', name: 'Empresas1', icon: <Building className="h-5 w-5" /> },
-    { id: 'companies2', name: 'Empresas2', icon: <Building className="h-5 w-5" /> },
-    { id: 'companies3', name: 'Empresas3', icon: <Building className="h-5 w-5" /> },
-    { id: 'companies4', name: 'Empresas4', icon: <Building className="h-5 w-5" /> },
+    { id: 'companies1', name: "EmpresInfo", icon: <Building className="h-5 w-5" /> },
+    { id: 'companies2', name: "EmpresInfoContacto", icon: <Building className="h-5 w-5" /> },
+    { id: 'companies3', name: "EmpresInfoFinanciera", icon: <Building className="h-5 w-5" /> },
+    { id: 'companies4', name: "EmpresInfoOperacion", icon: <Building className="h-5 w-5" /> },
   ];
 
 
@@ -111,7 +112,7 @@ const ReportsDashboard = () => {
       case 'text':
         return ['id', 'diagnosisId', 'number', 'result', 'description', 'fechaCreacion'];//
       case 'companies':
-        return ['id', 'nombre', 'fecha', 'estado', 'sector', 'tipeEmp', 'Autorized'];
+        return ['id', 'nombre', 'estado', 'sector', 'userId', 'fechaCreaccion', 'fechaActualizacion', 'ActivosActuales', 'AñoFundacion', 'CanalesDist', 'CorreoContac', 'Autorized', 'ingresoA', 'nit', 'nombreContacto', 'numeroEmple', 'patrimonio', 'principalesClien', 'tecnologiUtili', 'telefono', 'tipoEmpresa', 'ubicacion'];
       case 'companies1':
         return ['id', 'nit', 'nombre', 'tipoEmpresa', 'sector', 'AñoFundacion'];
       case 'companies2':
@@ -138,7 +139,7 @@ const ReportsDashboard = () => {
       case 'text':
         return TextExport;
       case 'companies':
-        return empresasFormateadas;
+        return empresasFormateadasplus;
       case 'companies1':
         return empresasFormated;
       case 'companies2':
@@ -338,26 +339,28 @@ const ReportsDashboard = () => {
                 <CardTitle className="text-[#2C5234]">Datos a Exportar</CardTitle>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[400px]">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="border-b">
-                        {getTableHeaders().map((header, index) => (
-                          <th key={index} className="text-left p-2">{header}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredData.map((item, index) => (
-                        <tr key={index} className="border-b">
-                          {getTableHeaders().map((header, idx) => (
-                            <td key={idx} className="p-2">{item[header]}</td>
+                <ScrollArea className="h-[400px] w-full rounded-md border">
+                  <div className="w-full" style={{ minWidth: 'max-content' }}>
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="border-b">
+                          {getTableHeaders().map((header, index) => (
+                            <th key={index} className="text-left p-2 whitespace-nowrap">{header}</th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-
-                  </table>
+                      </thead>
+                      <tbody>
+                        {filteredData.map((item, index) => (
+                          <tr key={index} className="border-b">
+                            {getTableHeaders().map((header, idx) => (
+                              <td key={idx} className="p-2 whitespace-nowrap">{item[header]}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
                 </ScrollArea>
               </CardContent>
             </Card>

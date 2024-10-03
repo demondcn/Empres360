@@ -289,6 +289,31 @@ export async function GET(request) {
             return value ? "Sí" : "No";
         };
         // Formatear los datos de las empresas
+        const empresasFormateadasplus = empresas.map(empresa => ({
+           id: empresa.id,
+           nombre: empresa.nombre,
+           estado: empresa.estado,
+           sector: empresa.sector,
+           userId: empresa.userId,
+           fechaCreaccion: empresa.createdAt.toLocaleDateString(),
+           fechaActualizacion: empresa.updatedAt.toLocaleDateString(),
+           ActivosActuales: empresa.activosTotales,
+           AñoFundacion: empresa.anoFundacion,
+           CanalesDist: empresa.canalesDistribucion,
+           CorreoContac: empresa.correoElectronico,
+           Autorized: convertBooleanToYesNo(empresa.emailAuthorization),
+           ingresoA: empresa.ingresosAnuales,
+           nit: empresa.nit,
+           nombreContacto: empresa.nombreContacto,
+           numeroEmple: empresa.numeroEmpleados,
+           patrimonio: empresa.patrimonio,
+           principalesClien: empresa.principalesClientes,
+           tecnologiUtili: empresa.tecnologiaUtilizada,
+           telefono: empresa.telefonos,
+           tipoEmpresa: empresa.tipoEmpresa,
+           ubicacion: empresa.ubicacion
+       }));
+        //
         const empresasFormateadas = empresas.map(empresa => ({
             id: empresa.id,
             nombre: empresa.nombre,
@@ -1083,7 +1108,8 @@ export async function GET(request) {
                 empresasConEmailAutorizado,
                 empresasPorSector,
                 numeroDeSectores,
-                EmpresActivity
+                EmpresActivity,
+                empresasFormateadasplus
 
             }),
             { status: 200 }

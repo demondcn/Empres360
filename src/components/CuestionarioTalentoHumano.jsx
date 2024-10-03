@@ -40,93 +40,85 @@ const CuestionarioTalentoHumano = ({ onNavigate }) => {
         number: 1,
         text: "¿Cuál es el nivel de participación de Recursos Humanos en la toma de decisiones estratégicas de la empresa?",
         options: [
-          { value: "5", label: "Recursos Humanos desempeña un papel fundamental en la toma de decisiones estratégicas de la empresa. Sus aportes y recomendaciones se consideran de alto valor y se integran activamente en el proceso de toma de decisiones." },
-          { value: "3", label: "Recursos Humanos tiene cierta participación en la toma de decisiones estratégicas de la empresa. Sus contribuciones se consideran importantes en algunas áreas, pero no están plenamente integradas en todas las decisiones." },
-          { value: "1", label: "Recursos Humanos tiene una participación limitada en la toma de decisiones estratégicas de la empresa. Su influencia es mínima, y sus aportes rara vez se consideran en el proceso de toma de decisiones." },
+          { value: "5", label: "Sí, Recursos Humanos desempeña un papel fundamental en las decisiones estratégicas y sus aportes son altamente valorados." },
+          { value: "3", label: "Parcialmente, Recursos Humanos tiene cierta participación, pero no está completamente integrado en todas las decisiones." },
+          { value: "1", label: "No, Recursos Humanos tiene una participación limitada y su influencia es mínima en las decisiones estratégicas." }
         ]
       },
       {
         number: 2,
         text: "¿Existe un plan estratégico de recursos humanos alineado con los objetivos y metas de la organización?",
         options: [
-          { value: "5", label: "Sí, la organización cuenta con un plan estratégico de recursos humanos perfectamente alineado con los objetivos y metas. Este plan se actualiza regularmente y se considera esencial para el éxito de la empresa." },
-          { value: "3", label: "Sí, existe un plan estratégico de recursos humanos que está en cierta medida alineado con los objetivos y metas de la organización. Sin embargo, puede haber áreas donde se requiere una mayor alineación o actualización." },
-          { value: "1", label: "No, actualmente no existe un plan estratégico de recursos humanos claramente alineado con los objetivos y metas de la organización, o dicho plan es inexistente o poco efectivo." },
+          { value: "5", label: "Sí, hay un plan estratégico de recursos humanos alineado y actualizado con los objetivos de la organización." },
+          { value: "3", label: "Parcialmente, existe un plan que está alineado, pero necesita más ajuste o actualización." },
+          { value: "1", label: "No, no hay un plan estratégico de recursos humanos alineado con los objetivos de la organización." }
         ]
       },
       {
         number: 3,
         text: "¿Qué medidas se han implementado para mejorar la retención de talento en la empresa?",
         options: [
-          { value: "5", label: "Se han implementado una variedad de medidas altamente efectivas para mejorar la retención de talento. Esto incluye programas de desarrollo profesional, beneficios competitivos, reconocimiento y oportunidades de crecimiento que han demostrado retener a los empleados de manera significativa." },
-          { value: "3", label: "Se han implementado algunas medidas para mejorar la retención de talento en la empresa. Aunque han tenido un impacto positivo en algunos casos, es posible que se necesiten más esfuerzos." },
-          { value: "1", label: "Hasta el momento, se han implementado medidas limitadas o ninguna medida específica para mejorar la retención de talento en la empresa. Esto podría estar afectando la retención de empleados de manera significativa." },
+          { value: "5", label: "Sí, se han implementado medidas efectivas para mejorar la retención de talento, como desarrollo profesional y beneficios competitivos." },
+          { value: "3", label: "Parcialmente, hay algunas medidas que han tenido un impacto positivo, pero se requieren más esfuerzos." },
+          { value: "1", label: "No, se han implementado medidas limitadas o ninguna para mejorar la retención de talento." }
         ]
       },
       {
         number: 4,
         text: "¿Se lleva a cabo una evaluación formal del desempeño de los empleados de manera regular?",
         options: [
-          { value: "5", label: "Sí, realizamos evaluaciones formales de desempeño regularmente y las utilizamos para tomar decisiones clave de desarrollo y reconocimiento." },
-          { value: "3", label: "En ciertas ocasiones, realizamos evaluaciones formales del desempeño, pero no de manera regular ni de manera consistente." },
-          { value: "1", label: "No realizamos evaluaciones formales del desempeño de manera regular, o nunca las llevamos a cabo en nuestra empresa." },
+          { value: "5", label: "Sí, se realizan evaluaciones formales de desempeño regularmente y se utilizan para decisiones de desarrollo y reconocimiento." },
+          { value: "3", label: "A veces, se realizan evaluaciones, pero no de manera regular ni consistente." },
+          { value: "1", label: "No, no se realizan evaluaciones formales de desempeño." }
         ]
       },
       {
         number: 5,
         text: "¿Cuál es el nivel de satisfacción de los empleados en temas de comunicación interna y clima laboral?",
         options: [
-          { value: "5", label: "Nuestros empleados están altamente satisfechos con la comunicación interna y el clima laboral, y consideran que son excelentes aspectos de nuestra empresa." },
-          { value: "3", label: "Los empleados muestran un nivel de satisfacción razonable en cuanto a comunicación interna y clima laboral, pero hay margen para mejoras." },
-          { value: "1", label: "El nivel de satisfacción de los empleados en temas de comunicación interna y clima laboral es insatisfactorio, y necesitamos tomar medidas significativas para mejorar estos aspectos." },
+          { value: "5", label: "Alto, los empleados están muy satisfechos con la comunicación interna y el clima laboral." },
+          { value: "3", label: "Razonable, hay satisfacción, pero con margen para mejoras." },
+          { value: "1", label: "Bajo, la satisfacción es insatisfactoria y se requieren mejoras significativas." }
         ]
       },
       {
         number: 6,
-        text: "¿Qué acciones se han implementado para promover la diversidad e inclusión en la organización?",
+        text: "¿Se han realizado esfuerzos para mejorar el proceso de reclutamiento y selección de personal?",
         options: [
-          { value: "5", label: "Hemos implementado una amplia gama de iniciativas de diversidad e inclusión, incluyendo programas de capacitación, políticas inclusivas, grupos de afinidad y una cultura de inclusión sólida." },
-          { value: "3", label: "Hemos tomado algunas medidas para promover la diversidad e inclusión, como capacitación ocasional y políticas básicas, pero aún hay margen para mejoras significativas." },
-          { value: "1", label: "No hemos tomado medidas significativas para promover la diversidad e inclusión en nuestra organización, y es un área en la que necesitamos tomar acciones urgentes." },
+          { value: "5", label: "Sí, se han implementado mejoras significativas en el reclutamiento y selección, incluyendo tecnología avanzada y optimización de prácticas." },
+          { value: "3", label: "Parcialmente, se han hecho algunas mejoras, pero hay áreas que aún necesitan atención." },
+          { value: "1", label: "No, no se han realizado esfuerzos significativos para mejorar el proceso de reclutamiento y selección." }
         ]
       },
       {
         number: 7,
-        text: "¿Se han realizado esfuerzos para mejorar el proceso de reclutamiento y selección de personal?",
+        text: "¿Existe un plan de capacitación y desarrollo para los empleados de la organización?",
         options: [
-          { value: "5", label: "Hemos implementado mejoras significativas en nuestro proceso de reclutamiento y selección, como la adopción de tecnología avanzada y la optimización de nuestras prácticas para atraer y retener talento de alta calidad." },
-          { value: "3", label: "Hemos realizado algunas mejoras en el proceso de reclutamiento y selección, pero aún hay áreas donde podemos hacer más mejoras para garantizar una selección más efectiva de personal." },
-          { value: "1", label: "No hemos realizado esfuerzos significativos para mejorar el proceso de reclutamiento y selección, y es necesario tomar medidas urgentes para hacerlo." },
+          { value: "5", label: "Sí, hay un plan integral de capacitación y desarrollo que se actualiza regularmente para todos los empleados." },
+          { value: "3", label: "Parcialmente, existen algunos programas, pero no son exhaustivos ni se actualizan con regularidad." },
+          { value: "1", label: "No, no hay un plan estructurado de capacitación y desarrollo para los empleados." }
         ]
       },
       {
         number: 8,
-        text: "¿Existe un plan de capacitación y desarrollo para los empleados de la organización?",
+        text: "¿Qué medidas se han tomado para promover el equilibrio entre trabajo y vida personal de los empleados?",
         options: [
-          { value: "5", label: "Sí, contamos con un plan de capacitación y desarrollo integral que abarca a todos los empleados y se actualiza regularmente para promover su crecimiento profesional y personal." },
-          { value: "3", label: "Tenemos algunos programas de capacitación y desarrollo, pero no son exhaustivos ni se actualizan con regularidad." },
-          { value: "1", label: "No tenemos un plan estructurado de capacitación y desarrollo para nuestros empleados, lo que requiere una atención inmediata." },
+          { value: "5", label: "Sí, se han implementado diversas medidas como horarios flexibles y programas de bienestar para promover el equilibrio trabajo-vida personal." },
+          { value: "3", label: "Parcialmente, se han tomado algunas medidas, pero hay espacio para mejorar y ampliar las iniciativas." },
+          { value: "1", label: "No, no se han tomado medidas significativas para promover el equilibrio trabajo-vida personal." }
         ]
       },
       {
         number: 9,
-        text: "¿Qué medidas se han tomado para promover el equilibrio entre trabajo y vida personal de los empleados?",
-        options: [
-          { value: "5", label: "Hemos implementado una amplia gama de medidas que incluyen flexibilidad de horarios, programas de bienestar y apoyo para cuidado de hijos/dependientes, lo que permite a nuestros empleados lograr un equilibrio óptimo entre trabajo y vida personal." },
-          { value: "3", label: "Hemos tomado algunas medidas para promover el equilibrio entre trabajo y vida personal, como horarios flexibles en ciertas situaciones, pero aún hay espacio para mejoras y expansión de estas iniciativas." },
-          { value: "1", label: "No hemos tomado medidas significativas para promover el equilibrio entre trabajo y vida personal de nuestros empleados, y es necesario hacerlo para mejorar la calidad de vida en la organización." },
-        ]
-      },
-      {
-        number: 10,
         text: "¿Cómo se mide el impacto de las acciones de Recursos Humanos en el rendimiento global de la empresa?",
         options: [
-          { value: "5", label: "Medimos el impacto de las acciones de Recursos Humanos de manera exhaustiva y cuantitativa, utilizando KPIs específicos y realizando análisis de datos para evaluar su influencia directa en el rendimiento global de la empresa." },
-          { value: "3", label: "Realizamos algunas mediciones del impacto de las acciones de Recursos Humanos, pero no de manera completa ni sistemática, y hay margen para mejorar nuestra evaluación." },
-          { value: "1", label: "No medimos el impacto de las acciones de Recursos Humanos en el rendimiento global de la empresa, lo que requiere una atención urgente para comprender y mejorar esta relación." },
+          { value: "5", label: "Sí, medimos exhaustivamente el impacto de Recursos Humanos utilizando KPIs específicos y análisis de datos." },
+          { value: "3", label: "Parcialmente, hacemos algunas mediciones, pero no son completas ni sistemáticas y necesitan mejoras." },
+          { value: "1", label: "No, no medimos el impacto de Recursos Humanos en el rendimiento de la empresa, lo que requiere atención urgente." }
         ]
-      },
+      }
     ];
+    
 
     // Mezclar las opciones de cada pregunta al montar el componente
     const initializeQuestions = () => {
@@ -154,7 +146,7 @@ const CuestionarioTalentoHumano = ({ onNavigate }) => {
     const values = Object.values(responses).map(Number);
     const total = values.reduce((acc, val) => acc + val, 0);
     
-    const maxScore = 50; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
+    const maxScore = 45; // Puntuación máxima posible: 10 preguntas con valor máximo de 3 cada una
     const percentage = (total / maxScore) * 100;
     
     return percentage;

@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { ClipboardList, BarChart2, UserPlus, TriangleAlert } from "lucide-react";
+import { ClipboardList, BarChart2, UserPlus, TriangleAlert, MessageCircle } from "lucide-react";
 
-const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegister, hasCompanies, loading }) => {
+const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegister, hasCompanies, loading, Mensaje }) => {
   useEffect(() => {
     const styleElement = document.createElement("style");
     styleElement.innerHTML = `
@@ -27,7 +27,7 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
 
 
   return (
-    <div 
+    <div
       className="relative flex items-center justify-center min-h-screen"
       style={{
         background: 'linear-gradient(-45deg, #FFF700, #4E9419, #2C5234)',
@@ -38,10 +38,10 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
       <Card className="w-full max-w-md bg-[#21323C] shadow-lg">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Image 
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/934998f8-8c24-41fd-bf88-93a6fc55d9fc-8exqPk7JrayPcJsRekohG0YpSGQP9W.jpg" 
-              alt="Empres 360 Pro Logo" 
-              width={400} 
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/934998f8-8c24-41fd-bf88-93a6fc55d9fc-8exqPk7JrayPcJsRekohG0YpSGQP9W.jpg"
+              alt="Empres 360 Pro Logo"
+              width={400}
               height={200}
               className="object-contain"
             />
@@ -51,12 +51,12 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
           </CardDescription>
           {!hasCompanies && (
             <p className="text-red-500 text-sm mt-2 font-semibold text-xl">
-               Por favor registre su empresa 
+              Por favor registre su empresa
             </p>
           )}
         </CardHeader>
         <CardContent className="space-y-6">
-          <Button 
+          <Button
             className="w-full h-16 text-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             onClick={onNewDiagnostic}
             style={{
@@ -69,7 +69,7 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
             <BarChart2 className="mr-2 h-6 w-6" />
             Nuevo Diagnóstico
           </Button>
-          <Button 
+          <Button
             className="w-full h-16 text-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             onClick={onViewDiagnostics}
             style={{
@@ -83,7 +83,7 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
             Ver Diagnósticos
           </Button>
           {!hasCompanies && (
-            <Button 
+            <Button
               className="w-full h-16 text-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               onClick={onRegister}
               style={{
@@ -108,6 +108,19 @@ const ISUMDiagnosticInterface = ({ onNewDiagnostic, onViewDiagnostics, onRegiste
         <p className="text-white text-xs ml-2 max-w-[400px]">
           Sistema de Diagnóstico aprobado por la Universidad de Cundinamarca
         </p>
+      </div>
+      <div className="absolute bottom-4 left-4 flex items-center opacity-70">
+        <Button
+          className="w-full h-16 text-lg font-semibold text-black transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+          onClick={Mensaje}
+          style={{
+            background: 'linear-gradient(-45deg, #2C5234, #FFF700, #4E9419)',
+            backgroundSize: '400% 400%',
+            animation: 'gradientAnimation 15s ease infinite',
+          }}
+        >
+          <MessageCircle className="mr-2 h-6 w-6"/>
+        </Button>
       </div>
     </div>
   );

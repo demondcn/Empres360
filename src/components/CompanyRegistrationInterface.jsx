@@ -8,6 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Building2, ArrowLeft } from "lucide-react"
 
+const generateYears = (startYear, endYear) => {
+  const years = [];
+  for (let year = endYear; year >= startYear; year--) {
+    years.push(year);
+  }
+  return years;
+}
 const CompanyRegistrationInterface = ({ userId }) => {
   const router = useRouter()
   const [formData, setFormData] = useState({
@@ -16,9 +23,20 @@ const CompanyRegistrationInterface = ({ userId }) => {
     anoFundacion: '', ingresosAnuales: '', activosTotales: '',
     patrimonio: '', numeroEmpleados: '', canalesDistribucion: '',
     principalesClientes: '', tecnologiaUtilizada: '',
-    emailAuthorization: false
+    emailAuthorization: false,
+    sectorOtro: '',
+    clientesOtro: '',
+    tecnologiaOtro: ''
   })
 
+  const [otrosSeleccionados, setOtrosSeleccionados] = useState({
+    sector: false,
+    clientes: false,
+    tecnologia: false
+  })
+  
+  const currentYear = new Date().getFullYear();
+  const years = generateYears(1600, currentYear);
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prevData => ({ ...prevData, [name]: value }))
@@ -26,6 +44,15 @@ const CompanyRegistrationInterface = ({ userId }) => {
 
   const handleSelectChange = (value, name) => {
     setFormData(prevData => ({ ...prevData, [name]: value }))
+    if (name === 'sector') {
+      setOtrosSeleccionados(prev => ({ ...prev, sector: value === 'otros' }))
+    }
+    if (name === 'principalesClientes') {
+      setOtrosSeleccionados(prev => ({ ...prev, clientes: value === 'otros' }))
+    }
+    if (name === 'tecnologiaUtilizada') {
+      setOtrosSeleccionados(prev => ({ ...prev, tecnologia: value === 'otros' }))
+    }
   }
 
   const handleCheckboxChange = (e) => {
@@ -35,11 +62,29 @@ const CompanyRegistrationInterface = ({ userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    // Crear una copia de formData para modificar si es necesario
+    let dataToSend = { ...formData }
+
+    // Reemplazar valores 'otros' por los que el usuario ha ingresado en los campos de texto
+    if (dataToSend.sector === 'otros') {
+      dataToSend.sector = dataToSend.sectorOtro
+    }
+    if (dataToSend.principalesClientes === 'otros') {
+      dataToSend.principalesClientes = dataToSend.clientesOtro
+    }
+    if (dataToSend.tecnologiaUtilizada === 'otros') {
+      dataToSend.tecnologiaUtilizada = dataToSend.tecnologiaOtro
+    }
+
+    // Eliminar los campos *_Otro que ya no son necesarios
+    delete dataToSend.sectorOtro
+    delete dataToSend.clientesOtro
+    delete dataToSend.tecnologiaOtro
     try {
       const response = await fetch('/api/company', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, userId }),
+        body: JSON.stringify({ ...dataToSend, userId }),
       })
       if (response.ok) {
         console.log('Company registration successful')
@@ -77,39 +122,39 @@ const CompanyRegistrationInterface = ({ userId }) => {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="companyName">Nombre de la Empresa</Label>
-              <Input id="companyName" name="companyName" value={formData.companyName} onChange={handleInputChange} required />
+              <Input id="companyName" name="companyName" value={formData.companyName} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Correo Electrónico</Label>
-              <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} required />
+              <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Teléfonos</Label>
-              <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required />
+              <Input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="contactName">Nombre de Contacto</Label>
-              <Input id="contactName" name="contactName" value={formData.contactName} onChange={handleInputChange} required />
+              <Input id="contactName" name="contactName" value={formData.contactName} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="nit">NIT</Label>
-              <Input id="nit" name="nit" value={formData.nit} onChange={handleInputChange} required />
+              <Input id="nit" name="nit" value={formData.nit} onChange={handleInputChange} placeholder="(Opcional)"/>
             </div>
             <div className="space-y-2">
               <Label htmlFor="address">Dirección</Label>
-              <Input id="address" name="address" value={formData.address} onChange={handleInputChange} required />
+              <Input id="address" name="address" value={formData.address} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="city">Ciudad</Label>
-              <Input id="city" name="city" value={formData.city} onChange={handleInputChange} required />
+              <Input id="city" name="city" value={formData.city} onChange={handleInputChange} placeholder="(Obligatorio)" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="location">Ubicación (coordenadas o descripción)</Label>
-              <Input id="location" name="location" value={formData.location} onChange={handleInputChange} />
+              <Label htmlFor="location">Departamento</Label>
+              <Input id="location" name="location" value={formData.location} onChange={handleInputChange} placeholder="(Obligatorio)" required/>
             </div>
             <div className="space-y-2">
               <Label htmlFor="companyType">Tipo de Empresa</Label>
-              <Select name="companyType" onValueChange={(value) => handleSelectChange(value, 'companyType')}>
+              <Select name="companyType" onValueChange={(value) => handleSelectChange(value, 'companyType')} required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione un tipo de empresa" />
                 </SelectTrigger>
@@ -123,7 +168,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="sector">Sector Económico</Label>
-              <Select name="sector" onValueChange={(value) => handleSelectChange(value, 'sector')}>
+              <Select name="sector" onValueChange={(value) => handleSelectChange(value, 'sector')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione un sector económico" />
                 </SelectTrigger>
@@ -141,21 +186,31 @@ const CompanyRegistrationInterface = ({ userId }) => {
                   <SelectItem value="otros">Otros</SelectItem>
                 </SelectContent>
               </Select>
+              {otrosSeleccionados.sector && (
+                <div className="space-y-2">
+                  <Label htmlFor="sectorOtro">Especifique el sector</Label>
+                  <Input id="sectorOtro" name="sectorOtro" value={formData.sectorOtro} onChange={handleInputChange} />
+                </div>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="anoFundacion">Año de Fundación</Label>
-              <Input
-                id="anoFundacion"
-                name="anoFundacion"
-                type="number"
-                value={formData.anoFundacion}
-                onChange={handleInputChange}
-                required
-              />
+              <Select name="anoFundacion" onValueChange={(value) => handleSelectChange(value, 'anoFundacion')} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccione el año de fundación" />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="ingresosAnuales">Ingresos Anuales</Label>
-              <Select name="ingresosAnuales" onValueChange={(value) => handleSelectChange(value, 'ingresosAnuales')}>
+              <Select name="ingresosAnuales" onValueChange={(value) => handleSelectChange(value, 'ingresosAnuales')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione el rango de ingresos" />
                 </SelectTrigger>
@@ -168,7 +223,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="activosTotales">Activos Totales</Label>
+              <Label htmlFor="activosTotales">Activos Totales (opcional) </Label>
               <Select name="activosTotales" onValueChange={(value) => handleSelectChange(value, 'activosTotales')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione el valor de activos totales" />
@@ -181,7 +236,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="patrimonio">Patrimonio</Label>
+              <Label htmlFor="patrimonio">Patrimonio (opcional) </Label>
               <Select name="patrimonio" onValueChange={(value) => handleSelectChange(value, 'patrimonio')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione el valor de patrimonio" />
@@ -195,7 +250,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="numeroEmpleados">Número de Empleados</Label>
-              <Select name="numeroEmpleados" onValueChange={(value) => handleSelectChange(value, 'numeroEmpleados')}>
+              <Select name="numeroEmpleados" onValueChange={(value) => handleSelectChange(value, 'numeroEmpleados')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione el número de empleados" />
                 </SelectTrigger>
@@ -209,7 +264,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="canalesDistribucion">Canales de Distribución</Label>
-              <Select name="canalesDistribucion" onValueChange={(value) => handleSelectChange(value, 'canalesDistribucion')}>
+              <Select name="canalesDistribucion" onValueChange={(value) => handleSelectChange(value, 'canalesDistribucion')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione un canal de distribución" />
                 </SelectTrigger>
@@ -223,7 +278,7 @@ const CompanyRegistrationInterface = ({ userId }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="principalesClientes">Principales Clientes</Label>
-              <Select name="principalesClientes" onValueChange={(value) => handleSelectChange(value, 'principalesClientes')}>
+              <Select name="principalesClientes" onValueChange={(value) => handleSelectChange(value, 'principalesClientes')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione sus principales clientes" />
                 </SelectTrigger>
@@ -234,10 +289,16 @@ const CompanyRegistrationInterface = ({ userId }) => {
                   <SelectItem value="otros">Otros</SelectItem>
                 </SelectContent>
               </Select>
+              {otrosSeleccionados.clientes && (
+                <div className="space-y-2">
+                  <Label htmlFor="clientesOtro">Especifique otros clientes</Label>
+                  <Input id="clientesOtro" name="clientesOtro" value={formData.clientesOtro} onChange={handleInputChange} />
+                </div>
+              )}
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="tecnologiaUtilizada">Tecnología Utilizada</Label>
-              <Select name="tecnologiaUtilizada" onValueChange={(value) => handleSelectChange(value, 'tecnologiaUtilizada')}>
+              <Select name="tecnologiaUtilizada" onValueChange={(value) => handleSelectChange(value, 'tecnologiaUtilizada')}required>
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccione la tecnología utilizada" />
                 </SelectTrigger>
@@ -251,7 +312,13 @@ const CompanyRegistrationInterface = ({ userId }) => {
                   <SelectItem value="otros">Otros</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+              {otrosSeleccionados.tecnologia && (
+                <div className="space-y-2">
+                  <Label htmlFor="tecnologiaOtro">Especifique otra tecnología</Label>
+                  <Input id="tecnologiaOtro" name="tecnologiaOtro" value={formData.tecnologiaOtro} onChange={handleInputChange} />
+                </div>
+              )}
+            </div> */}
             <div className="md:col-span-2 flex items-center space-x-2">
               <Checkbox
                 id="emailAuthorization"

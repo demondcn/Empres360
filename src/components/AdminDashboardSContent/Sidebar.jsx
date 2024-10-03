@@ -6,9 +6,8 @@ import {
   Users, 
   FileText, 
   PieChart,
-  Bell,
   FileOutput,
-  Settings,
+  BellRing,
   Building2,
   BookMarked
 } from 'lucide-react';
@@ -42,6 +41,9 @@ const Sidebar = ({ onSelectSection }) => {
         </Button>
         <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={() => router.push('/InicioSeccion/admin/ExportAd')}>
           <BookMarked className="mr-2 h-4 w-4" /> Informes
+        </Button>
+        <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={() => router.push('/InicioSeccion/admin/ConfigAd')}>
+          <BellRing className="mr-2 h-4 w-4" /> Notificaciones
         </Button>
         <Button variant="ghost" className="w-full justify-start mb-2 text-white hover:bg-[#2C5234] nav-button" onClick={handleSignOut}>
           <FileOutput className="mr-2 h-4 w-4" /> Cerrar

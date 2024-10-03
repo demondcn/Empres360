@@ -42,19 +42,19 @@ const CuestionarioVentasMark = ({ onNavigate }) => {
         number: 1,
         text: "¿Se establecieron objetivos para el departamento de ventas y marketing durante el último año y se lograron cumplir?",
         options: [
-          { value: "5", label: "Se establecieron y cumplieron con éxito todos los objetivos establecidos" },
-          { value: "3", label: "Se establecieron algunos objetivos, pero no todos se lograron cumplir" },
-          { value: "1", label: "No se establecieron objetivos claros para el departamento de ventas y marketing durante el último año" },
-        ]
+          { value: "5", label: "Sí, se establecieron y cumplieron todos los objetivos" },
+          { value: "3", label: "Parcialmente, se establecieron algunos objetivos, pero no se cumplieron todos" },
+          { value: "1", label: "No, no se establecieron objetivos claros para ventas y marketing" },
+        ],
       },
       {
         number: 2,
         text: "¿Se poseen estrategias de marketing utilizadas por el departamento encargado de mercadeo y ventas?",
         options: [
-          { value: "5", label: "Sí, se cuentan con estrategias de marketing óptimas que se implementan de manera eficiente" },
-          { value: "3", label: "Sí, se poseen estrategias de marketing que se utilizan de forma regular pero con resultados regulares" },
-          { value: "1", label: "No, no se dispone de estrategias de marketing claras y efectivas para el departamento de mercadeo y ventas" },
-        ]
+          { value: "5", label: "Sí, se implementan estrategias de marketing de manera eficiente" },
+          { value: "3", label: "Parcialmente, hay estrategias de marketing, pero los resultados son regulares" },
+          { value: "1", label: "No, no se cuenta con estrategias de marketing claras y efectivas" },
+        ],
       },
       {
         number: 3,
@@ -63,25 +63,25 @@ const CuestionarioVentasMark = ({ onNavigate }) => {
           { value: "5", label: "Excelentes resultados" },
           { value: "3", label: "Resultados aceptables" },
           { value: "1", label: "Resultados insatisfactorios" },
-        ]
+        ],
       },
       {
         number: 4,
         text: "¿Cómo es la disposición y capacidad del equipo de ventas para alcanzar los objetivos establecidos?",
         options: [
-          { value: "5", label: "Óptima: El equipo de ventas está altamente motivado, capacitado y trabaja de manera coordinada para alcanzar los objetivos establecidos" },
-          { value: "3", label: "Media: El equipo de ventas cuenta con algunas habilidades y capacidades, pero podría mejorar en coordinación y motivación para alcanzar los objetivos establecidos" },
-          { value: "1", label: "Baja: El equipo de ventas presenta falta de capacitación, motivación y coordinación, lo que dificulta alcanzar los objetivos establecidos" },
-        ]
+          { value: "5", label: "Óptima: El equipo está motivado, capacitado y coordinado para alcanzar los objetivos" },
+          { value: "3", label: "Media: El equipo tiene algunas habilidades, pero necesita mejorar en coordinación y motivación" },
+          { value: "1", label: "Baja: El equipo carece de capacitación, motivación y coordinación, lo que afecta el logro de objetivos" },
+        ],
       },
       {
         number: 5,
         text: "¿Cómo evalúa los procesos de generación de leads en mercadeo y ventas que se están utilizando actualmente?",
         options: [
-          { value: "5", label: "Óptima: Los procesos de generación de leads en mercadeo y ventas se encuentran altamente efectivos, generando un alto volumen de leads de calidad" },
-          { value: "3", label: "Media: Los procesos de generación de leads en mercadeo y ventas son efectivos, pero podrían mejorarse para aumentar la cantidad y calidad de los leads" },
-          { value: "1", label: "Baja: Los procesos de generación de leads en mercadeo y ventas no están funcionando correctamente, generando pocos leads de calidad" },
-        ]
+          { value: "5", label: "Óptima: Los procesos generan un alto volumen de leads de calidad" },
+          { value: "3", label: "Media: Los procesos son efectivos, pero requieren mejoras en cantidad y calidad de leads" },
+          { value: "1", label: "Baja: Los procesos no funcionan bien, generando pocos leads de calidad" },
+        ],
       },
       {
         number: 6,
@@ -90,35 +90,35 @@ const CuestionarioVentasMark = ({ onNavigate }) => {
           { value: "5", label: "Óptima: Altamente integrado y utilizado en todos los procesos de ventas y marketing" },
           { value: "3", label: "Media: Utilizado de forma moderada para algunas funciones específicas" },
           { value: "1", label: "Baja: Escasamente utilizado o no implementado en absoluto" },
-        ]
+        ],
       },
       {
         number: 7,
         text: "¿Se cuenta con un sistema de seguimiento y análisis de métricas de ventas y marketing?",
         options: [
-          { value: "5", label: "Óptima: Sí, contamos con un sistema completo y altamente efectivo para el seguimiento y análisis de métricas de ventas y marketing. Utilizamos herramientas avanzadas de análisis de datos y generamos informes periódicos para optimizar nuestras estrategias" },
-          { value: "3", label: "Media: Sí, contamos con algún sistema para el seguimiento y análisis de métricas de ventas y marketing, pero aún hay áreas donde se podría mejorar la implementación o la eficacia de las herramientas utilizadas" },
-          { value: "1", label: "Baja: No contamos con un sistema formal para el seguimiento y análisis de métricas de ventas y marketing, o si lo hacemos, es limitado y poco efectivo en la toma de decisiones estratégicas" },
-        ]
+          { value: "5", label: "Óptima: Contamos con un sistema completo y efectivo para seguimiento y análisis de métricas" },
+          { value: "3", label: "Media: Tenemos un sistema, pero con áreas que requieren mejora en su implementación o eficacia" },
+          { value: "1", label: "Baja: No contamos con un sistema formal o es limitado y poco efectivo en la toma de decisiones" },
+        ],
       },
       {
         number: 8,
         text: "¿Se ofrecen capacitaciones y desarrollo profesional al equipo de ventas y marketing para mantenerse actualizado en las últimas tendencias y técnicas?",
         options: [
-          { value: "5", label: "Óptima: Sí, ofrecemos capacitaciones regulares y oportunidades de desarrollo profesional de alta calidad para nuestro equipo de ventas y marketing. Nos mantenemos al día con las últimas tendencias y técnicas, y fomentamos el aprendizaje continuo para mejorar el rendimiento" },
-          { value: "3", label: "Media: Sí, ofrecemos algunas capacitaciones y desarrollo profesional a nuestro equipo de ventas y marketing, pero puede que no sean tan frecuentes o completas como deberían. A veces nos esforzamos por mantenernos al día con las últimas tendencias y técnicas" },
-          { value: "1", label: "Baja: No, no ofrecemos capacitaciones ni oportunidades de desarrollo profesional de manera regular a nuestro equipo de ventas y marketing, o si lo hacemos, son insuficientes para mantenernos actualizados en las últimas tendencias y técnicas" },
-        ]
+          { value: "5", label: "Óptima: Ofrecemos capacitaciones regulares y de calidad, manteniéndonos al día con las últimas tendencias y técnicas" },
+          { value: "3", label: "Media: Ofrecemos algunas capacitaciones, pero no son tan frecuentes ni completas como deberían" },
+          { value: "1", label: "Baja: No ofrecemos capacitaciones regulares o son insuficientes para estar actualizados" },
+        ],
       },
       {
         number: 9,
         text: "¿Se asigna un presupuesto suficiente al departamento de ventas y marketing que permita lograr un buen desempeño e impacto en el medio?",
         options: [
-          { value: "5", label: "Óptima: Sí, se asigna un presupuesto adecuado al departamento de ventas y marketing que permite implementar estrategias efectivas y tener un impacto significativo en el medio. Contamos con los recursos necesarios para alcanzar nuestros objetivos de manera efectiva" },
-          { value: "3", label: "Media: Sí, se asigna un presupuesto al departamento de ventas y marketing, pero podría ser mejorado para lograr un desempeño óptimo y un mayor impacto en el medio. A veces nos enfrentamos a limitaciones financieras que afectan nuestras estrategias y resultados" },
-          { value: "1", label: "Baja: No, el presupuesto asignado al departamento de ventas y marketing es insuficiente para lograr un buen desempeño e impacto en el medio. Nos vemos limitados en la implementación de estrategias efectivas debido a restricciones financieras" },
-        ]
-      }
+          { value: "5", label: "Óptima: Sí, se asigna un presupuesto adecuado que permite implementar estrategias efectivas y tener un impacto significativo" },
+          { value: "3", label: "Media: Sí, hay un presupuesto asignado, pero podría mejorarse para un mayor impacto y desempeño" },
+          { value: "1", label: "Baja: No, el presupuesto es insuficiente, limitando la implementación de estrategias efectivas" },
+        ],
+      },
     ];
 
     // Mezclar las opciones de cada pregunta al montar el componente

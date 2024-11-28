@@ -266,7 +266,7 @@ const DiagnosticManagementDashboard = () => {
                             <td className="p-2">{diagnostic.sector}</td>
                             <td className="p-2">{diagnostic.resultGeneralD}</td>
                             <td className="p-2">{diagnostic.Dominprueba}</td>
-                            <td className="p-2">{diagnostic.Peorprueva}</td>
+                            <td className="p-2">{diagnostic.Peorprueba}</td>
                             <td className="p-2">
                               <Button variant="ghost" className="mr-2" onClick={() => router.push(`/InicioSeccion/admin/DiagnAd/result?diagnosisId=${diagnostic.id}`)}>
                                 <FileText className="h-4 w-4 mr-1" /> Ver

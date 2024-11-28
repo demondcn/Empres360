@@ -706,7 +706,7 @@ export async function GET(request) {
                 sector: diagnosis.user.empresas[0].sector,   // Sector de la empresa
                 resultGeneralD: parseFloat(resultGeneralD.toFixed(2)), // Formateamos el resultado a 2 decimales
                 Dominprueba: DominPrueba.description, // Descripción de la prueba con mayor resultado
-                Peorprueva: Peorprueva.description,   // Descripción de la prueba con menor resultado
+                Peorprueba: Peorprueva.description,   // Descripción de la prueba con menor resultado
             };
         });
 

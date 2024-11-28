@@ -108,7 +108,7 @@ const ReportsDashboard = () => {
       case 'diagnostics':
         return ['id', 'userId', 'status', 'fechaCreacion'];//
       case 'diagnostics2':
-        return ['id', 'Empresa', 'sector', 'resultGeneralD', 'Dominprueba', 'Peorprueva']; //
+        return ['id', 'Empresa', 'sector', 'resultGeneralD', 'Dominprueba', 'Peorprueba']; //
       case 'text':
         return ['id', 'diagnosisId', 'number', 'result', 'description', 'fechaCreacion'];//
       case 'companies':

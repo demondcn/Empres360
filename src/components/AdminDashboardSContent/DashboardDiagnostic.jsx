@@ -148,7 +148,7 @@ const DiagnosticManagementDashboard = () => {
       diagnostic.sector?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       diagnostic.resultGeneralD?.toString().includes(searchTerm) ||
       diagnostic.Dominprueba?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      diagnostic.Peorprueva?.toLowerCase().includes(searchTerm.toLowerCase())
+      diagnostic.Peorprueba?.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
